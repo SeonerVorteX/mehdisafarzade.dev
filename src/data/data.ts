@@ -75,7 +75,7 @@ export default {
         skills: "I usually code and develop new projects (websites, bots, scripts, etc.). I have worked on various projects and have experience in developing RESTful APIs, web scrapping, and bot development.",
         expectations:
             "I am looking for opportunities to work as a backend developer and enhance my skills in software development. I am also open to working on new projects and collaborating with other developers.",
-        email: "seferzademehdi@gmail.com",
+        email: "contact@mehdisafarzade.dev",
         socials: {
             linkedin: "https://linkedin.com/in/seonervortex",
             github: "https://github.com/SeonerVorteX",
