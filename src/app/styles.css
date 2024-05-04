@@ -1,0 +1,123 @@
+.container {
+    max-width: var(--MAX-WIDTH);
+    margin: auto;
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(
+        135deg,
+        var(--DARK-BLUE) 0%,
+        var(--BLUE) 50%,
+        var(--LIGHT-BLUE) 100%
+    );
+}
+
+.notfound {
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.notfound .heading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 2rem;
+}
+
+.notfound h1 {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #407bff;
+}
+
+.notfound p {
+    text-align: center;
+    color: var(--LIGHT);
+    padding-top: 1rem;
+    font-size: 1.2rem;
+    font-weight: var(--HEADLINE-3);
+    opacity: 0.7;
+}
+
+.notfound img {
+    max-width: calc(var(--MAX-WIDTH) / 2);
+    margin: auto;
+}
+
+::-webkit-scrollbar {
+    width: 0.6rem;
+}
+
+::-webkit-scrollbar-track {
+    background: hsla(216, 43%, 16%, 0.737);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--DARK-BLUE);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .notfound {
+        grid-template-columns: repeat(1, 1fr);
+        margin-bottom: 1rem;
+    }
+
+    .notfound .heading {
+        gap: 1rem;
+    }
+    .notfound .image {
+        display: flex;
+        width: minmax(400px, 700px);
+        grid-area: 1/1/2/2;
+    }
+
+    .notfound .heading {
+        align-items: center;
+    }
+
+    .notfound h1 {
+        font-size: 2rem;
+    }
+
+    .notfound p {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .notfound {
+        height: 50vh;
+    }
+
+    .notfound .heading {
+        padding-bottom: 0;
+    }
+
+    .notfound .image {
+        display: none;
+    }
+
+    .notfound h1 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 340px) {
+    .notfound h1 {
+        font-size: 1.4rem;
+    }
+
+    .notfound p {
+        font-size: 1rem;
+    }
+}

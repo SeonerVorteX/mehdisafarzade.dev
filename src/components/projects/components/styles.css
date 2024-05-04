@@ -1,0 +1,124 @@
+.project-border-wrap {
+    padding: 1rem;
+    position: relative;
+    background: var(--LINEAR-135);
+    border-radius: 1.2rem;
+    padding: 0.2rem;
+    transition: all 0.5s ease;
+    width: clamp(340px, 100%, 340px);
+}
+
+.project-border-wrap:hover {
+    transform: translateY(-0.5rem);
+    box-shadow: 0 0 10px 0 var(--LIGHT-BLUE);
+}
+
+.project-item {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    word-wrap: break-word;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    background: var(--DARK);
+    border-radius: 1.2rem;
+    padding: 2.5rem 2rem;
+}
+
+.project-item .content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.project-item img {
+    width: 100%;
+    height: auto;
+    object-fit: fill;
+    outline: 1px solid #ffffff;
+    cursor: pointer;
+    border-radius: 0.25rem;
+}
+
+.project-item h3 {
+    color: var(--WHITE);
+    font-size: 1.5rem;
+    font-weight: var(--HEADLINE-3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.project-item h3:hover {
+    color: var(--BLUE);
+}
+
+.project-item p {
+    color: var(--LIGHT);
+    font-size: var(--PRIMARY-FONT-SIZE);
+    font-weight: var(--PARAGRAPH);
+    opacity: 0.7;
+}
+
+.project-item .readless,
+.project-item .readmore {
+    color: var(--PRIMARY);
+    font-size: var(--PRIMARY-FONT-SIZE);
+    font-weight: var(--HEADLINE-3);
+    cursor: pointer;
+}
+
+.project-item .readless:hover,
+.project-item .readmore:hover {
+    color: rgb(7, 206, 246);
+}
+
+.project-item .readless:active,
+.project-item .readmore:active {
+    color: var(--BLUE);
+}
+
+.project-item .tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.project-item .tag {
+    color: var(--WHITE);
+    font-size: 0.9rem;
+    font-weight: var(--PARAGRAPH);
+    padding: 0.3rem 0.6rem;
+    border-radius: 1rem;
+    background: var(--PRIMARY);
+    transition: all 0.3s ease;
+}
+
+.project-item .tag:hover {
+    background: var(--BLUE);
+}
+
+@media screen and (max-width: 768px) {
+    .project-item img {
+        width: 100%;
+    }
+
+    .project-item h3 {
+        font-size: 1.25rem;
+    }
+
+    .project-item p {
+        font-size: 1rem;
+    }
+
+    .project-item a {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .project-item .tag {
+        padding: 0.3rem 0.55rem;
+        font-size: 0.8rem;
+    }
+}

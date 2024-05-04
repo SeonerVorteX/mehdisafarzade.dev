@@ -1,0 +1,116 @@
+.home-content {
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.home-img img {
+    max-width: calc(var(--MAX-WIDTH) / 2);
+    margin: auto;
+}
+
+.home-text h1 {
+    color: var(--WHITE);
+    font-size: 2.5rem;
+    font-weight: var(--HEADLINE-1);
+    padding-top: 4rem;
+    margin-bottom: 1rem;
+}
+
+.home-text h1 .sp {
+    background: var(--LINEAR-90);
+    color: transparent;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
+
+.home-text p {
+    color: var(--LIGHT);
+    font-size: 1.2rem;
+    font-weight: var(--PARAGRAPH);
+    padding-top: 1rem;
+    margin-bottom: 4rem;
+    opacity: 0.7;
+}
+
+.home-btn {
+    font-size: var(--PRIMARY-FONT-SIZE);
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 2rem;
+    padding: 1rem 2rem;
+    color: var(--WHITE);
+    background: var(--LINEAR-90);
+    background-size: 200%;
+    transition: all 1s ease;
+}
+
+.home-btn:hover {
+    transform: scale(1.9);
+    background-position: right;
+    box-shadow: 0 0 15px 0 rgba(7, 206, 246, 0.811);
+}
+
+@media screen and (max-width: 768px) {
+    .home-content {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .home-img {
+        display: flex;
+        width: minmax(500px, 700px);
+        grid-area: 1/1/2/2;
+    }
+
+    .home-text h1 {
+        font-size: 2rem;
+    }
+
+    .home-text p {
+        font-size: 1rem;
+    }
+
+    .home-btn {
+        font-size: 1rem;
+    }
+
+    .home-img img {
+        max-width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .home-img {
+        display: none;
+    }
+
+    .home-text h1 {
+        padding-top: 2rem;
+        font-size: 1.5rem;
+    }
+
+    .home-text p {
+        padding-top: 0rem;
+        margin-bottom: 3rem;
+        font-size: 0.9rem;
+    }
+
+    .home-btn {
+        font-size: 0.8rem;
+    }
+}
+@media screen and (max-width: 340px) {
+    .home-text h1 {
+        font-size: 1.2rem;
+    }
+
+    .home-text p {
+        font-size: 0.8rem;
+    }
+
+    .home-btn {
+        font-size: 0.7rem;
+    }
+}

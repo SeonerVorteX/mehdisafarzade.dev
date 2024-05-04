@@ -1,0 +1,38 @@
+.scroll-up {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 3rem;
+    height: 3rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.scroll-up.visible {
+    display: block;
+    animation: up-down-animation 0.5s forwards;
+}
+
+.scroll-up.hidden {
+    animation: fadeout 0.5s forwards;
+}
+
+.scroll-up i {
+    color: var(--WHITE);
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    position: absolute;
+    top: 25%;
+}
+
+.scroll-up.visible:hover {
+    animation: up-down-animation 1s infinite;
+}
+
+@media screen and (max-width: 480px) {
+    .scroll-up {
+        display: none;
+    }
+}

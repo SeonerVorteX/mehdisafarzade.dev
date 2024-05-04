@@ -1,0 +1,85 @@
+.technology {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.technology .scrollbar-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.technology .scrollbar-heading h3 {
+    color: var(--WHITE);
+    font-size: 1.3rem;
+    font-weight: var(--HEADLINE-3);
+}
+
+.technology .scrollbar-heading .level {
+    color: var(--WHITE);
+    font-size: var(--PRIMARY-FONT-SIZE);
+    font-weight: var(--HEADLINE-3);
+}
+
+.technology .scrollbar {
+    max-width: 85%;
+}
+
+.technology .scrollbar .bar {
+    height: 1.25rem;
+    background: var(--LINEAR-90);
+    border-radius: 0.62rem;
+    box-shadow: 0px 0px 0.6rem var(--LIGHT-BLUE);
+}
+
+.bar.advanced {
+    width: 100%;
+}
+
+.bar.regular {
+    width: 60%;
+}
+
+.bar.beginner {
+    width: 30%;
+}
+
+@media screen and (max-width: 768px) {
+    .technology .scrollbar-heading h3 {
+        font-size: 1.1rem;
+    }
+
+    .technology .scrollbar-heading .level {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .technology .scrollbar-heading h3 {
+        font-size: 1rem;
+    }
+
+    .technology .scrollbar-heading .level {
+        font-size: 0.9rem;
+    }
+
+    .technology .scrollbar .bar {
+        height: 0.8rem;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .technology .scrollbar-heading h3 {
+        font-size: 0.9rem;
+    }
+
+    .technology .scrollbar-heading .level {
+        font-size: 0.8rem;
+    }
+
+    .technology .scrollbar .bar {
+        height: 0.7rem;
+    }
+}
