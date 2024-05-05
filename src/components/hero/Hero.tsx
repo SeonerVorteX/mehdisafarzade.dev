@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
+import data from "@/data/data";
+import Image from "next/image";
 import Typed from "typed.js";
 import "./styles.css";
 
@@ -17,13 +18,7 @@ export default function Hero() {
 
     useEffect(() => {
         const typed = new Typed(element.current, {
-            strings: [
-                "Student",
-                "Web Developer",
-                "Back-End Developer",
-                "Front-End Developer",
-                "Bot Developer",
-            ],
+            strings: data.typingTexts,
             typeSpeed: 80,
             backSpeed: 50,
             loop: true,

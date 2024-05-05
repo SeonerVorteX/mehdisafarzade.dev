@@ -43,7 +43,8 @@ footer .container {
     transition: all 0.3s ease;
 }
 
-.footer-socials i:hover {
+.footer-socials i:hover,
+.footer-socials a:focus-visible > i {
     transform: scale(1.3);
     background: var(--LINEAR-135);
     color: transparent;
@@ -60,6 +61,12 @@ footer .container {
 
 .footer-right .email a {
     color: var(--WHITE);
+    transition: all 0.3s ease;
+}
+
+.footer-right .email a:hover,
+.footer-right .email a:focus-visible {
+    color: var(--PRIMARY);
 }
 
 .footer-right .contact {

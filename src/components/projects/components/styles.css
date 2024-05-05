@@ -8,7 +8,8 @@
     width: clamp(340px, 100%, 340px);
 }
 
-.project-border-wrap:hover {
+.project-border-wrap:hover,
+.project-border-wrap:focus-within {
     transform: translateY(-0.5rem);
     box-shadow: 0 0 10px 0 var(--LIGHT-BLUE);
 }
@@ -49,7 +50,8 @@
     transition: all 0.3s ease;
 }
 
-.project-item h3:hover {
+.project-item h3:hover,
+.project-item a:focus-visible > h3 {
     color: var(--BLUE);
 }
 

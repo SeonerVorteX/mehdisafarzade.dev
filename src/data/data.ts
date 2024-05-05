@@ -19,7 +19,7 @@ export default {
                 "Personal portfolio website built with Next.js and TypeScript.",
             image: "/images/Portfolio.png",
             preview: "https://mehdisafarzade.dev",
-            url: "https://github.com/SeonerVorteX/Simple-RESTful-API",
+            url: "https://github.com/SeonerVorteX/mehdisafarzade.dev",
             tags: ["TypeScript", "Node.js", "Express.js", "MongoDB"],
         },
         {
@@ -82,4 +82,10 @@ export default {
             instagram: "https://instagram.com/seoner_vortex",
         },
     },
+    typingTexts: [
+        "Student",
+        "Full Stack Developer",
+        "Web3 Developer",
+        "Bot Developer",
+    ],
 };

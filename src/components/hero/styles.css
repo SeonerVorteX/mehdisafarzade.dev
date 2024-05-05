@@ -48,7 +48,6 @@
 }
 
 .home-btn:hover {
-    transform: scale(1.9);
     background-position: right;
     box-shadow: 0 0 15px 0 rgba(7, 206, 246, 0.811);
 }
