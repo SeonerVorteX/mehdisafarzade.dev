@@ -5,6 +5,11 @@ const nextConfig = {
             protocol: 'https',
             hostname: 'opengraph.githubassets.com',
             pathname: '**'
+        },
+        {
+            protocol: 'https',
+            hostname: 'raw.githubusercontent.com',
+            pathname: '**'
         }]
     }
 };

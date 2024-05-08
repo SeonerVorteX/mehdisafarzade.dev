@@ -20,7 +20,7 @@ export default {
             image: "/images/Portfolio.png",
             preview: "https://mehdisafarzade.dev",
             url: "https://github.com/SeonerVorteX/mehdisafarzade.dev",
-            tags: ["TypeScript", "Node.js", "Express.js", "MongoDB"],
+            tags: ["Next.js", "TypeScript", "Node.js", "Express.js", "MongoDB"],
         },
         {
             id: 2,
@@ -33,6 +33,14 @@ export default {
         },
         {
             id: 3,
+            title: "Todo Application",
+            description: "Todo application with Next.js and TypeScript",
+            image: "https://raw.githubusercontent.com/SeonerVorteX/todo-app/main/public/preview/preview.png",
+            url: "https://github.com/SeonerVorteX/todo-app",
+            tags: ["Next.js", "TypeScript", "Express.js", "MongoDB"],
+        },
+        {
+            id: 4,
             title: "Discord Moderation Bot",
             description: "Moderation bot for Discord servers.",
             image: "https://opengraph.githubassets.com/api/SeonerVorteX/discord-moderation-bot",
@@ -40,7 +48,7 @@ export default {
             tags: ["Node.js", "Discord.js", "MongoDB"],
         },
         {
-            id: 4,
+            id: 5,
             title: "Discord Registration Bot",
             description: "Registration bot for Discord servers.",
             image: "https://opengraph.githubassets.com/api/SeonerVorteX/discord-register-bot",
@@ -48,7 +56,7 @@ export default {
             tags: ["Node.js", "Discord.js", "MongoDB"],
         },
         {
-            id: 5,
+            id: 6,
             title: "AI Voice Assistant",
             description: "AI voice assistant with Python.",
             image: "https://opengraph.githubassets.com/api/SeonerVorteX/charlie-ai-assistant",
@@ -61,7 +69,7 @@ export default {
             ],
         },
         {
-            id: 6,
+            id: 7,
             title: "Live Chat Application",
             description: "Live chat application with Node.js and Socket.io.",
             image: "https://opengraph.githubassets.com/api/SeonerVorteX/console-live-chat",
@@ -71,10 +79,10 @@ export default {
     ],
     about: {
         description:
-            "I am a 18-year-old developer who is passionate about coding and developing new projects. I started learning JavaScript for software development 3 years ago, and I'm currently focusing on enhancing my skills as a backend developer.",
-        skills: "I usually code and develop new projects (websites, bots, scripts, etc.). I have worked on various projects and have experience in developing RESTful APIs, web scrapping, and bot development.",
+            "I am a 18-year-old developer who is passionate about coding and developing new projects. I started learning JavaScript for software development 3 years ago, and I'm currently focusing on enhancing my skills as a full stack web developer.",
+        skills: "I usually work with Next.js, TypeScript, and Express.js to build full stack web applications. I also have experience in developing RESTful APIs, bots, smart contracts and decentralized applications",
         expectations:
-            "I am looking for opportunities to work as a backend developer and enhance my skills in software development. I am also open to working on new projects and collaborating with other developers.",
+            "I am looking for opportunities to work as a full stack web developer in a team where I can improve my skills and learn new technologies. I am also interested in working on blockchain projects",
         email: "contact@mehdisafarzade.dev",
         socials: {
             linkedin: "https://linkedin.com/in/seonervortex",
@@ -84,7 +92,7 @@ export default {
     },
     typingTexts: [
         "Student",
-        "Full Stack Developer",
+        "Full Stack Web Developer",
         "Web3 Developer",
         "Bot Developer",
     ],
