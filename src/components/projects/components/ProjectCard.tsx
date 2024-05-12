@@ -60,7 +60,7 @@ export default ({ details }: ProjectCardProps) => {
                             priority
                         />
                     </Link>
-                    <Link href={url}>
+                    <Link href={url} target="_blank">
                         <h3>{title}</h3>
                     </Link>
                     <p className={`description-${id}`}>
