@@ -15,7 +15,7 @@ export default {
         {
             id: 1,
             title: "Examination System",
-            description: "This is a examination system for UNEC students.",
+            description: "This is an examination system for UNEC students.",
             image: "https://opengraph.githubassets.com/api/SeonerVorteX/examiner",
             preview: "https://unec-examination.vercel.app",
             url: "https://github.com/SeonerVorteX/examiner",
