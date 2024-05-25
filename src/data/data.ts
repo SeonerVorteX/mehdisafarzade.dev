@@ -16,7 +16,7 @@ export default {
             id: 1,
             title: "Examination System",
             description: "This is an examination system for UNEC students.",
-            image: "https://opengraph.githubassets.com/api/SeonerVorteX/examiner",
+            image: "/images/Examination.png",
             preview: "https://unec-examination.vercel.app",
             url: "https://github.com/SeonerVorteX/examiner",
             tags: ["Next.js", "TypeScript", "Node.js", "Express.js", "MongoDB"],
