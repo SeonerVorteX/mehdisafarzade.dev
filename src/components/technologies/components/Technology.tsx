@@ -1,4 +1,8 @@
+"use client";
+
 import "./styles.css";
+import { useEffect, useRef } from "react";
+import { createObserver } from "@/utils";
 
 interface TechnologyProps {
     language: {
@@ -8,9 +12,19 @@ interface TechnologyProps {
 }
 
 export default ({ language }: TechnologyProps) => {
+    const slideTechUp = useRef(null);
     const { name, level } = language;
+
+    useEffect(() => {
+        const slideTechUpObserver = createObserver(["slide-tech-up"]);
+
+        if (slideTechUp.current) {
+            slideTechUpObserver.observe(slideTechUp.current);
+        }
+    }, []);
+
     return (
-        <div className="technology">
+        <div ref={slideTechUp} className="technology hidden">
             <div className="scrollbar-heading">
                 <h3>{name}</h3>
                 <h4 className="level">

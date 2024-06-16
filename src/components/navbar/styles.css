@@ -44,7 +44,6 @@
     transition: all 0.3s ease;
 }
 
-.nav-links ul a:hover::after,
 .nav-links ul a:focus-visible::after {
     width: 100%;
 }
@@ -61,13 +60,37 @@
     transition: all 0.3s ease;
 }
 
-.nav-socials i:hover,
 .nav-socials a:focus-visible > i {
     transform: scale(1.5);
     background: var(--LINEAR-135);
     color: transparent;
     background-clip: text;
     -webkit-background-clip: text;
+}
+
+.slide-nav-down {
+    animation: slideNavDown 1s linear;
+}
+.slide-nav-left {
+    animation: slideNavLeft 1s linear;
+}
+
+.slide-nav-right {
+    animation: slideNavRight 1s linear;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .nav-links ul a:hover::after {
+        width: 100%;
+    }
+
+    .nav-socials i:hover {
+        transform: scale(1.5);
+        background: var(--LINEAR-135);
+        color: transparent;
+        background-clip: text;
+        -webkit-background-clip: text;
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -80,5 +103,32 @@
     .nav-socials {
         font-size: 0.5rem;
         gap: 1rem;
+    }
+}
+
+@keyframes slideNavDown {
+    0% {
+        transform: translateY(-200%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideNavLeft {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideNavRight {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
     }
 }

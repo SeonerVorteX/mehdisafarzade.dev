@@ -1,19 +1,43 @@
+"use client";
+
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import data from "@/data/data";
 import "./styles.css";
+import { createObserver } from "@/utils";
 
 export default () => {
     const { socials } = data.about;
+    const slideRight = useRef(null);
+    const slideLeft = useRef(null);
+    const slideDown = useRef(null);
+
+    useEffect(() => {
+        const slideRightObserver = createObserver(["slide-nav-right"]);
+        const slideLeftObserver = createObserver(["slide-nav-left"]);
+        const slideDownObserver = createObserver(["slide-nav-down"]);
+
+        if (slideRight.current) {
+            slideRightObserver.observe(slideRight.current);
+        }
+
+        if (slideLeft.current) {
+            slideLeftObserver.observe(slideLeft.current);
+        }
+
+        if (slideDown.current) {
+            slideDownObserver.observe(slideDown.current);
+        }
+    }, []);
 
     return (
-        <div className="container">
-            <div className="nav-heading">
+        <div className="container flexible-opacity">
+            <div ref={slideRight} className="nav-heading hidden">
                 <h3>
                     <Link href="/#">M.S. Portfolio</Link>
                 </h3>
             </div>
-            <div className="nav-links">
+            <div ref={slideDown} className="nav-links hidden">
                 <ul>
                     <li>
                         <Link href="/#projects">Projects</Link>
@@ -30,7 +54,7 @@ export default () => {
                 </ul>
             </div>
 
-            <div className="nav-socials">
+            <div ref={slideLeft} className="nav-socials hidden">
                 <Link href={socials.linkedin} target="_blank">
                     <i className="fa-brands fa-linkedin"></i>
                 </Link>

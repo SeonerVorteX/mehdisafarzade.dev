@@ -46,6 +46,10 @@
     width: 30%;
 }
 
+.slide-tech-up {
+    animation: slideTechUp 1s linear;
+}
+
 @media screen and (max-width: 768px) {
     .technology .scrollbar-heading h3 {
         font-size: 1.1rem;
@@ -81,5 +85,14 @@
 
     .technology .scrollbar .bar {
         height: 0.7rem;
+    }
+}
+
+@keyframes slideTechUp {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(0);
     }
 }

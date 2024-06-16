@@ -53,6 +53,7 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
@@ -62,6 +63,27 @@ body {
 
 a {
     text-decoration: none;
+}
+
+.hidden {
+    opacity: 0;
+    animation-timeline: view();
+    transition: all 1s linear;
+}
+
+.blured {
+    filter: blur(3px);
+}
+
+.visible {
+    filter: blur(0px);
+    opacity: 1;
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
 }
 
 @keyframes up-down-animation {

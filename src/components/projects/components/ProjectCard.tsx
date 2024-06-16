@@ -3,8 +3,9 @@
 import { ProjectCardDetails } from "@/types/types";
 import Image from "next/image";
 import "./styles.css";
-import { Key, useState } from "react";
+import { Key, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { createObserver } from "@/utils";
 
 interface ProjectCardProps {
     details: ProjectCardDetails;
@@ -24,6 +25,15 @@ export default ({ details }: ProjectCardProps) => {
     } = details;
 
     const [expanded, setExpanded] = useState(false);
+    const slideProjectUp = useRef(null);
+
+    useEffect(() => {
+        const slideProjectUpObserver = createObserver(["slide-project-up"]);
+
+        if (slideProjectUp.current) {
+            slideProjectUpObserver.observe(slideProjectUp.current);
+        }
+    }, []);
 
     const handleClickReadMore = () => {
         setExpanded(true);
@@ -48,7 +58,7 @@ export default ({ details }: ProjectCardProps) => {
     };
 
     return (
-        <article className="project-border-wrap">
+        <article ref={slideProjectUp} className="project-border-wrap hidden">
             <div className="project-item">
                 <div className="content">
                     <Link href={preview ? preview : url} target="_blank">
@@ -81,7 +91,7 @@ export default ({ details }: ProjectCardProps) => {
                                     <>
                                         {`${substringSentence(
                                             description,
-                                            100
+                                            45
                                         )}`}{" "}
                                         <span
                                             onClick={handleClickReadMore}

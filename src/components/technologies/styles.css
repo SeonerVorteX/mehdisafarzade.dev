@@ -26,6 +26,10 @@
     width: 100%;
 }
 
+.slide-techs-right {
+    animation: slideTechsRight 1s linear;
+}
+
 @media screen and (max-width: 768px) {
     .technologies {
         grid-template-columns: 1fr;
@@ -36,6 +40,19 @@
     #technologies .container {
         margin-top: 3rem;
     }
+
+    .slide-techs-right {
+        animation: slideTechsRight 1s linear;
+    }
+
+    @keyframes slideTechsRight {
+        0% {
+            transform: translateX(-20%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+    }
 }
 
 @media screen and (max-width: 340px) {
@@ -45,5 +62,14 @@
 
     .technologies-heading p {
         font-size: 0.9rem;
+    }
+}
+
+@keyframes slideTechsRight {
+    0% {
+        transform: translateX(-30%);
+    }
+    100% {
+        transform: translateX(0);
     }
 }

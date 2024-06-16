@@ -30,9 +30,26 @@
     justify-content: center;
 }
 
+.slide-projects-right {
+    animation: slideProjectsRight 1s linear;
+}
+
 @media screen and (max-width: 480px) {
     .projects-heading {
         padding-top: 2rem;
+    }
+
+    .slide-projects-right {
+        animation: slideProjectsRight 1s linear;
+    }
+
+    @keyframes slideProjectsRight {
+        0% {
+            transform: translateX(-20%);
+        }
+        100% {
+            transform: translateX(0);
+        }
     }
 }
 
@@ -43,5 +60,14 @@
 
     .projects-heading p {
         font-size: 0.9rem;
+    }
+}
+
+@keyframes slideProjectsRight {
+    0% {
+        transform: translateX(-30%);
+    }
+    100% {
+        transform: translateX(0);
     }
 }
