@@ -8,7 +8,7 @@ footer {
 footer .container {
     flex-direction: column;
     padding-bottom: 0.5rem;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .footer-content {
@@ -162,13 +162,25 @@ footer .copyright {
 }
 
 @media screen and (max-width: 480px) {
+    footer .container {
+        gap: 1rem;
+    }
+
     footer .footer-content p {
         font-size: 0.9rem;
         max-width: 200px;
     }
 
+    footer .copyright {
+        font-size: 0.7rem;
+    }
+
+    footer .footer-socials {
+        gap: 1.25rem;
+    }
+
     footer .footer-socials i {
-        font-size: 1.25rem;
+        font-size: 1.3rem;
     }
 
     .footer-right .email {
@@ -189,7 +201,7 @@ footer .copyright {
     }
 
     footer .footer-socials i {
-        font-size: 1.5rem;
+        font-size: 1rem;
     }
 
     .footer-right .email {

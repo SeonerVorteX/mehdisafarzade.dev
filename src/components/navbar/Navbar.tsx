@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import React, { useEffect, useRef } from "react";
-import data from "@/data/data";
-import "./styles.css";
-import { createObserver } from "@/utils";
+import Link from 'next/link';
+import React, { useEffect, useRef } from 'react';
+import data from '@/data/data';
+import './styles.css';
+import { createObserver } from '@/utils';
 
 export default () => {
     const { socials } = data.about;
@@ -13,9 +13,9 @@ export default () => {
     const slideDown = useRef(null);
 
     useEffect(() => {
-        const slideRightObserver = createObserver(["slide-nav-right"]);
-        const slideLeftObserver = createObserver(["slide-nav-left"]);
-        const slideDownObserver = createObserver(["slide-nav-down"]);
+        const slideRightObserver = createObserver(['slide-nav-right']);
+        const slideLeftObserver = createObserver(['slide-nav-left']);
+        const slideDownObserver = createObserver(['slide-nav-down']);
 
         if (slideRight.current) {
             slideRightObserver.observe(slideRight.current);
@@ -55,11 +55,14 @@ export default () => {
             </div>
 
             <div ref={slideLeft} className="nav-socials hidden">
+                <Link href={socials.github} target="_blank">
+                    <i className="fa-brands fa-github"></i>
+                </Link>
                 <Link href={socials.linkedin} target="_blank">
                     <i className="fa-brands fa-linkedin"></i>
                 </Link>
-                <Link href={socials.github} target="_blank">
-                    <i className="fa-brands fa-github"></i>
+                <Link href={socials.discord} target="_blank">
+                    <i className="fa-brands fa-discord"></i>
                 </Link>
                 <Link href={socials.instagram} target="_blank">
                     <i className="fa-brands fa-instagram"></i>

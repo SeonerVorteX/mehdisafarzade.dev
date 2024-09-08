@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import "./styles.css";
-import data from "@/data/data";
-import { createObserver } from "@/utils";
-import Link from "next/link";
-import { useEffect, useRef } from "react";
+import './styles.css';
+import data from '@/data/data';
+import { createObserver } from '@/utils';
+import Link from 'next/link';
+import { useEffect, useRef } from 'react';
 
 export default () => {
     const slideFooterRight = useRef(null);
@@ -13,8 +13,8 @@ export default () => {
     const { email, socials } = data.about;
 
     useEffect(() => {
-        const slideRightObserver = createObserver(["slide-footer-right"]);
-        const slideLeftObserver = createObserver(["slide-footer-left"]);
+        const slideRightObserver = createObserver(['slide-footer-right']);
+        const slideLeftObserver = createObserver(['slide-footer-left']);
 
         if (slideFooterRight.current) {
             slideRightObserver.observe(slideFooterRight.current);
@@ -31,15 +31,18 @@ export default () => {
                 <div className="footer-content flexible-opacity">
                     <div ref={slideFooterRight} className="footer-left hidden">
                         <div className="footer-socials">
-                            <a href={socials.linkedin} target="_blank">
-                                <i className="fa-brands fa-linkedin"></i>
-                            </a>
-                            <a href={socials.github} target="_blank">
+                            <Link href={socials.github} target="_blank">
                                 <i className="fa-brands fa-github"></i>
-                            </a>
-                            <a href={socials.instagram} target="_blank">
+                            </Link>
+                            <Link href={socials.linkedin} target="_blank">
+                                <i className="fa-brands fa-linkedin"></i>
+                            </Link>
+                            <Link href={socials.discord} target="_blank">
+                                <i className="fa-brands fa-discord"></i>
+                            </Link>
+                            <Link href={socials.instagram} target="_blank">
                                 <i className="fa-brands fa-instagram"></i>
-                            </a>
+                            </Link>
                         </div>
                         <p>Developed with Love and Coffee</p>
                     </div>

@@ -34,7 +34,7 @@
 }
 
 .nav-links ul a::after {
-    content: "";
+    content: '';
     position: absolute;
     height: 2px;
     width: 0;
@@ -99,10 +99,23 @@
     }
 }
 
+@media screen and (max-width: 480px) {
+    .nav-socials {
+        gap: 1rem;
+    }
+
+    .nav-socials i {
+        font-size: 1.5rem;
+    }
+}
+
 @media screen and (max-width: 340px) {
     .nav-socials {
-        font-size: 0.5rem;
         gap: 1rem;
+    }
+
+    .nav-socials i {
+        font-size: 1.4rem;
     }
 }
 
