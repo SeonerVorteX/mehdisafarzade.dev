@@ -104,7 +104,7 @@ export default {
     ],
     about: {
         description:
-            "I am an 18-year-old developer who is passionate about coding and developing new projects. I started learning JavaScript for software development 3 years ago, and I'm currently focusing on enhancing my skills as a full-stack web developer.",
+            "I am an 18-year-old developer who is passionate about coding and developing new projects. I started learning JavaScript for software development 4 years ago, and I'm currently focusing on enhancing my skills as a full-stack web developer.",
         skills: 'I usually work with NextJs, and NestJs to build full-stack web applications. I also have experience in developing RESTful APIs, bots, smart contracts, and decentralized applications',
         expectations:
             'I am looking for opportunities to work as a full-stack web developer in a team where I can improve my skills and learn new technologies. I am also interested in working on blockchain projects',
