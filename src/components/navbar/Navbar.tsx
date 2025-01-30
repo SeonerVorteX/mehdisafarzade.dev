@@ -64,9 +64,6 @@ export default () => {
                 <Link href={socials.discord} target="_blank">
                     <i className="fa-brands fa-discord"></i>
                 </Link>
-                <Link href={socials.instagram} target="_blank">
-                    <i className="fa-brands fa-instagram"></i>
-                </Link>
             </div>
         </div>
     );
