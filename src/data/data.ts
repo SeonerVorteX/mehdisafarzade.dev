@@ -112,7 +112,6 @@ export default {
         socials: {
             linkedin: 'https://linkedin.com/in/seonervortex',
             github: 'https://github.com/SeonerVorteX',
-            instagram: 'https://instagram.com/seoner_vortex',
             discord: 'https://discord.gg/MTNkXHnX3b',
         },
     },
