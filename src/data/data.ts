@@ -101,5 +101,5 @@ export default {
             discord: 'https://discord.gg/MTNkXHnX3b',
         },
     },
-    typingTexts: ['Student', 'Full Stack Web Developer', 'Web3 Developer', 'Bot Developer'],
+    typingTexts: ['Student', 'Full Stack Web Developer', 'Bot Developer'],
 };
