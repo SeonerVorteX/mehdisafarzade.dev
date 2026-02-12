@@ -8,13 +8,7 @@ export default {
             { name: 'Python', level: 'regular' },
         ],
         tools: ['Express.js', 'MongoDB', 'PostgreSQL', 'Docker', 'Git'],
-        experiences: [
-            'RESTful API',
-            'Bot Development',
-            'Web Scrapping',
-            'Code Review',
-            'Bug Fixing',
-        ],
+        experiences: ['RESTful API', 'Bot Development', 'Web Scrapping', 'Code Review', 'Bug Fixing'],
         skills: ['Teamwork', 'B2 English'],
     },
     projects: [
@@ -29,8 +23,7 @@ export default {
         {
             id: 2,
             title: 'Personal Portfolio',
-            description:
-                'Personal portfolio website built with Next.js and TypeScript.',
+            description: 'Personal portfolio website built with Next.js and TypeScript.',
             image: '/images/Portfolio.png',
             preview: 'https://mehdisafarzade.dev',
             url: 'https://github.com/SeonerVorteX/mehdisafarzade.dev',
@@ -49,8 +42,7 @@ export default {
         {
             id: 4,
             title: 'Simple RESTful API',
-            description:
-                'Simple RESTful API with TypeScript, Express.js, and MongoDB.',
+            description: 'Simple RESTful API with TypeScript, Express.js, and MongoDB.',
             image: 'https://opengraph.githubassets.com/api/SeonerVorteX/Simple-RESTful-API',
             url: 'https://github.com/SeonerVorteX/Simple-RESTful-API',
             tags: ['TypeScript', 'Node.js', 'Express.js', 'MongoDB'],
@@ -85,12 +77,7 @@ export default {
             description: 'AI voice assistant with Python.',
             image: 'https://opengraph.githubassets.com/api/SeonerVorteX/charlie-ai-assistant',
             url: 'https://github.com/SeonerVorteX/charlie-ai-assistant',
-            tags: [
-                'Python',
-                'TensorFlow',
-                'Pyttsx3',
-                'Artificial Intelligence',
-            ],
+            tags: ['Python', 'TensorFlow', 'Pyttsx3', 'Artificial Intelligence'],
         },
         {
             id: 9,
@@ -103,7 +90,7 @@ export default {
     ],
     about: {
         description:
-            "I am a 19-year-old developer who is passionate about coding and developing new projects. I started learning JavaScript for software development 5 years ago, and I'm currently focusing on enhancing my skills as a full-stack web developer.",
+            "I am a 19-year-old developer who is passionate about coding and developing new projects. I started learning JavaScript for software development 6 years ago, and I'm currently focusing on enhancing my skills as a full-stack web developer.",
         skills: 'I usually work with NextJs, and NestJs to build full-stack web applications. I also have experience in developing RESTful APIs, bots, smart contracts, and decentralized applications',
         expectations:
             'I am looking for opportunities to work as a full-stack web developer in a team where I can improve my skills and learn new technologies. I am also interested in working on blockchain projects',
@@ -114,10 +101,5 @@ export default {
             discord: 'https://discord.gg/MTNkXHnX3b',
         },
     },
-    typingTexts: [
-        'Student',
-        'Full Stack Web Developer',
-        'Web3 Developer',
-        'Bot Developer',
-    ],
+    typingTexts: ['Student', 'Full Stack Web Developer', 'Web3 Developer', 'Bot Developer'],
 };
