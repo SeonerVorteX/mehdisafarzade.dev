@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import "./styles.css";
-import data from "@/data/data";
-import { createObserver } from "@/utils";
+import { useEffect, useRef } from 'react';
+import './styles.css';
+import data from '@/data/data';
+import { createObserver } from '@/utils';
 
-export default () => {
+export default function About() {
     const slideAboutRight = useRef(null);
     const slideAboutUp1 = useRef(null);
     const slideAboutUp2 = useRef(null);
@@ -13,33 +13,19 @@ export default () => {
     const { description, skills, expectations } = data.about;
 
     useEffect(() => {
-        const slideRightObserver = createObserver(["slide-about-right"]);
-        const slideUpObserver = createObserver(["slide-about-up"]);
+        const slideRightObserver = createObserver(['slide-about-right']);
+        const slideUpObserver = createObserver(['slide-about-up']);
 
-        if (slideAboutRight.current) {
-            slideRightObserver.observe(slideAboutRight.current);
-        }
-
-        if (slideAboutUp1.current) {
-            slideUpObserver.observe(slideAboutUp1.current);
-        }
-
-        if (slideAboutUp2.current) {
-            slideUpObserver.observe(slideAboutUp2.current);
-        }
-
-        if (slideAboutUp3.current) {
-            slideUpObserver.observe(slideAboutUp3.current);
-        }
+        if (slideAboutRight.current) slideRightObserver.observe(slideAboutRight.current);
+        if (slideAboutUp1.current) slideUpObserver.observe(slideAboutUp1.current);
+        if (slideAboutUp2.current) slideUpObserver.observe(slideAboutUp2.current);
+        if (slideAboutUp3.current) slideUpObserver.observe(slideAboutUp3.current);
     }, []);
 
     return (
         <section id="about">
             <div className="container">
-                <div
-                    ref={slideAboutRight}
-                    className="about-heading hidden flexible-opacity"
-                >
+                <div ref={slideAboutRight} className="about-heading hidden flexible-opacity">
                     <h2>About Me</h2>
                     <p>Here is a brief introduction about me.</p>
                 </div>
@@ -60,4 +46,4 @@ export default () => {
             </div>
         </section>
     );
-};
+}

@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import data from '@/data/data';
 import './styles.css';
 import { createObserver } from '@/utils';
 
-export default () => {
+export default function Navbar() {
     const { socials } = data.about;
     const slideRight = useRef(null);
     const slideLeft = useRef(null);
@@ -17,24 +17,16 @@ export default () => {
         const slideLeftObserver = createObserver(['slide-nav-left']);
         const slideDownObserver = createObserver(['slide-nav-down']);
 
-        if (slideRight.current) {
-            slideRightObserver.observe(slideRight.current);
-        }
-
-        if (slideLeft.current) {
-            slideLeftObserver.observe(slideLeft.current);
-        }
-
-        if (slideDown.current) {
-            slideDownObserver.observe(slideDown.current);
-        }
+        if (slideRight.current) slideRightObserver.observe(slideRight.current);
+        if (slideLeft.current) slideLeftObserver.observe(slideLeft.current);
+        if (slideDown.current) slideDownObserver.observe(slideDown.current);
     }, []);
 
     return (
         <div className="container flexible-opacity">
             <div ref={slideRight} className="nav-heading hidden">
                 <h3>
-                    <Link href="/#">M.S. Portfolio</Link>
+                    <Link href="/#">Mehdi Safarzade</Link>
                 </h3>
             </div>
             <div ref={slideDown} className="nav-links hidden">
@@ -43,7 +35,7 @@ export default () => {
                         <Link href="/#projects">Projects</Link>
                     </li>
                     <li>
-                        <Link href="/#technologies">Technologies </Link>
+                        <Link href="/#technologies">Technologies</Link>
                     </li>
                     <li>
                         <Link href="/#about">About Me</Link>
@@ -53,7 +45,6 @@ export default () => {
                     </li>
                 </ul>
             </div>
-
             <div ref={slideLeft} className="nav-socials hidden">
                 <Link href={socials.github} target="_blank">
                     <i className="fa-brands fa-github"></i>
@@ -67,4 +58,4 @@ export default () => {
             </div>
         </div>
     );
-};
+}

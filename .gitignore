@@ -16,6 +16,7 @@
 # production
 /build
 TODO.md
+yarn.lock
 package-lock.json
 
 # misc

@@ -1,35 +1,27 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import "./styles.css";
-import data from "@/data/data";
-import { createObserver } from "@/utils";
+import { useEffect, useRef } from 'react';
+import './styles.css';
+import data from '@/data/data';
+import { createObserver } from '@/utils';
 
-export default () => {
-    const { tools, skills, experiences } = data.technologies;
+export default function Additional() {
+    const { tools, cloud, skills, experiences } = data.technologies;
     const slideAdditionalRight = useRef(null);
     const slideAdditionalUp = useRef(null);
 
     useEffect(() => {
-        const slideRightObserver = createObserver(["slide-additional-right"]);
-        const slideUpObserver = createObserver(["slide-additional-up"]);
+        const slideRightObserver = createObserver(['slide-additional-right']);
+        const slideUpObserver = createObserver(['slide-additional-up']);
 
-        if (slideAdditionalRight.current) {
-            slideRightObserver.observe(slideAdditionalRight.current);
-        }
-
-        if (slideAdditionalUp.current) {
-            slideUpObserver.observe(slideAdditionalUp.current);
-        }
+        if (slideAdditionalRight.current) slideRightObserver.observe(slideAdditionalRight.current);
+        if (slideAdditionalUp.current) slideUpObserver.observe(slideAdditionalUp.current);
     }, []);
 
     return (
         <section className="additional">
             <div className="container">
-                <div
-                    ref={slideAdditionalRight}
-                    className="heading hidden flexible-opacity"
-                >
+                <div ref={slideAdditionalRight} className="heading hidden flexible-opacity">
                     <h2>Additional technologies and skills</h2>
                 </div>
                 <div ref={slideAdditionalUp} className="details hidden">
@@ -39,6 +31,16 @@ export default () => {
                                 <li key={index}>
                                     <div className="circle"></div>
                                     <h3>{tool}</h3>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="cloud flexible-opacity">
+                        <ul>
+                            {cloud.map((item, index) => (
+                                <li key={index}>
+                                    <div className="circle"></div>
+                                    <h3>{item}</h3>
                                 </li>
                             ))}
                         </ul>
@@ -67,4 +69,4 @@ export default () => {
             </div>
         </section>
     );
-};
+}

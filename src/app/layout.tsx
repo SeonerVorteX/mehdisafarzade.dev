@@ -1,42 +1,41 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import "./styles.css";
-import Navbar from "@/components/navbar/Navbar";
-import Footer from "@/components/footer/Footer";
+import type { Metadata } from 'next';
+import './globals.css';
+import './styles.css';
+import Navbar from '@/components/navbar/Navbar';
+import Footer from '@/components/footer/Footer';
 
-("/");
 export const metadata: Metadata = {
-    title: "M.S Portfolio",
-    description: "Personal Portfolio of M.S.",
-    keywords: ["Developer", "Portfolio", "M.S.", "Frontend", "Backend"],
-    authors: [{ name: "Mehdi Safarzade", url: "https://mehdisafarzade.dev" }],
-    metadataBase: new URL("https://mehdisafarzade.dev"),
+    title: 'Mehdi Safarzade',
+    description: 'Full-stack developer from Baku, Azerbaijan. Building scalable web applications with Next.js, NestJS, and TypeScript.',
+    keywords: ['Developer', 'Portfolio', 'Full-Stack', 'Next.js', 'NestJS', 'TypeScript', 'Mehdi Safarzade'],
+    authors: [{ name: 'Mehdi Safarzade', url: 'https://mehdisafarzade.dev' }],
+    metadataBase: new URL('https://mehdisafarzade.dev'),
     openGraph: {
-        title: "Personal Portfolio Website",
-        type: "website",
-        url: "https://mehdisafarzade.dev",
-        description: "Personal Portfolio of M.S.",
+        title: 'Mehdi Safarzade — Full-Stack Developer',
+        type: 'website',
+        url: 'https://mehdisafarzade.dev',
+        description: 'Full-stack developer from Baku, Azerbaijan. Building scalable web applications with Next.js, NestJS, and TypeScript.',
         images: [
             {
-                url: "/images/Portfolio.png",
+                url: '/images/Portfolio.png',
                 width: 800,
                 height: 600,
-                alt: "Personal Portfolio",
+                alt: 'Mehdi Safarzade Portfolio',
             },
         ],
     },
     twitter: {
-        card: "summary_large_image",
-        site: "@SeonerVorteX",
-        creator: "@SeonerVorteX",
-        title: "Personal Portfolio Website",
-        description: "Personal Portfolio of M.S.",
+        card: 'summary_large_image',
+        site: '@SeonerVorteX',
+        creator: '@SeonerVorteX',
+        title: 'Mehdi Safarzade — Full-Stack Developer',
+        description: 'Full-stack developer from Baku, Azerbaijan. Building scalable web applications with Next.js, NestJS, and TypeScript.',
         images: [
             {
-                url: "/images/Portfolio.png",
+                url: '/images/Portfolio.png',
                 width: 800,
                 height: 600,
-                alt: "Personal Portfolio",
+                alt: 'Mehdi Safarzade Portfolio',
             },
         ],
     },
@@ -50,12 +49,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
-                <link
-                    rel="icon"
-                    type="image/png"
-                    sizes="16x16"
-                    href="/images/Favicon.png"
-                />
+                <link rel="icon" type="image/png" sizes="16x16" href="/images/Favicon.png" />
             </head>
             <body>
                 <Navbar />

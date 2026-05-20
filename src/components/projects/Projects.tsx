@@ -1,32 +1,24 @@
-"use client";
+'use client';
 
-import "./styles.css";
-import data from "@/data/data";
-import ProjectCard from "./components/ProjectCard";
-import { useEffect, useRef } from "react";
-import { createObserver } from "@/utils";
+import './styles.css';
+import data from '@/data/data';
+import ProjectCard from './components/ProjectCard';
+import { useEffect, useRef } from 'react';
+import { createObserver } from '@/utils';
 
-export default () => {
+export default function Projects() {
     const { projects } = data;
     const slideProjectsRight = useRef(null);
 
     useEffect(() => {
-        const slideProjectsRightObserver = createObserver([
-            "slide-projects-right",
-        ]);
-
-        if (slideProjectsRight.current) {
-            slideProjectsRightObserver.observe(slideProjectsRight.current);
-        }
+        const observer = createObserver(['slide-projects-right']);
+        if (slideProjectsRight.current) observer.observe(slideProjectsRight.current);
     }, []);
 
     return (
         <section id="projects">
             <div className="container">
-                <div
-                    ref={slideProjectsRight}
-                    className="projects-heading hidden flexible-opacity"
-                >
+                <div ref={slideProjectsRight} className="projects-heading hidden flexible-opacity">
                     <h2>Projects</h2>
                     <p>Here are some of my projects that I have worked on.</p>
                 </div>
@@ -38,4 +30,4 @@ export default () => {
             </div>
         </section>
     );
-};
+}

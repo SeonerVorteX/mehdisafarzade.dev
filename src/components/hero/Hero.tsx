@@ -1,36 +1,23 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import data from "@/data/data";
-import Image from "next/image";
-import Typed from "typed.js";
-import "./styles.css";
-import { createObserver } from "@/utils";
+import { useEffect, useRef } from 'react';
+import data from '@/data/data';
+import Image from 'next/image';
+import Typed from 'typed.js';
+import './styles.css';
+import { createObserver } from '@/utils';
 
 export default function Hero() {
     const element = useRef(null);
     const slideRight = useRef(null);
     const slideLeft = useRef(null);
 
-    const handleDownloadCV = () => {
-        const link = document.createElement("a");
-        link.href = "/documents/Resume.pdf";
-        link.download = "Resume.pdf";
-        link.click();
-    };
-
     useEffect(() => {
-        const leftObserver = createObserver(["slide-hero-left"]);
+        const leftObserver = createObserver(['slide-hero-left']);
+        const rightObserver = createObserver(['slide-hero-right']);
 
-        const rightObserver = createObserver(["slide-hero-right"]);
-
-        if (slideRight.current) {
-            rightObserver.observe(slideRight.current);
-        }
-
-        if (slideLeft.current) {
-            leftObserver.observe(slideLeft.current);
-        }
+        if (slideRight.current) rightObserver.observe(slideRight.current);
+        if (slideLeft.current) leftObserver.observe(slideLeft.current);
 
         const typed = new Typed(element.current, {
             strings: data.typingTexts,
@@ -38,6 +25,7 @@ export default function Hero() {
             backSpeed: 50,
             loop: true,
         });
+
         return () => {
             typed.destroy();
         };
@@ -47,25 +35,17 @@ export default function Hero() {
         <header>
             <div className="container">
                 <div className="home-content">
-                    <div
-                        ref={slideRight}
-                        className="home-text hidden flexible-opacity"
-                    >
+                    <div ref={slideRight} className="home-text hidden flexible-opacity">
                         <h1>
-                            <span className="sp">
-                                Hello, I'm Mehdi Safarzade
-                            </span>
+                            <span className="sp">Hello, I'm Mehdi Safarzade</span>
                             <br />
                             <span ref={element}></span>
                         </h1>
-                        <p>
-                            Young, talented software student who is passionate
-                            about his work and creates amazing things
-                        </p>
+                        <p>Building production web applications from Baku, Azerbaijan.</p>
                         <a
                             className="home-btn"
-                            download
-                            onClick={handleDownloadCV}
+                            href="/documents/Resume.pdf"
+                            download="Resume.pdf"
                             title="Click to download my CV"
                         >
                             Download CV
@@ -74,16 +54,12 @@ export default function Hero() {
                     <div
                         ref={slideLeft}
                         className="home-img hidden flexible-opacity"
-                        style={{
-                            position: "relative",
-                            width: "100%",
-                            minHeight: "600px",
-                        }}
+                        style={{ position: 'relative', width: '100%', minHeight: '600px' }}
                     >
                         <Image
                             src="/images/Illustration.svg"
                             fill
-                            style={{ objectFit: "cover" }}
+                            style={{ objectFit: 'cover' }}
                             priority={true}
                             alt="Illustration"
                         />

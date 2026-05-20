@@ -1,35 +1,26 @@
-"use client";
+'use client';
 
-import Technology from "./components/Technology";
-import data from "@/data/data";
-import "./styles.css";
-import { useEffect, useRef } from "react";
-import { createObserver } from "@/utils";
+import Technology from './components/Technology';
+import data from '@/data/data';
+import './styles.css';
+import { useEffect, useRef } from 'react';
+import { createObserver } from '@/utils';
 
-export default () => {
+export default function Technologies() {
     const slideTechsRight = useRef(null);
-    const languages = data.technologies.languages;
+    const { languages } = data.technologies;
 
     useEffect(() => {
-        const slideTechsRightObserver = createObserver(["slide-techs-right"]);
-
-        if (slideTechsRight.current) {
-            slideTechsRightObserver.observe(slideTechsRight.current);
-        }
+        const observer = createObserver(['slide-techs-right']);
+        if (slideTechsRight.current) observer.observe(slideTechsRight.current);
     }, []);
 
     return (
         <section id="technologies">
             <div className="container">
-                <div
-                    ref={slideTechsRight}
-                    className="technologies-heading hidden flexible-opacity"
-                >
+                <div ref={slideTechsRight} className="technologies-heading hidden flexible-opacity">
                     <h2>Technologies</h2>
-                    <p>
-                        Here are some of the technologies that I have worked
-                        with.
-                    </p>
+                    <p>Here are some of the technologies that I have worked with.</p>
                 </div>
                 <div className="technologies flexible-opacity">
                     {languages.map((language, index) => (
@@ -39,4 +30,4 @@ export default () => {
             </div>
         </section>
     );
-};
+}

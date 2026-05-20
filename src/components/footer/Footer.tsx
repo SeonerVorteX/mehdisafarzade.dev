@@ -6,23 +6,17 @@ import { createObserver } from '@/utils';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 
-export default () => {
+export default function Footer() {
     const slideFooterRight = useRef(null);
     const slideFooterLeft = useRef(null);
-    const slideFooterUp = useRef(null);
     const { email, socials } = data.about;
 
     useEffect(() => {
         const slideRightObserver = createObserver(['slide-footer-right']);
         const slideLeftObserver = createObserver(['slide-footer-left']);
 
-        if (slideFooterRight.current) {
-            slideRightObserver.observe(slideFooterRight.current);
-        }
-
-        if (slideFooterLeft.current) {
-            slideLeftObserver.observe(slideFooterLeft.current);
-        }
+        if (slideFooterRight.current) slideRightObserver.observe(slideFooterRight.current);
+        if (slideFooterLeft.current) slideLeftObserver.observe(slideFooterLeft.current);
     }, []);
 
     return (
@@ -50,11 +44,10 @@ export default () => {
                         <h4 className="contact">Feel free to contact me</h4>
                     </div>
                 </div>
-
                 <div className="copyright">
-                    Copyright © 2024 Mehdi Safarzade. All rights reserved.
+                    Copyright © 2025 Mehdi Safarzade. All rights reserved.
                 </div>
             </div>
         </footer>
     );
-};
+}
