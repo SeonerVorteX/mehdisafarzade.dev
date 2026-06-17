@@ -46,7 +46,7 @@ export default {
             "I'm looking for full-stack or backend developer roles where I can work on meaningful products, take real ownership, and keep growing. I value clean code, good architecture, and teams that care about what they build.",
         email: 'contact@mehdisafarzade.dev',
         socials: {
-            linkedin: 'https://linkedin.com/in/seonervortex',
+            linkedin: 'https://linkedin.com/in/mehdi-safarzade',
             github: 'https://github.com/SeonerVorteX',
             discord: 'https://discord.gg/MTNkXHnX3b',
         },
