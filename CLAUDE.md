@@ -12,8 +12,8 @@ The phase plan is in `PLAN.md` §16. Every phase ends with `yarn ci` green in th
 |---|---|
 | 0 Plan | done (`PLAN.md`, `SEED_REVIEW.md`) |
 | 1 Scaffold | done |
-| 2 Backend foundation | in progress |
-| 3 Admin auth + device gate | not started |
+| 2 Backend foundation | done |
+| 3 Admin auth + device gate | in progress |
 
 ## Read these first
 

@@ -1,0 +1,11 @@
+{
+    "UNKNOWN": "Nəsə səhv getdi. Yenidən cəhd edin.",
+    "BAD_REQUEST": "Sorğu yanlışdır.",
+    "UNAUTHORIZED": "Daxil olmalısınız.",
+    "FORBIDDEN": "Bunun üçün icazəniz yoxdur.",
+    "NOT_FOUND": "Tapılmadı.",
+    "CONFLICT": "Bu, mövcud məlumatla ziddiyyət təşkil edir.",
+    "PAYLOAD_TOO_LARGE": "Sorğu çox böyükdür.",
+    "TOO_MANY_REQUESTS": "Çox sayda sorğu. Bir az gözləyin.",
+    "SERVICE_UNAVAILABLE": "Xidmət müvəqqəti əlçatan deyil."
+}

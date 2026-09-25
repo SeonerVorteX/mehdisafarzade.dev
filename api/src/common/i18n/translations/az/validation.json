@@ -1,0 +1,14 @@
+{
+    "NOT_EMPTY": "{Property} tələb olunur.",
+    "IS_STRING": "{Property} mətn olmalıdır.",
+    "IS_EMAIL": "Düzgün e-poçt ünvanı daxil edin.",
+    "IS_URL": "{Property} düzgün URL olmalıdır.",
+    "IS_INT": "{Property} tam ədəd olmalıdır.",
+    "IS_BOOLEAN": "{Property} doğru və ya yanlış olmalıdır.",
+    "IS_ENUM": "{Property} dəstəklənməyən dəyərə malikdir.",
+    "MIN_LENGTH": "{Property} ən azı {constraints.0} simvol olmalıdır.",
+    "MAX_LENGTH": "{Property} ən çox {constraints.0} simvol ola bilər.",
+    "LENGTH": "{Property} dəqiq {constraints.0} simvol olmalıdır.",
+    "MATCHES": "{Property} yanlış formatdadır.",
+    "NOT_ALLOWED": "{Property} icazə verilmir."
+}

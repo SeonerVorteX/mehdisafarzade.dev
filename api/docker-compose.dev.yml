@@ -12,7 +12,7 @@ volumes:
     portfolio-pgdata-test:
     portfolio-rabbitmq-dev-data:
     portfolio-redis-dev-data:
-    portfolio-minio-dev-data:
+    portfolio-s3-dev-data:
 
 services:
     db-dev:
@@ -84,25 +84,19 @@ services:
             - '127.0.0.1:5673:5672'
             - '127.0.0.1:15673:15672'
 
-    # S3-compatible storage for local media work (Phase 4) so dev never needs real AWS credentials.
-    minio-dev:
-        image: minio/minio:latest
-        container_name: portfolio-minio-dev
-        command: server /data --console-address ':9001'
-        environment:
-            MINIO_ROOT_USER: ${MINIO_ROOT_USER:-portfolio}
-            MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-portfolio-dev-secret}
+    # S3-compatible storage for local media work so dev never needs real AWS credentials.
+    # SeaweedFS rather than MinIO: MinIO no longer publishes images to Docker Hub/Quay.
+    # Credentials come from dev/seaweedfs-s3.json (dev-only, committed on purpose).
+    s3-dev:
+        image: chrislusf/seaweedfs:latest
+        container_name: portfolio-s3-dev
+        command: server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json
         volumes:
-            - portfolio-minio-dev-data:/data
-        healthcheck:
-            test: ['CMD', 'mc', 'ready', 'local']
-            interval: 5s
-            timeout: 3s
-            retries: 10
+            - portfolio-s3-dev-data:/data
+            - ./dev/seaweedfs-s3.json:/etc/seaweedfs/s3.json:ro
         networks: [portfolio-dev]
         ports:
-            - '127.0.0.1:9002:9000'
-            - '127.0.0.1:9003:9001'
+            - '127.0.0.1:9002:8333'
 
     # Catches every outgoing email in dev (UI on :8026) so the contact round-trip can be tested without SES.
     mailpit-dev:

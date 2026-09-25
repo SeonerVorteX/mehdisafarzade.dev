@@ -135,7 +135,7 @@ Left out on purpose, as the brief allows: MongoDB/Mongoose, the Python worker, p
 | Postgres | `portfolio-db-dev` :5436 | `portfolio-db-test` :5437 | shared `db`, database `portfolio`, role `portfolio` |
 | Redis | `portfolio-redis-dev` :6382 | same, DB 2 | shared `redis`, DB `1`, prefix `pf:` |
 | RabbitMQ | `portfolio-rabbitmq-dev` :5673 / mgmt :15673 | same | shared `rabbitmq`, vhost `portfolio`, user `portfolio` |
-| S3 | a dev bucket (or MinIO via compose, if you don't want a dev bucket) | mocked in e2e | private bucket `mehdisafarzade-dev-media` (name TBD, you create it) |
+| S3 | SeaweedFS S3 gateway via compose (`portfolio-s3-dev`, :9002; MinIO no longer publishes images) | mocked in e2e | private bucket `mehdisafarzade-dev-media` (name TBD, you create it) |
 
 Env files follow Examination: `api/.env.dev`, `api/.env.test`, and `.env` on the server only; `frontend/apps/*/.env.local` for dev, with `.env.web` / `.env.admin` on the server. Every variable is listed with a description in `.env.example`. **`assertEnv.ts` is the first import in `main.ts`**, the same idea as Examination's `assertConnectionEnv`. Unlike Examination's API, it can't be tricked by a production `.env` sitting at the repo root: `api/` never has one locally, and the check also refuses to boot when `NODE_ENV!=='production'` and `DATABASE_URL` points to a non-localhost host. Frontend env is Zod-validated in `packages/config/env.ts` at build time and at boot.
 

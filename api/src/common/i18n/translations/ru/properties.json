@@ -1,0 +1,9 @@
+{
+    "email": "email",
+    "password": "пароль",
+    "name": "имя",
+    "subject": "тема",
+    "message": "сообщение",
+    "code": "код",
+    "locale": "язык"
+}

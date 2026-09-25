@@ -1,0 +1,14 @@
+{
+    "NOT_EMPTY": "Поле «{property}» обязательно.",
+    "IS_STRING": "Поле «{property}» должно быть текстом.",
+    "IS_EMAIL": "Введите корректный адрес электронной почты.",
+    "IS_URL": "Поле «{property}» должно быть корректным URL.",
+    "IS_INT": "Поле «{property}» должно быть целым числом.",
+    "IS_BOOLEAN": "Поле «{property}» должно быть логическим значением.",
+    "IS_ENUM": "Поле «{property}» имеет недопустимое значение.",
+    "MIN_LENGTH": "Поле «{property}»: минимальная длина — {constraints.0}.",
+    "MAX_LENGTH": "Поле «{property}»: максимальная длина — {constraints.0}.",
+    "LENGTH": "Поле «{property}»: требуемая длина — {constraints.0}.",
+    "MATCHES": "Поле «{property}» имеет неверный формат.",
+    "NOT_ALLOWED": "Поле «{property}» не допускается."
+}

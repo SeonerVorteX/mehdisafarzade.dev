@@ -1,0 +1,11 @@
+{
+    "UNKNOWN": "Something went wrong. Please try again.",
+    "BAD_REQUEST": "The request is invalid.",
+    "UNAUTHORIZED": "You need to sign in.",
+    "FORBIDDEN": "You don't have access to this.",
+    "NOT_FOUND": "Not found.",
+    "CONFLICT": "This conflicts with existing data.",
+    "PAYLOAD_TOO_LARGE": "The request is too large.",
+    "TOO_MANY_REQUESTS": "Too many requests. Please wait a moment.",
+    "SERVICE_UNAVAILABLE": "The service is temporarily unavailable."
+}

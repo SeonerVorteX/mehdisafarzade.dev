@@ -1,0 +1,9 @@
+{
+    "email": "email",
+    "password": "password",
+    "name": "name",
+    "subject": "subject",
+    "message": "message",
+    "code": "code",
+    "locale": "language"
+}

@@ -1,0 +1,9 @@
+{
+  "identities": [
+    {
+      "name": "portfolio-dev",
+      "credentials": [{ "accessKey": "portfolio", "secretKey": "portfolio-dev-secret" }],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}

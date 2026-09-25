@@ -1,0 +1,547 @@
+// mehdisafarzade.dev data model (PLAN.md §5).
+// Conventions: PascalCase models / camelCase fields in TS, snake_case tables/columns
+// via @@map/@map on EVERY model and field (Examination maps only some; we map all),
+// cuid ids, created_at/updated_at everywhere. Translatable entities are a base
+// table + a *_translations table with @@unique([<entity>Id, locale]).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Locale {
+  az
+  en
+  ru
+
+  @@map("locale")
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+
+  @@map("post_status")
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+
+  @@map("content_status")
+}
+
+enum MessageStatus {
+  NEW
+  READ
+  ARCHIVED
+  SPAM
+
+  @@map("message_status")
+}
+
+enum MediaStatus {
+  PENDING
+  READY
+  FAILED
+
+  @@map("media_status")
+}
+
+enum SkillCategory {
+  LANGUAGE
+  FRAMEWORK
+  DATA
+  CLOUD_DEVOPS
+  TOOLING
+  SOFT
+
+  @@map("skill_category")
+}
+
+// ─── Media ──────────────────────────────────────────────────────────────────
+
+model Media {
+  id           String      @id @default(cuid())
+  s3Key        String      @unique @map("s3_key")
+  mime         String
+  width        Int?
+  height       Int?
+  size         Int
+  /// tiny WebP data URI used as a blur placeholder
+  lqip         String?
+  /// { "avif": { "480": key, ... }, "webp": { ... } }
+  variants     Json        @default("{}")
+  status       MediaStatus @default(PENDING)
+  uploadedById String?     @map("uploaded_by_id")
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  uploadedBy     AdminUser?         @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  translations   MediaTranslation[]
+  postCovers     Post[]             @relation("PostCover")
+  projectCovers  Project[]          @relation("ProjectCover")
+  projectGallery ProjectMedia[]
+  resumes        ProfileResume[]
+
+  @@map("media")
+}
+
+model MediaTranslation {
+  id        String   @id @default(cuid())
+  mediaId   String   @map("media_id")
+  locale    Locale
+  alt       String   @default("")
+  caption   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  media Media @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([mediaId, locale])
+  @@map("media_translations")
+}
+
+// ─── Blog ───────────────────────────────────────────────────────────────────
+
+model Post {
+  id           String     @id @default(cuid())
+  status       PostStatus @default(DRAFT)
+  publishedAt  DateTime?  @map("published_at")
+  scheduledAt  DateTime?  @map("scheduled_at")
+  featured     Boolean    @default(false)
+  coverMediaId String?    @map("cover_media_id")
+  authorId     String?    @map("author_id")
+  needsReview  Boolean    @default(false) @map("needs_review")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  cover        Media?            @relation("PostCover", fields: [coverMediaId], references: [id], onDelete: SetNull)
+  author       AdminUser?        @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  translations PostTranslation[]
+  tags         PostTag[]
+
+  @@index([status, publishedAt])
+  @@index([status, scheduledAt])
+  @@map("posts")
+}
+
+model PostTranslation {
+  id             String   @id @default(cuid())
+  postId         String   @map("post_id")
+  locale         Locale
+  title          String
+  slug           String
+  excerpt        String   @default("")
+  bodyMarkdown   String   @default("") @map("body_markdown")
+  readingTimeMin Int      @default(1) @map("reading_time_min")
+  seoTitle       String?  @map("seo_title")
+  seoDescription String?  @map("seo_description")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, locale])
+  /// slugs are unique per locale (brief §6)
+  @@unique([locale, slug])
+  @@map("post_translations")
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  translations TagTranslation[]
+  posts        PostTag[]
+
+  @@map("tags")
+}
+
+model TagTranslation {
+  id        String   @id @default(cuid())
+  tagId     String   @map("tag_id")
+  locale    Locale
+  name      String
+  slug      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tag Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([tagId, locale])
+  @@unique([locale, slug])
+  @@map("tag_translations")
+}
+
+model PostTag {
+  postId    String   @map("post_id")
+  tagId     String   @map("tag_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@map("post_tags")
+}
+
+// ─── Projects / experience / skills ─────────────────────────────────────────
+
+model Project {
+  id           String        @id @default(cuid())
+  /// one slug across locales: case-study URLs are shared (PLAN §5)
+  slug         String        @unique
+  order        Int           @default(0)
+  featured     Boolean       @default(false)
+  status       ContentStatus @default(DRAFT)
+  repoUrl      String?       @map("repo_url")
+  liveUrl      String?       @map("live_url")
+  startedAt    DateTime?     @map("started_at")
+  endedAt      DateTime?     @map("ended_at")
+  coverMediaId String?       @map("cover_media_id")
+  needsReview  Boolean       @default(false) @map("needs_review")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  cover        Media?               @relation("ProjectCover", fields: [coverMediaId], references: [id], onDelete: SetNull)
+  translations ProjectTranslation[]
+  skills       ProjectSkill[]
+  gallery      ProjectMedia[]
+
+  @@index([status, order])
+  @@map("projects")
+}
+
+model ProjectTranslation {
+  id                String   @id @default(cuid())
+  projectId         String   @map("project_id")
+  locale            Locale
+  title             String
+  summary           String   @default("")
+  caseStudyMarkdown String   @default("") @map("case_study_markdown")
+  role              String?
+  seoTitle          String?  @map("seo_title")
+  seoDescription    String?  @map("seo_description")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, locale])
+  @@map("project_translations")
+}
+
+model ProjectSkill {
+  projectId String @map("project_id")
+  skillId   String @map("skill_id")
+  order     Int    @default(0)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skill   Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, skillId])
+  @@map("project_skills")
+}
+
+model ProjectMedia {
+  projectId String @map("project_id")
+  mediaId   String @map("media_id")
+  order     Int    @default(0)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  media   Media   @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+
+  @@id([projectId, mediaId])
+  @@map("project_media")
+}
+
+model Skill {
+  id        String        @id @default(cuid())
+  /// stable natural key for the idempotent seed ("typescript", "nestjs", ...)
+  key       String        @unique
+  name      String
+  category  SkillCategory
+  level     Int?
+  icon      String?
+  order     Int           @default(0)
+  featured  Boolean       @default(false)
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  projects ProjectSkill[]
+
+  @@map("skills")
+}
+
+model Experience {
+  id          String        @id @default(cuid())
+  /// natural key for the idempotent seed
+  key         String        @unique
+  org         String
+  orgUrl      String?       @map("org_url")
+  location    String?
+  startedAt   DateTime      @map("started_at")
+  endedAt     DateTime?     @map("ended_at")
+  order       Int           @default(0)
+  status      ContentStatus @default(DRAFT)
+  needsReview Boolean       @default(false) @map("needs_review")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  translations ExperienceTranslation[]
+
+  @@map("experience")
+}
+
+model ExperienceTranslation {
+  id              String   @id @default(cuid())
+  experienceId    String   @map("experience_id")
+  locale          Locale
+  title           String
+  summary         String   @default("")
+  bulletsMarkdown String   @default("") @map("bullets_markdown")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  experience Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+
+  @@unique([experienceId, locale])
+  @@map("experience_translations")
+}
+
+model Education {
+  id          String        @id @default(cuid())
+  key         String        @unique
+  institution String
+  url         String?
+  startedAt   DateTime      @map("started_at")
+  endedAt     DateTime?     @map("ended_at")
+  order       Int           @default(0)
+  status      ContentStatus @default(DRAFT)
+  needsReview Boolean       @default(false) @map("needs_review")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  translations EducationTranslation[]
+
+  @@map("education")
+}
+
+model EducationTranslation {
+  id          String   @id @default(cuid())
+  educationId String   @map("education_id")
+  locale      Locale
+  degree      String
+  summary     String   @default("")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  education Education @relation(fields: [educationId], references: [id], onDelete: Cascade)
+
+  @@unique([educationId, locale])
+  @@map("education_translations")
+}
+
+// ─── Site profile (singleton) & pages ───────────────────────────────────────
+
+model SiteProfile {
+  /// singleton: always "profile"
+  id               String   @id @default("profile")
+  email            String
+  /// { github, linkedin, upwork, ... } validated in the service layer
+  socials          Json     @default("{}")
+  availableForWork Boolean  @default(false) @map("available_for_work")
+  needsReview      Boolean  @default(false) @map("needs_review")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  translations SiteProfileTranslation[]
+  resumes      ProfileResume[]
+
+  @@map("site_profile")
+}
+
+model SiteProfileTranslation {
+  id             String   @id @default(cuid())
+  profileId      String   @map("profile_id")
+  locale         Locale
+  name           String
+  headline       String
+  pitch          String   @default("")
+  bioMarkdown    String   @default("") @map("bio_markdown")
+  seoTitle       String?  @map("seo_title")
+  seoDescription String?  @map("seo_description")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  profile SiteProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, locale])
+  @@map("site_profile_translations")
+}
+
+/// Résumé PDF per locale. The site hides the download button for a locale without one.
+model ProfileResume {
+  id        String   @id @default(cuid())
+  profileId String   @map("profile_id")
+  locale    Locale
+  mediaId   String   @map("media_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  profile SiteProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  media   Media       @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+
+  @@unique([profileId, locale])
+  @@map("profile_resumes")
+}
+
+model Page {
+  id          String        @id @default(cuid())
+  key         String        @unique
+  status      ContentStatus @default(DRAFT)
+  needsReview Boolean       @default(false) @map("needs_review")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  translations PageTranslation[]
+
+  @@map("pages")
+}
+
+model PageTranslation {
+  id             String   @id @default(cuid())
+  pageId         String   @map("page_id")
+  locale         Locale
+  title          String
+  slug           String
+  bodyMarkdown   String   @default("") @map("body_markdown")
+  seoTitle       String?  @map("seo_title")
+  seoDescription String?  @map("seo_description")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, locale])
+  @@unique([locale, slug])
+  @@map("page_translations")
+}
+
+// ─── Contact ────────────────────────────────────────────────────────────────
+
+model ContactMessage {
+  id          String        @id @default(cuid())
+  name        String
+  email       String
+  subject     String?
+  message     String
+  projectType String?       @map("project_type")
+  budget      String?
+  locale      Locale
+  status      MessageStatus @default(NEW)
+  /// HMAC-SHA256(ip, IP_HASH_PEPPER): the raw IP is never stored
+  ipHash      String        @map("ip_hash")
+  userAgent   String?       @map("user_agent")
+  repliedAt   DateTime?     @map("replied_at")
+  notifiedAt  DateTime?     @map("notified_at")
+  autoReplyAt DateTime?     @map("auto_reply_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  @@index([status, createdAt])
+  @@map("contact_messages")
+}
+
+// ─── Admin realm ────────────────────────────────────────────────────────────
+
+model AdminUser {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  /// AES-256-GCM ciphertext ("v1:<iv>:<tag>:<data>", base64url parts), key TOTP_ENC_KEY
+  totpSecretEnc String?   @map("totp_secret_enc")
+  /// null = TOTP not enrolled → no session may be issued (PLAN §0)
+  totpEnabledAt DateTime? @map("totp_enabled_at")
+  googleSub     String?   @unique @map("google_sub")
+  lastLoginAt   DateTime? @map("last_login_at")
+  disabledAt    DateTime? @map("disabled_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  sessions      AdminSession[]
+  recoveryCodes AdminRecoveryCode[]
+  auditLogs     AuditLog[]
+  posts         Post[]
+  media         Media[]
+
+  @@map("admin_users")
+}
+
+model AdminRecoveryCode {
+  id        String    @id @default(cuid())
+  adminId   String    @map("admin_id")
+  codeHash  String    @map("code_hash")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  admin AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@map("admin_recovery_codes")
+}
+
+/// One row per refresh token. Rotation creates a new row and links the old one via
+/// replacedById; presenting a replaced token revokes the whole family (reuse detection).
+model AdminSession {
+  id           String    @id @default(cuid())
+  adminId      String    @map("admin_id")
+  familyId     String    @map("family_id")
+  /// sha256 of the opaque refresh token
+  refreshHash  String    @unique @map("refresh_hash")
+  /// X-Admin-Device from the nginx gate at login; must match on every request
+  deviceName   String    @map("device_name")
+  ip           String?
+  userAgent    String?   @map("user_agent")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  lastUsedAt   DateTime  @default(now()) @map("last_used_at")
+  expiresAt    DateTime  @map("expires_at")
+  revokedAt    DateTime? @map("revoked_at")
+  replacedById String?   @unique @map("replaced_by_id")
+
+  admin      AdminUser     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  replacedBy AdminSession? @relation("SessionRotation", fields: [replacedById], references: [id], onDelete: SetNull)
+  replaces   AdminSession? @relation("SessionRotation")
+
+  @@index([adminId])
+  @@index([familyId])
+  @@map("admin_sessions")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  adminId    String?  @map("admin_id")
+  deviceName String?  @map("device_name")
+  action     String
+  entity     String
+  entityId   String?  @map("entity_id")
+  /// redacted before storage (no passwords, tokens, secrets)
+  diff       Json?
+  ip         String?
+  at         DateTime @default(now())
+
+  admin AdminUser? @relation(fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([at])
+  @@index([entity, entityId])
+  @@map("audit_logs")
+}
