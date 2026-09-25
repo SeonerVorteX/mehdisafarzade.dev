@@ -1,0 +1,21 @@
+# Local device gate for development (see admin-local.conf). Managed by
+# `deploy/device-gate/gate.ps1 up|down -Target local`. Loopback-only port.
+# .certs/ (self-signed localhost cert) and .gate/ (local maps) are git-ignored.
+name: portfolio-gate-dev
+
+services:
+    gate:
+        image: nginx:1.24
+        container_name: portfolio-gate-dev
+        ports:
+            - '127.0.0.1:8443:443'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        volumes:
+            # 00- prefix: must load before admin-local.conf (it defines the dg_enroll log format)
+            - ../conf.d/device-gate.conf:/etc/nginx/conf.d/00-device-gate.conf:ro
+            - ../snippets/device-gate.conf:/etc/nginx/snippets/device-gate.conf:ro
+            - ./admin-local.conf:/etc/nginx/conf.d/admin-local.conf:ro
+            - ./.certs:/etc/nginx/certs:ro
+            - ./.gate:/etc/nginx/device-gate
+        restart: unless-stopped

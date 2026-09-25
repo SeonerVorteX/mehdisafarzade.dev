@@ -61,3 +61,7 @@ Thumbs.db
 # legacy local-only leftovers (untracked on GitHub too)
 legacy/TODO.md
 legacy/package-lock.json
+
+# local device-gate dev container (deploy/nginx/dev): self-signed cert + local maps
+deploy/nginx/dev/.certs/
+deploy/nginx/dev/.gate/

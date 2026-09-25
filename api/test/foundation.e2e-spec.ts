@@ -182,9 +182,7 @@ describe('foundation (e2e)', () => {
         it('allows the web origin and not the admin origin', async () => {
             const ok = await request(app.getHttpServer()).get('/v1/health').set('Origin', 'http://localhost:5600');
             expect(ok.headers['access-control-allow-origin']).toBe('http://localhost:5600');
-            const admin = await request(app.getHttpServer())
-                .get('/v1/health')
-                .set('Origin', 'https://admin.localhost:8443');
+            const admin = await request(app.getHttpServer()).get('/v1/health').set('Origin', 'https://localhost:8443');
             expect(admin.headers['access-control-allow-origin']).toBeUndefined();
         });
     });

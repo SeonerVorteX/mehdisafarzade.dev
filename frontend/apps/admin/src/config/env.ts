@@ -17,7 +17,7 @@ const env = parseEnv(
     NEXT_PUBLIC_ADMIN_URL: process.env.NEXT_PUBLIC_ADMIN_URL,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   },
-  { NEXT_PUBLIC_ADMIN_URL: "https://admin.localhost:8443", NEXT_PUBLIC_SITE_URL: "http://localhost:5600" },
+  { NEXT_PUBLIC_ADMIN_URL: "https://localhost:8443", NEXT_PUBLIC_SITE_URL: "http://localhost:5600" },
 );
 
 export const ADMIN_URL = env.NEXT_PUBLIC_ADMIN_URL.replace(/\/$/, "");

@@ -1,5 +1,12 @@
+// Admin: dense, clean, token-driven (brief §7: doesn't need the public site's flair).
 @use "@portfolio/ui/styles/root";
 @use "@portfolio/ui/styles/index" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -8,7 +15,288 @@ body {
   @include font($color-fg, $fs-xs, $fw-regular, $lh-md);
 }
 
-.placeholder {
+:focus-visible {
+  @include focus-ring;
+}
+
+code {
+  font-family: $font-mono;
+}
+
+// ── buttons ─────────────────────────────────────────────────────────────────
+.button {
+  @include flex(row, center, center, true);
+  width: 100%;
+  min-height: rem(40);
+  padding: 0 rem(16);
+  border: 1px solid transparent;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  text-decoration: none;
+  @include font($color-fg, $fs-xs, $fw-semibold, 1);
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: $color-accent;
+    color: $color-accent-fg;
+  }
+
+  &--secondary {
+    background: $color-bg-elevated;
+    border-color: $color-border;
+  }
+
+  &--ghost {
+    width: auto;
+    background: transparent;
+    border-color: $color-border;
+  }
+
+  &--danger {
+    width: auto;
+    background: transparent;
+    border-color: $color-error;
+    color: $color-error;
+  }
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: rem(2);
+  @include font($color-fg-secondary, $fs-xs);
+}
+
+// ── form fields ────────────────────────────────────────────────────────────
+.field {
+  @include flex(column, flex-start, stretch);
+  gap: rem(6);
+
+  &__label {
+    @include font($color-fg-secondary, $fs-xs, $fw-medium);
+  }
+
+  &__input {
+    min-height: rem(40);
+    padding: 0 rem(12);
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    background: $color-bg-elevated;
+    @include font($color-fg, $fs-sm);
+  }
+
+  &--invalid &__input {
+    border-color: $color-error;
+  }
+
+  &__error {
+    margin: 0;
+    @include font($color-error, $fs-xxs, $fw-medium);
+  }
+}
+
+.checkbox {
+  @include flex(row, flex-start, center);
+  gap: rem(8);
+  cursor: pointer;
+}
+
+// ── auth screens ──────────────────────────────────────────────────────────
+.auth {
   @include flex(column, center, center);
   min-height: 100dvh;
+  padding: $pad;
+
+  &__card {
+    @include flex(column, flex-start, stretch);
+    gap: rem(16);
+    width: 100%;
+    max-width: rem(400);
+    padding: $pad-lg;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    background: $color-bg-elevated;
+  }
+
+  &__header {
+    @include flex(column, flex-start, flex-start);
+    gap: rem(4);
+  }
+
+  &__title {
+    margin: 0;
+    @include font($color-fg, $fs-xl, $fw-semibold, $lh-sm);
+  }
+
+  &__subtitle {
+    margin: 0;
+    @include font($color-muted, $fs-xs);
+  }
+
+  &__form {
+    @include flex(column, flex-start, stretch);
+    gap: rem(14);
+  }
+
+  &__alert {
+    margin: 0;
+    padding: rem(10) rem(12);
+    border-radius: $radius-sm;
+    background: $color-accent-soft;
+    @include font($color-fg, $fs-xs);
+
+    &--warning {
+      border: 1px solid $color-warning;
+      background: transparent;
+    }
+  }
+
+  &__divider {
+    @include flex(row, center, center);
+    gap: rem(12);
+    @include font($color-muted, $fs-xxs);
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: $color-border;
+    }
+  }
+
+  &__links {
+    @include flex(row, space-between, center);
+  }
+}
+
+.setup-steps {
+  @include flex(column, flex-start, stretch);
+  gap: rem(16);
+  margin: 0;
+  padding-left: rem(18);
+
+  p {
+    margin: 0 0 rem(8);
+  }
+
+  &__hint {
+    @include font($color-muted, $fs-xxs);
+  }
+}
+
+.qr {
+  display: inline-block;
+  padding: rem(8);
+  border-radius: $radius-sm;
+  // QR codes need a light background in both themes to stay scannable.
+  background: #ffffff;
+}
+
+.secret {
+  @include flex(row, space-between, center);
+  gap: rem(8);
+  padding: rem(8) rem(10);
+  border: 1px dashed $color-border;
+  border-radius: $radius-sm;
+
+  code {
+    min-width: 0;
+    word-break: break-all;
+  }
+
+  .link-button {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+.recovery-codes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: rem(6) rem(16);
+  margin: 0;
+  padding: rem(12) rem(12) rem(12) rem(32);
+  border-radius: $radius-sm;
+  background: $color-bg-sunken;
+  @include font($color-fg, $fs-sm);
+}
+
+// ── shell ──────────────────────────────────────────────────────────────────
+.shell {
+  min-height: 100dvh;
+
+  &__bar {
+    @include flex(row, space-between, center);
+    padding: rem(12) $pad;
+    border-bottom: 1px solid $color-border;
+    background: $color-bg-elevated;
+  }
+
+  &__brand {
+    @include font($color-fg, $fs-sm, $fw-semibold);
+  }
+
+  &__main {
+    display: grid;
+    gap: $pad;
+    max-width: rem(960);
+    margin: 0 auto;
+    padding: $pad;
+
+    @include bp-up(md) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
+
+.panel {
+  @include flex(column, flex-start, stretch);
+  gap: rem(12);
+  padding: $pad;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: $color-bg-elevated;
+
+  &__title {
+    margin: 0;
+    @include font($color-fg, $fs-md, $fw-semibold, $lh-sm);
+  }
+
+  &__facts {
+    margin: 0;
+    padding-left: rem(18);
+  }
+
+  &__muted {
+    margin: 0;
+    @include font($color-muted, $fs-xxs);
+  }
+}
+
+.sessions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    @include flex(row, space-between, center);
+    padding: rem(10) 0;
+    border-bottom: 1px solid $color-border;
+  }
+}
+
+.badge {
+  margin-left: rem(8);
+  padding: rem(2) rem(8);
+  border-radius: 999px;
+  background: $color-accent-soft;
+  @include font($color-fg, $fs-xxs, $fw-medium);
 }

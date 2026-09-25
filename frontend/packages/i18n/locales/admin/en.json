@@ -2,7 +2,71 @@
   "meta": {
     "title": "Admin"
   },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "mehdisafarzade.dev admin",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Continue",
+    "submitting": "Checking…",
+    "or": "or",
+    "google": "Continue with Google",
+    "errors": {
+      "google_cancelled": "Google sign-in was cancelled.",
+      "google_denied": "This Google account is not allowed to sign in here.",
+      "google_state": "The Google sign-in expired or was tampered with. Please try again.",
+      "google_exchange": "Google sign-in failed. Please try again.",
+      "google_disabled": "Google sign-in is not configured.",
+      "sessionExpired": "Your session has ended. Please sign in again."
+    }
+  },
+  "totp": {
+    "title": "Two-factor authentication",
+    "subtitle": "Enter the 6-digit code from your authenticator app.",
+    "code": "Authentication code",
+    "recoveryCode": "Recovery code",
+    "useRecovery": "Use a recovery code instead",
+    "useApp": "Use the authenticator app instead",
+    "submit": "Verify",
+    "submitting": "Verifying…",
+    "back": "Start over",
+    "recoveryUsed": "You signed in with a recovery code. {remaining, plural, one {# recovery code is left.} other {# recovery codes are left.}}"
+  },
+  "setup": {
+    "title": "Set up two-factor authentication",
+    "subtitle": "Two-factor authentication is required before you can use the admin.",
+    "step1": "Scan this QR code with an authenticator app (1Password, Google Authenticator, Aegis…).",
+    "manual": "Can't scan it? Enter this key manually:",
+    "copy": "Copy",
+    "copied": "Copied",
+    "step2": "Then enter the 6-digit code it shows.",
+    "code": "Authentication code",
+    "submit": "Enable two-factor authentication",
+    "submitting": "Enabling…",
+    "recoveryTitle": "Save your recovery codes",
+    "recoveryBody": "Each code signs you in once if you lose your authenticator. They are shown only now. Store them somewhere safe, like your password manager.",
+    "download": "Download .txt",
+    "confirm": "I have saved my recovery codes",
+    "continue": "Continue to the admin"
+  },
   "shell": {
-    "placeholder": "Admin shell"
+    "title": "Admin",
+    "signedInAs": "Signed in as {email}",
+    "device": "Device: {device}",
+    "lastLogin": "Last sign-in: {date}",
+    "recoveryLeft": "{count, plural, one {# recovery code left} other {# recovery codes left}}",
+    "placeholder": "The content editors arrive in Phase 7.",
+    "logout": "Sign out",
+    "logoutAll": "Sign out everywhere",
+    "sessions": "Active sessions",
+    "current": "this browser",
+    "revoke": "Revoke",
+    "started": "since {date}"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "email": "Enter a valid email address.",
+    "code": "Enter the 6-digit code.",
+    "recovery": "Enter a recovery code like abcde-fghjk."
   }
 }

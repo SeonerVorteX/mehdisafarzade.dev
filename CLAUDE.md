@@ -13,7 +13,14 @@ The phase plan is in `PLAN.md` §16. Every phase ends with `yarn ci` green in th
 | 0 Plan | done (`PLAN.md`, `SEED_REVIEW.md`) |
 | 1 Scaffold | done |
 | 2 Backend foundation | done |
-| 3 Admin auth + device gate | in progress |
+| 3 Admin auth + device gate | done, awaiting the owner's ☑ |
+| 4 Content APIs | not started |
+
+## Device gate (read before touching `deploy/nginx` or admin routing)
+
+- `deploy/nginx/conf.d/device-gate.conf` + `snippets/device-gate.conf` are generic (maps keyed on `$host`). `deploy/nginx/test/run.sh` runs the REAL files in nginx:1.24 (60 checks, in CI). Run it after any nginx change.
+- `deploy/device-gate/gate.ps1` manages devices (remote via `ssh root@examination`, or `-Target local`). It is the owner's tool. **Never run it against the server** and never print map files.
+- Local dev gate: `gate.ps1 up -Target local` → https://localhost:8443 (self-signed; the browser pane can't open it, so verification used a throwaway plain-HTTP gate container).
 
 ## Read these first
 

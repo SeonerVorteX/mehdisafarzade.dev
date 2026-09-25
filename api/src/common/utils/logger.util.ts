@@ -16,10 +16,10 @@ const line = printf((info) => {
 /**
  * Winston + daily rotation, like Examination's `logger.util.ts`, with two changes:
  * a single leveled file stream per day (not one file per level), and JSON lines in
- * production so they can be grepped/parsed. Tests log warnings and above only.
+ * production so they can be grepped/parsed. Level comes from LOG_LEVEL (e2e: error).
  */
 export const winstonLogger: Logger = createLogger({
-    level: IS_TEST ? 'warn' : LOG_LEVEL,
+    level: LOG_LEVEL,
     format: combine(errors({ stack: true }), timestamp()),
     transports: [
         new transports.Console({

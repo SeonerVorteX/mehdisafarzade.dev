@@ -7,7 +7,7 @@ const base = {
     REDIS_URL: 'redis://localhost:6382/1',
     RABBITMQ_URL: 'amqp://portfolio:portfolio@localhost:5673/portfolio',
     WEB_ORIGIN: 'http://localhost:5600',
-    ADMIN_ORIGIN: 'https://admin.localhost:8443',
+    ADMIN_ORIGIN: 'https://localhost:8443',
     ADMIN_JWT_SECRET: 'a'.repeat(48),
     ADMIN_PENDING_JWT_SECRET: 'b'.repeat(48),
     TOTP_ENC_KEY: 'c'.repeat(44),

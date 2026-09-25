@@ -1,0 +1,5 @@
+# /etc/nginx/device-gate/admin.mehdisafarzade.dev.map  (root:root 0600, NEVER committed)
+# Written only by deploy/device-gate/gate.ps1. One line per enrolled browser profile:
+#   "<host>:<256-bit token, base64url, 43 chars>" <device-name>;  # enrolled <ISO date>
+"admin.mehdisafarzade.dev:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" pc; # enrolled 2026-01-01T00:00:00Z
+"admin.mehdisafarzade.dev:BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" laptop; # enrolled 2026-01-01T00:00:00Z

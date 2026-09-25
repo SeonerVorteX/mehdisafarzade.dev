@@ -54,6 +54,15 @@ jobs:
       - run: node .yarn/releases/yarn-4.12.0.cjs install --immutable
       - run: node .yarn/releases/yarn-4.12.0.cjs ci
 
+  gate:
+    needs: changes
+    if: needs.changes.outputs.gate == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Real deploy/nginx files in nginx:1.24 with stub upstreams (PLAN.md §10.4).
+      - run: bash deploy/nginx/test/run.sh
+
   api:
     needs: changes
     if: needs.changes.outputs.api == 'true'

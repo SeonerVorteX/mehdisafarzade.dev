@@ -14,6 +14,13 @@ Yarn 4 + Turbo workspace. It mirrors `D:\Files\Examination\examination` (read-on
 | `packages/config` | Zod-validated shared env (`API_URL`, `INTERNAL_API_URL`), `parseEnv`, constants, and the shared ESLint flat config (`@portfolio/config/eslint`). |
 | `packages/types` | Ambient declarations. |
 
+## Admin app auth (Phase 3)
+
+- `src/proxy.ts`: `/login*` is public. A live `__Host-pf_at` → continue. An expired/expiring access token plus a `__Host-pf_rt` → **server-side refresh** (POST to the API with the refresh cookie, `X-Admin-Device`, and `Origin: ADMIN_URL`; the new cookies go to both this render and the browser). Otherwise → `/login?next=`.
+- Browser calls: `lib/adminClient.ts` `adminFetch()` → same-origin `/api`, CSRF header on mutations, single-flight refresh + one retry on 401.
+- Server calls: `lib/getServerAdmin.ts` (`server-only`) → `INTERNAL_API_URL/admin/*`, forwarding the cookies + `x-admin-device` that nginx set.
+- Screens: `/login` → `/login/totp` or `/login/totp-setup` (QR + recovery codes shown once) → `/` (bare shell: identity, device, sessions, sign out).
+
 ## Rules
 
 1. `page.tsx` stays a thin server component. Put interactive UI in a co-located `*Page.tsx` or `views/`, and server fetchers in `lib/getServer*.ts`.

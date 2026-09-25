@@ -2,7 +2,71 @@
   "meta": {
     "title": "İdarəetmə"
   },
+  "login": {
+    "title": "Daxil ol",
+    "subtitle": "mehdisafarzade.dev idarəetmə paneli",
+    "email": "E-poçt",
+    "password": "Şifrə",
+    "submit": "Davam et",
+    "submitting": "Yoxlanılır…",
+    "or": "və ya",
+    "google": "Google ilə davam et",
+    "errors": {
+      "google_cancelled": "Google ilə giriş ləğv edildi.",
+      "google_denied": "Bu Google hesabı ilə burada daxil olmaq icazəli deyil.",
+      "google_state": "Google ilə girişin vaxtı bitib və ya dəyişdirilib. Yenidən cəhd edin.",
+      "google_exchange": "Google ilə giriş alınmadı. Yenidən cəhd edin.",
+      "google_disabled": "Google ilə giriş qurulmayıb.",
+      "sessionExpired": "Sessiyanız bitdi. Yenidən daxil olun."
+    }
+  },
+  "totp": {
+    "title": "İki faktorlu autentifikasiya",
+    "subtitle": "Autentifikator tətbiqindəki 6 rəqəmli kodu daxil edin.",
+    "code": "Autentifikasiya kodu",
+    "recoveryCode": "Bərpa kodu",
+    "useRecovery": "Bərpa kodundan istifadə et",
+    "useApp": "Autentifikator tətbiqindən istifadə et",
+    "submit": "Təsdiqlə",
+    "submitting": "Təsdiqlənir…",
+    "back": "Yenidən başla",
+    "recoveryUsed": "Bərpa kodu ilə daxil oldunuz. {remaining, plural, one {# bərpa kodu qalıb.} other {# bərpa kodu qalıb.}}"
+  },
+  "setup": {
+    "title": "İki faktorlu autentifikasiyanı qurun",
+    "subtitle": "İdarəetmə panelindən istifadə etmək üçün iki faktorlu autentifikasiya tələb olunur.",
+    "step1": "Bu QR kodu autentifikator tətbiqi ilə skan edin (1Password, Google Authenticator, Aegis…).",
+    "manual": "Skan edə bilmirsiniz? Bu açarı əl ilə daxil edin:",
+    "copy": "Kopyala",
+    "copied": "Kopyalandı",
+    "step2": "Sonra tətbiqin göstərdiyi 6 rəqəmli kodu daxil edin.",
+    "code": "Autentifikasiya kodu",
+    "submit": "İki faktorlu autentifikasiyanı aktivləşdir",
+    "submitting": "Aktivləşdirilir…",
+    "recoveryTitle": "Bərpa kodlarınızı saxlayın",
+    "recoveryBody": "Autentifikatoru itirsəniz, hər kod bir dəfə daxil olmağa imkan verir. Kodlar yalnız indi göstərilir. Onları təhlükəsiz yerdə, məsələn şifrə menecerində saxlayın.",
+    "download": ".txt kimi yüklə",
+    "confirm": "Bərpa kodlarımı saxladım",
+    "continue": "İdarəetmə panelinə keç"
+  },
   "shell": {
-    "placeholder": "İdarəetmə paneli"
+    "title": "İdarəetmə",
+    "signedInAs": "{email} kimi daxil olunub",
+    "device": "Cihaz: {device}",
+    "lastLogin": "Son giriş: {date}",
+    "recoveryLeft": "{count, plural, one {# bərpa kodu qalıb} other {# bərpa kodu qalıb}}",
+    "placeholder": "Məzmun redaktorları 7-ci mərhələdə əlavə olunacaq.",
+    "logout": "Çıxış",
+    "logoutAll": "Bütün cihazlardan çıxış",
+    "sessions": "Aktiv sessiyalar",
+    "current": "bu brauzer",
+    "revoke": "Ləğv et",
+    "started": "{date} tarixindən"
+  },
+  "validation": {
+    "required": "Bu sahə tələb olunur.",
+    "email": "Düzgün e-poçt ünvanı daxil edin.",
+    "code": "6 rəqəmli kodu daxil edin.",
+    "recovery": "abcde-fghjk formatında bərpa kodu daxil edin."
   }
 }

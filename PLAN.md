@@ -292,6 +292,8 @@ nginx runs on the host, so "over the Docker network" means the loopback-publishe
   add_header Cache-Control "private, no-store" always;
   ```
   The harness in §10.4 tests this exact ordering.
+- **Found by the harness (Phase 3):** (1) `map_hash_bucket_size 128;` is required in `conf.d/device-gate.conf` (the `host:token` keys exceed the 64-byte default and nginx refuses to load; the live `nginx.conf` doesn't set it, checked with `nginx -T`). (2) The unlock redirect uses `absolute_redirect off` so it works on non-443 ports. (3) Keep `device-gate.conf` loading before any server that includes the snippet (it defines the `dg_enroll` log format).
+- **Local dev gate:** `deploy/nginx/dev/` runs the same two files in nginx:1.24 on `https://localhost:8443` (plain `localhost` because Google OAuth accepts only `localhost` as a non-public redirect host). `gate.ps1 -Target local` manages it.
 - The **404 body** is nginx's default 404 page, the same as any unknown path, so it gives nothing away. `server_tokens off` is already global (verify in Phase 9).
 - **File permissions:** `/etc/nginx/device-gate/` is `0700 root`, and files are `0600 root`. The nginx master reads includes as root, so that's fine.
 
