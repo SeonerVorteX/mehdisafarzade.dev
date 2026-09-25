@@ -1,0 +1,4 @@
+// Pixel → rem. Kept in its own file so variables can use it without a module cycle.
+@function rem($px) {
+  @return calc($px / 16) * 1rem;
+}

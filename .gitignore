@@ -1,39 +1,63 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
+node_modules/
+.pnp.*
+**/.yarn/*
+!**/.yarn/patches
+!**/.yarn/plugins
+!**/.yarn/releases
+!**/.yarn/sdks
+!**/.yarn/versions
 
-# testing
-/coverage
+# build output
+.next/
+out/
+dist/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
 
-# next.js
-/.next/
-/out/
+# env files: never commit real values (.env.example is the documented template)
+.env
+.env.*
+!.env.example
+!**/.env.example
 
-# production
-/build
-TODO.md
-yarn.lock
-package-lock.json
-
-# misc
-.DS_Store
+# secrets / certificates
 *.pem
+*.key
+*.crt
+*.p12
+certs/
 
-# debug
+# device gate: tokens live only on the server (or the local gate volume)
+*.map
+!*.map.example
+*.unlock
+deploy/device-gate/.local/
+deploy/device-gate/local/
+
+# logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# test output
+test-results/
+playwright-report/
+playwright/.cache/
 
-# vercel
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# legacy local-only leftovers (untracked on GitHub too)
+legacy/TODO.md
+legacy/package-lock.json

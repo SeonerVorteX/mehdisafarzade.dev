@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "title": "Mehdi Səfərzadə — Full-Stack Developer",
+    "description": "TypeScript, Next.js və NestJS ilə istehsal platformaları quran full-stack developer."
+  },
+  "home": {
+    "placeholder": "Yeni sayt hazırlanır."
+  },
+  "notFound": {
+    "title": "Səhifə tapılmadı",
+    "body": "Axtardığınız səhifə mövcud deyil və ya köçürülüb.",
+    "home": "Ana səhifəyə qayıt"
+  }
+}

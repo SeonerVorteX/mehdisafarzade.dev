@@ -1,0 +1,29 @@
+// Same keys/values as Examination. Use these mixins, never raw @media widths.
+@use "sass:map";
+
+$breakpoints: (
+  xxs: 375px,
+  xs: 480px,
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+);
+
+@mixin bp-up($name) {
+  @media (min-width: map.get($breakpoints, $name)) {
+    @content;
+  }
+}
+
+@mixin bp-down($name) {
+  @media (max-width: calc(#{map.get($breakpoints, $name)} - 0.02px)) {
+    @content;
+  }
+}
+
+@mixin bp-between($lower, $upper) {
+  @media (min-width: map.get($breakpoints, $lower)) and (max-width: calc(#{map.get($breakpoints, $upper)} - 0.02px)) {
+    @content;
+  }
+}

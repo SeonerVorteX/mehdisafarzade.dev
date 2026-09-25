@@ -1,21 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# mehdisafarzade.dev
 
-## Getting Started
+The personal site of Mehdi Safarzade: a public portfolio + blog (az/en/ru), a separate admin CMS, and a NestJS API.
 
-First, run the development server:
+| Part | Path | Local URL |
+|---|---|---|
+| Public site | `frontend/apps/web` | http://localhost:5600 |
+| Admin CMS | `frontend/apps/admin` | https://admin.localhost:8443 (through the local device gate, Phase 3) |
+| API | `api/` | http://localhost:3100/v1 |
+
+## Quick start
+
+Prerequisites: Node 22+, Docker Desktop.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# API
+cd api
+cp .env.example .env.dev        # fill in values (see comments in the file)
+node .yarn/releases/yarn-4.12.0.cjs install
+node .yarn/releases/yarn-4.12.0.cjs start:dev    # starts portfolio-* dev containers, then the API
+
+# Frontend (both apps)
+cd frontend
+cp apps/web/.env.example apps/web/.env.local
+cp apps/admin/.env.example apps/admin/.env.local
+node .yarn/releases/yarn-4.12.0.cjs install
+node .yarn/releases/yarn-4.12.0.cjs dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`yarn ci` runs every check in each half. See `AGENTS.md` for conventions and `PLAN.md` for the architecture.
 
-You can start editing the page by modifying `src/app/page.tsx`. The page auto-updates as you edit the file.
+## License
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Apache-2.0 (see `LICENSE`).

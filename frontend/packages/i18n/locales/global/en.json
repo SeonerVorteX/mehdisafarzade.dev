@@ -1,0 +1,22 @@
+{
+  "common": {
+    "siteName": "Mehdi Safarzade",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "close": "Close",
+    "skipToContent": "Skip to content"
+  },
+  "errors": {
+    "serverUnavailable": "The server is unavailable. Please try again in a moment.",
+    "unknown": "Something went wrong."
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "label": "Language"
+  }
+}

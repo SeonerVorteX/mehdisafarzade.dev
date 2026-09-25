@@ -1,0 +1,30 @@
+{
+  "name": "@portfolio/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": "./index.ts",
+    "./admin": "./admin/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@portfolio/config": "workspace:*",
+    "react-hook-form": "^7.75",
+    "zod": "^4.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "react": "^19.2.4"
+  },
+  "peerDependencies": {
+    "react": "^19.2.4"
+  }
+}

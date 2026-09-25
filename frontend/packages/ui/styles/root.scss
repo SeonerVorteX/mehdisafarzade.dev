@@ -1,0 +1,83 @@
+// Design tokens as CSS custom properties. Placeholder values until the Phase 5
+// style tile is approved; the *names* are the contract every app styles against.
+// Theme switching: `html[data-theme="dark"|"light"]`, set before paint.
+
+:root {
+  color-scheme: light;
+
+  /* neutrals */
+  --color-bg: #f7f6f3;
+  --color-bg-elevated: #ffffff;
+  --color-bg-sunken: #efede8;
+  --color-fg: #16161a;
+  --color-fg-secondary: #45454d;
+  --color-muted: #6e6e78;
+  --color-border: #deddd8;
+
+  /* the single accent (brief: one bold accent on a neutral palette) */
+  --color-accent: #e5484d;
+  --color-accent-fg: #ffffff;
+  --color-accent-soft: #fde8e8;
+
+  /* feedback */
+  --color-success: #1f8a4c;
+  --color-warning: #b76e00;
+  --color-error: #cd2b31;
+  --color-focus: #0b63f3;
+
+  /* radius & spacing */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --pad: 16px;
+  --pad-lg: 28px;
+
+  /* typography (families are injected by next/font as CSS variables) */
+  --font-sans: var(--font-inter, ui-sans-serif), system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: var(--font-display-face, var(--font-sans));
+  --font-mono: var(--font-jetbrains, ui-monospace), SFMono-Regular, Menlo, Consolas, monospace;
+
+  --fs-xxs: 12px;
+  --fs-xs: 14px;
+  --fs-sm: 16px;
+  --fs-md: 18px;
+  --fs-lg: 20px;
+  --fs-xl: 24px;
+  --fs-2xl: 32px;
+  --fs-3xl: 44px;
+  --fs-4xl: 60px;
+  --fs-5xl: 80px;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  --lh-xs: 1.1;
+  --lh-sm: 1.3;
+  --lh-md: 1.55;
+  --lh-lg: 1.75;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg: #0e0e10;
+  --color-bg-elevated: #17171a;
+  --color-bg-sunken: #0a0a0b;
+  --color-fg: #ededf0;
+  --color-fg-secondary: #b4b4bc;
+  --color-muted: #8b8b95;
+  --color-border: #2a2a2f;
+
+  --color-accent: #ff6369;
+  --color-accent-fg: #0e0e10;
+  --color-accent-soft: #3b1219;
+
+  --color-success: #3dd68c;
+  --color-warning: #ffc53d;
+  --color-error: #ff6369;
+  --color-focus: #70b8ff;
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@portfolio/i18n",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./config": "./config.ts",
+    "./messages": "./messages.ts",
+    "./locales/*": "./locales/*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  }
+}

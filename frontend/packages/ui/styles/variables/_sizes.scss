@@ -1,0 +1,11 @@
+@use "../functions" as *;
+
+$page-max-width: rem(1200);
+
+$radius-xs: var(--radius-xs);
+$radius-sm: var(--radius-sm);
+$radius-md: var(--radius-md);
+$radius-lg: var(--radius-lg);
+$radius-xl: var(--radius-xl);
+$pad: var(--pad);
+$pad-lg: var(--pad-lg);

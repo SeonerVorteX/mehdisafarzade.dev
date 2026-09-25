@@ -1,0 +1,8 @@
+// Shared SCSS entry, same chain as `@examination/ui/styles/_index.scss`.
+// Apps: `@use "@portfolio/ui/styles/root"; @use "@portfolio/ui/styles/index" as *;`
+@forward "tailwindcss";
+
+@forward "./variables";
+@forward "./animations";
+@forward "./breakpoints";
+@forward "./mixins";

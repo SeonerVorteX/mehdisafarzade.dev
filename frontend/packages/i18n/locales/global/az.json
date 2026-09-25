@@ -1,0 +1,22 @@
+{
+  "common": {
+    "siteName": "Mehdi Səfərzadə",
+    "loading": "Yüklənir…",
+    "retry": "Yenidən cəhd edin",
+    "close": "Bağla",
+    "skipToContent": "Məzmuna keç"
+  },
+  "errors": {
+    "serverUnavailable": "Server əlçatan deyil. Bir az sonra yenidən cəhd edin.",
+    "unknown": "Nəsə səhv getdi."
+  },
+  "theme": {
+    "label": "Mövzu",
+    "light": "İşıqlı",
+    "dark": "Qaranlıq",
+    "system": "Sistem"
+  },
+  "language": {
+    "label": "Dil"
+  }
+}

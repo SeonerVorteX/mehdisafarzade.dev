@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "title": "Mehdi Safarzade — Full-Stack Developer",
+    "description": "Full-stack developer building production platforms with TypeScript, Next.js and NestJS."
+  },
+  "home": {
+    "placeholder": "The new site is under construction."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you are looking for doesn't exist or has moved.",
+    "home": "Back to home"
+  }
+}

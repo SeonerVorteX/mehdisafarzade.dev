@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [v2, main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      api: ${{ steps.filter.outputs.api }}
+      gate: ${{ steps.filter.outputs.gate }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - '.github/workflows/ci.yml'
+            api:
+              - 'api/**'
+              - '.github/workflows/ci.yml'
+            gate:
+              - 'deploy/nginx/**'
+              - '.github/workflows/ci.yml'
+
+  frontend:
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/cache@v4
+        with:
+          path: frontend/.yarn/cache
+          key: yarn-frontend-${{ hashFiles('frontend/yarn.lock') }}
+      - run: node .yarn/releases/yarn-4.12.0.cjs install --immutable
+      - run: node .yarn/releases/yarn-4.12.0.cjs ci
+
+  api:
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/cache@v4
+        with:
+          path: api/.yarn/cache
+          key: yarn-api-${{ hashFiles('api/yarn.lock') }}
+      - run: node .yarn/releases/yarn-4.12.0.cjs install --immutable
+      - run: node .yarn/releases/yarn-4.12.0.cjs ci

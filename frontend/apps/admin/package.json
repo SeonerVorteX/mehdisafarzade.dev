@@ -1,0 +1,38 @@
+{
+  "name": "@portfolio/admin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev -p 5603",
+    "build": "next build",
+    "start": "next start -p 5603",
+    "typecheck": "next typegen && tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2",
+    "@portfolio/api": "workspace:*",
+    "@portfolio/config": "workspace:*",
+    "@portfolio/i18n": "workspace:*",
+    "@portfolio/types": "workspace:*",
+    "@portfolio/ui": "workspace:*",
+    "@tanstack/react-query": "^5.90",
+    "clsx": "^2.1",
+    "dayjs": "^1.11",
+    "lucide-react": "^1.48.0",
+    "next": "^16.1.6",
+    "next-intl": "^4.4",
+    "qrcode.react": "^4.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-hook-form": "^7.75",
+    "react-hot-toast": "^2.6",
+    "zod": "^4.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19"
+  }
+}

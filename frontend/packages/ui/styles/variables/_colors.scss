@@ -1,0 +1,17 @@
+// SCSS aliases for the CSS custom properties in root.scss. Never write raw hex in app styles.
+$color-bg: var(--color-bg);
+$color-bg-elevated: var(--color-bg-elevated);
+$color-bg-sunken: var(--color-bg-sunken);
+$color-fg: var(--color-fg);
+$color-fg-secondary: var(--color-fg-secondary);
+$color-muted: var(--color-muted);
+$color-border: var(--color-border);
+
+$color-accent: var(--color-accent);
+$color-accent-fg: var(--color-accent-fg);
+$color-accent-soft: var(--color-accent-soft);
+
+$color-success: var(--color-success);
+$color-warning: var(--color-warning);
+$color-error: var(--color-error);
+$color-focus: var(--color-focus);

@@ -1,0 +1,18 @@
+// App entry: tokens → shared chain → app styles (same order as Examination's main.scss).
+@use "@portfolio/ui/styles/root";
+@use "@portfolio/ui/styles/index" as *;
+
+body {
+  margin: 0;
+  background: $color-bg;
+  font-family: $font-sans;
+  @include font($color-fg, $fs-sm, $fw-regular, $lh-md);
+}
+
+.placeholder {
+  @include flex(column, center, center);
+  gap: rem(12);
+  min-height: 100dvh;
+  padding: $pad;
+  text-align: center;
+}

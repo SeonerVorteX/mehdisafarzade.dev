@@ -1,0 +1,114 @@
+# Local development + test services. Every container/volume is `portfolio-*` prefixed and
+# every host port differs from Examination's dev stack (db-dev 5434, db-test 5435,
+# redis-dev 6381, rabbitmq-dev 5672/15672), so both stacks can run side by side.
+# Throwaway local data only; no auth hardening here (prod uses the shared infra stack).
+name: portfolio-dev
+
+networks:
+    portfolio-dev:
+
+volumes:
+    portfolio-pgdata-dev:
+    portfolio-pgdata-test:
+    portfolio-rabbitmq-dev-data:
+    portfolio-redis-dev-data:
+    portfolio-minio-dev-data:
+
+services:
+    db-dev:
+        image: postgres:18
+        container_name: portfolio-db-dev
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-portfolio}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-portfolio}
+            POSTGRES_DB: ${POSTGRES_DB:-portfolio}
+        volumes:
+            - portfolio-pgdata-dev:/var/lib/postgresql
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+            interval: 5s
+            timeout: 3s
+            retries: 20
+        networks: [portfolio-dev]
+        ports:
+            - '127.0.0.1:5436:5432'
+
+    db-test:
+        image: postgres:18
+        container_name: portfolio-db-test
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-portfolio}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-portfolio}
+            POSTGRES_DB: ${POSTGRES_DB:-portfolio_test}
+        tmpfs:
+            - /var/lib/postgresql # test data is disposable; faster and always clean
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+            interval: 2s
+            timeout: 3s
+            retries: 30
+        networks: [portfolio-dev]
+        ports:
+            - '127.0.0.1:5437:5432'
+
+    redis-dev:
+        image: redis:7-alpine
+        container_name: portfolio-redis-dev
+        volumes:
+            - portfolio-redis-dev-data:/data
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 5s
+            timeout: 3s
+            retries: 10
+        networks: [portfolio-dev]
+        ports:
+            - '127.0.0.1:6382:6379'
+
+    rabbitmq-dev:
+        image: rabbitmq:3.13-management
+        container_name: portfolio-rabbitmq-dev
+        environment:
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-portfolio}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-portfolio}
+            RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-portfolio}
+        volumes:
+            - portfolio-rabbitmq-dev-data:/var/lib/rabbitmq
+        healthcheck:
+            test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+            interval: 10s
+            timeout: 5s
+            retries: 10
+        networks: [portfolio-dev]
+        ports:
+            - '127.0.0.1:5673:5672'
+            - '127.0.0.1:15673:15672'
+
+    # S3-compatible storage for local media work (Phase 4) so dev never needs real AWS credentials.
+    minio-dev:
+        image: minio/minio:latest
+        container_name: portfolio-minio-dev
+        command: server /data --console-address ':9001'
+        environment:
+            MINIO_ROOT_USER: ${MINIO_ROOT_USER:-portfolio}
+            MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-portfolio-dev-secret}
+        volumes:
+            - portfolio-minio-dev-data:/data
+        healthcheck:
+            test: ['CMD', 'mc', 'ready', 'local']
+            interval: 5s
+            timeout: 3s
+            retries: 10
+        networks: [portfolio-dev]
+        ports:
+            - '127.0.0.1:9002:9000'
+            - '127.0.0.1:9003:9001'
+
+    # Catches every outgoing email in dev (UI on :8026) so the contact round-trip can be tested without SES.
+    mailpit-dev:
+        image: axllent/mailpit:latest
+        container_name: portfolio-mailpit-dev
+        networks: [portfolio-dev]
+        ports:
+            - '127.0.0.1:1026:1025'
+            - '127.0.0.1:8026:8025'
