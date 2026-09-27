@@ -85,6 +85,8 @@ cat >"$work/gate/device-gate/$host_admin.map" <<EOF
 EOF
 printf '"%s:%s" %s;\n' "$host_admin" "$unlock_key" "$tok_new" >"$work/gate/device-gate/$host_admin.unlock"
 printf '"%s:%s" newdevice; # enrolled 2026-09-25T00:00:00Z\n' "$host_admin" "$tok_new" >>"$work/gate/device-gate/$host_admin.map"
+tok_upper=$(secret)
+printf '"%s:%s" LAPTOP; # enrolled 2026-09-25T00:00:00Z\n' "$host_admin" "$tok_upper" >>"$work/gate/device-gate/$host_admin.map"
 
 cat >"$work/gate/nginx.conf" <<'EOF'
 user nginx;
@@ -167,6 +169,8 @@ expect_eq "enrolled device → 200" 200 "$STATUS"
 expect_has "reaches the admin app with its device name" "upstream=admin uri=/ device=[pc]" "$BODY"
 req "$host_admin" / -H "Cookie: a=1; __Host-dg=$tok_laptop; b=2"
 expect_has "cookie among other cookies works (laptop)" "device=[laptop]" "$BODY"
+req "$host_admin" /api/auth/me -H "Cookie: __Host-dg=$tok_upper"
+expect_has "nginx forwards a mis-cased device name VERBATIM (so gate.ps1 must reject it; the API 404s it)" "device=[LAPTOP]" "$BODY"
 req "$host_admin" / -H "Cookie: __Host-dg=$tok_pc" -H "X-Admin-Device: laptop"
 expect_has "client-sent X-Admin-Device is overwritten" "device=[pc]" "$BODY"
 expect_has "admin responses are not cacheable" "cache-control: private, no-store" "${HEADERS,,}"

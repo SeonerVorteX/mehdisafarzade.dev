@@ -46,10 +46,15 @@ describe('admin auth (e2e)', () => {
             expect(res.headers['set-cookie']).toBeUndefined();
         });
 
-        it('rejects malformed device names', async () => {
-            const c = new AdminClient(app, 'PC; drop');
-            expect((await c.get('/auth/config')).status).toBe(404);
-        });
+        // Device names are matched case-sensitively: nginx forwards whatever the map says,
+        // so a mis-cased enrollment (e.g. "LAPTOP") must fail here too (gate.ps1 now refuses it).
+        it.each(['PC; drop', 'LAPTOP', 'Pc', '-pc', 'a'.repeat(33)])(
+            'rejects the device name %p with 404',
+            async (name) => {
+                const c = new AdminClient(app, name);
+                expect((await c.get('/auth/pending')).status).toBe(404);
+            },
+        );
     });
 
     describe('first login: forced TOTP enrollment', () => {

@@ -28,6 +28,22 @@ Each device (really, each **browser profile**) has its own token, so you can rev
 .\gate.ps1 rotate -Device pc          # new token for pc, then re-enroll (the old cookie stops working)
 ```
 
+### Device names
+
+Lowercase letters, digits and `-`, starting with a letter or digit, at most 32 characters: `^[a-z0-9][a-z0-9-]{0,31}$`. The check is **case-sensitive**: `-Device LAPTOP` is rejected (with a "did you mean `laptop`" hint) rather than silently lowercased. nginx forwards the name verbatim as `X-Admin-Device`, and the API accepts only that pattern, so a mis-cased entry would pass the gate and then get 404 on every admin call.
+
+### `list` statuses
+
+`list` shows **every** line of the map, never the tokens, with a status:
+
+| Status | Meaning | Fix |
+|---|---|---|
+| `OK` | valid entry | none |
+| `INVALID_NAME` | e.g. `LAPTOP`: passes nginx, 404 from the API | `revoke -Device LAPTOP -Force`, then enroll a valid name |
+| `MALFORMED:token` / `MALFORMED:host-or-quotes` / `MALFORMED:syntax` | a hand-edited or damaged line | `revoke -Device <name> -Force` |
+
+If a broken line makes nginx reject the whole map, `list` says so. Remove that line first (`revoke … -Force`). `-Force` only relaxes the naming rule (it still refuses shell-unsafe characters), and names stay case-sensitive.
+
 What `enroll` does:
 1. Generates a token and a one-time unlock key locally.
 2. Sends them to the server **over stdin** (never on a command line) and appends them to the maps.
