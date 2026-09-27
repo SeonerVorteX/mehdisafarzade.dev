@@ -10,6 +10,12 @@ The personal site of Mehdi Safarzade: a public portfolio + blog (az/en/ru), a se
 
 ## Quick start
 
+```powershell
+.\deploy\dev.ps1 up      # everything: env files, containers, migrations + seed, device gate, API, web, admin
+```
+
+See **[LOCAL_DEV.md](LOCAL_DEV.md)** for details and the manual fallback below.
+
 Prerequisites: Node 22+, Docker Desktop.
 
 ```bash

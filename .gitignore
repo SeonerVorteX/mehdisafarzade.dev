@@ -65,3 +65,6 @@ legacy/package-lock.json
 # local device-gate dev container (deploy/nginx/dev): self-signed cert + local maps
 deploy/nginx/dev/.certs/
 deploy/nginx/dev/.gate/
+
+# local dev orchestration state (deploy/dev.ps1)
+deploy/.dev/
