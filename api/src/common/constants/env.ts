@@ -66,6 +66,19 @@ export const MAIL = {
 export const IP_HASH_PEPPER = env.IP_HASH_PEPPER ?? '';
 
 /**
+ * On-demand revalidation webhook (API → every web colour). Production lists both
+ * colours (http://10.231.0.21:3000/api/revalidate, http://10.231.0.22:3000/api/revalidate);
+ * a stopped colour just fails quietly.
+ */
+export const REVALIDATE = {
+    urls: list(env.WEB_REVALIDATE_URLS),
+    secret: env.REVALIDATE_SECRET ?? '',
+};
+
+/** Shared with web: signs draft-preview links and web → API preview fetches. */
+export const PREVIEW_SECRET = env.PREVIEW_SECRET ?? '';
+
+/**
  * Exact peer IPs trusted to send X-Admin-Device and X-Real-IP (see trustedSources.util).
  * Production: required (assertEnv refuses to boot otherwise). Dev/test default: loopback.
  * On Docker Desktop, the local gate container's requests reach the host API from 127.0.0.1.

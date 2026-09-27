@@ -1,0 +1,12 @@
+{
+    "NOT_FOUND": "Tapılmadı.",
+    "SLUG_TAKEN": "\"{slug}\" slug-ı artıq istifadə olunur ({locale}).",
+    "SLUG_REQUIRED": "Slug tələb olunur.",
+    "FALLBACK_REQUIRED": "Dərc olunmuş halda ingiliscə tərcümə silinə bilməz.",
+    "FALLBACK_INCOMPLETE": "İngiliscə tərcümə natamamdır (çatışmır: {missing}).",
+    "SCHEDULE_IN_PAST": "Planlaşdırılan vaxt gələcəkdə olmalıdır.",
+    "INVALID_REFERENCE": "İstinad edilən element mövcud deyil və ya növü yanlışdır.",
+    "UNKNOWN_LOCALE": "Naməlum dil.",
+    "MISSING_FIELDS": "Bəzi tələb olunan sahələr boşdur.",
+    "INVALID_SOCIAL": "\"{key}\" üçün keçid icazəli deyil və ya etibarlı https URL deyil."
+}

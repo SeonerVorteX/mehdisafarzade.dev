@@ -25,6 +25,9 @@ src/
   assertEnv.ts            boot-time env validation (first import in main.ts)
   app.setup.ts            global HTTP wiring shared with tests
   api/health/             GET /v1/health (503 if Postgres is down; Redis/RMQ reported only)
+  api/content/            public + admin content APIs (posts/tags, projects, experience/education, skills, pages, profile, overview)
+  api/media/              media pipeline (presign → PUT → finalize → RMQ → sharp variants) + public redirect
+  api/events/             RabbitMQ consumers (media.uploaded, content.changed)
   common/
     constants/            env (typed), locales, rateLimits, rabbitmq
     filters/ interceptors/ pipes/ decorators/ guards/   envelope, AppValidationPipe, @RawResponse, @StrictIpThrottle, AppThrottlerGuard
@@ -53,6 +56,17 @@ dev/seaweedfs-s3.json     dev-only S3 credentials for portfolio-s3-dev
 - Sessions (`session.service.ts`): 10-min access JWT + opaque rotating refresh token (sha256 in DB). Replaying a rotated token revokes the whole family, except within a 15 s tab-race grace. A device mismatch on refresh also revokes the family. Access checks are Redis-cached for 60 s, and revocation deletes the cache keys.
 - TOTP secrets are AES-256-GCM sealed (`common/utils/secretBox.util.ts`, key `TOTP_ENC_KEY`). Codes are burned in Redis for 95 s (no replay). Per-account lockouts (`adminLockout.service.ts`): TOTP 5/15 min, password 10/15 min per email.
 - `AuditService` records auth events (success, failures, recovery-code use, refresh reuse, logout) with device + IP. Diffs are redacted.
+
+## Content (Phase 4, PLAN §6/§7)
+
+- **Shape:** each content type has a base row + per-locale translations. Public reads pick the requested locale and fall back to `en`, returning `locale` + `fallback: true` so the web can show a notice. Publishing (and scheduling) requires a complete `en` translation (`completeness()` in `common/utils/content.util.ts`); the `en` translation of a live item can't be deleted.
+- **Slugs:** unique per locale (posts/pages/tags) or global (projects), generated with az/ru transliteration when omitted. A post found by another locale's slug still resolves, and `alternates` gives the canonical slug per locale.
+- **Cache:** public reads go through `ContentCacheService.wrap(key, tags, load)` (Redis, 5 min, tag sets). Every write calls `RevalidationService.contentChanged(tags)`: that invalidates synchronously, then publishes `content.changed`; the consumer POSTs an HMAC-signed webhook to each `WEB_REVALIDATE_URLS` (all web colours). The tags are shared with the web (`frontend/packages/api/paths.ts#cacheTags`); `all` = full revalidation (`POST /v1/admin/revalidate/all`).
+- **Scheduling:** `PublishSchedulerService` runs every minute behind the Redis lock `lock:publish-scheduled` (owner-checked release). `publishDue` is conditional per row, so a concurrent unpublish wins.
+- **Preview:** `/v1/preview/{posts,projects,pages}/:id` need `x-preview-timestamp` + `x-preview-signature` (HMAC of path + ts with `PREVIEW_SECRET`, 5-min window); anything else is 404.
+- **Media:** the bucket is private. Presigned PUTs sign content-type + content-length, and the S3 client disables flexible checksums (otherwise the SDK signs an empty-body CRC32 and every browser upload fails). `finalize` sniffs magic bytes; images get AVIF/WebP at 480/960/1600 (never upscaled) + a WebP LQIP, EXIF stripped. `GET /v1/media/:id/:variant` 302s to a 10-min presigned URL; image originals are never served. Delete is refused while `usage()` finds references.
+- **Audit:** `@AdminAuth()` includes `AuditInterceptor`, which logs `<entity>.<handler>` for every successful mutation (entity from `@AuditEntity`), with a redacted body.
+- **Contract:** `test/contract.e2e-spec.ts` snapshots every route (OpenAPI from `@nestjs/swagger`, served at `/v1/docs` outside production). After an intended route change, run the e2e with `-u` and review the snapshot diff, then update `frontend/packages/api`.
 
 ## Services and data
 

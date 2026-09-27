@@ -13,8 +13,9 @@ The phase plan is in `PLAN.md` §16. Every phase ends with `yarn ci` green in th
 | 0 Plan | done (`PLAN.md`, `SEED_REVIEW.md`) |
 | 1 Scaffold | done |
 | 2 Backend foundation | done |
-| 3 Admin auth + device gate | done, awaiting the owner's ☑ |
-| 4 Content APIs | not started |
+| 3 Admin auth + device gate | done (☑) |
+| 4 Content APIs | done |
+| 5 Design system + style tile | in progress |
 
 ## Device gate (read before touching `deploy/nginx` or admin routing)
 

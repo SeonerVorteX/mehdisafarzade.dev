@@ -4,10 +4,14 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { AdminModule } from './api/admin/admin.module';
+import { ContentModule } from './api/content/content.module';
+import { EventsModule } from './api/events/events.module';
 import { HealthModule } from './api/health/health.module';
+import { MediaModule } from './api/media/media.module';
 import { THROTTLE } from './common/constants/rateLimits';
 import { AppThrottlerGuard } from './common/guards/appThrottler.guard';
 import { AuditModule } from './common/helpers/audit/audit.module';
+import { ContentCacheModule } from './common/helpers/cache/cache.module';
 import { LoggerModule } from './common/helpers/logger/logger.module';
 import { MailerModule } from './common/helpers/mailer/mailer.module';
 import { PrismaModule } from './common/helpers/prisma/prisma.module';
@@ -28,6 +32,7 @@ import { I18nModule } from './common/i18n/i18n.module';
         S3Module,
         MailerModule,
         AuditModule,
+        ContentCacheModule,
         ThrottlerModule.forRootAsync({
             inject: [RedisService],
             useFactory: (redis: RedisService) => ({
@@ -39,6 +44,9 @@ import { I18nModule } from './common/i18n/i18n.module';
         }),
         HealthModule,
         AdminModule,
+        MediaModule,
+        ContentModule,
+        EventsModule,
     ],
     providers: [{ provide: APP_GUARD, useClass: AppThrottlerGuard }],
 })

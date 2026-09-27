@@ -1,11 +1,14 @@
 import { VersioningType, type INestApplication } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Transport, type MicroserviceOptions } from '@nestjs/microservices';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule, type OpenAPIObject } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import helmet from 'helmet';
 import { AppValidationPipe } from './common/pipes/appValidation.pipe';
-import { CORS_ORIGINS, IS_PRODUCTION } from './common/constants/env';
+import { CORS_ORIGINS, IS_PRODUCTION, RABBITMQ_URL } from './common/constants/env';
+import { EVENTS_DLX, EVENTS_EXCHANGE, EVENTS_EXCHANGE_TYPE, EVENTS_QUEUE } from './common/constants/rabbitmq';
 import { ResponseExceptionFilter } from './common/filters/responseException.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { requestLogger } from './common/utils/logger.util';
@@ -75,4 +78,39 @@ export function configureApp<T extends INestApplication>(app: T): T {
         maxAge: 600,
     });
     return app;
+}
+
+/**
+ * The RabbitMQ consumer options (topic exchange, manual ack, DLX). Shared by main.ts
+ * and the content e2e test, which attaches the same consumer to its test app.
+ */
+export function rmqConsumerOptions(): MicroserviceOptions {
+    return {
+        transport: Transport.RMQ,
+        options: {
+            urls: [RABBITMQ_URL],
+            queue: EVENTS_QUEUE,
+            exchange: EVENTS_EXCHANGE,
+            exchangeType: EVENTS_EXCHANGE_TYPE,
+            wildcards: true,
+            noAck: false,
+            prefetchCount: 8,
+            queueOptions: { durable: true, arguments: { 'x-dead-letter-exchange': EVENTS_DLX } },
+        },
+    };
+}
+
+/** The OpenAPI document (routes + params). Served at /v1/docs outside production; snapshotted by test/contract.e2e-spec.ts. */
+export function buildOpenApi(app: INestApplication): OpenAPIObject {
+    const config = new DocumentBuilder()
+        .setTitle('mehdisafarzade.dev API')
+        .setVersion('1')
+        .addCookieAuth('__Host-pf_at')
+        .build();
+    return SwaggerModule.createDocument(app, config);
+}
+
+export function setupDocs(app: INestApplication): void {
+    if (IS_PRODUCTION) return;
+    SwaggerModule.setup('v1/docs', app, () => buildOpenApi(app));
 }

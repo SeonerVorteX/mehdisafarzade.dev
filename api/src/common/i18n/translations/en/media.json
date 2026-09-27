@@ -1,0 +1,8 @@
+{
+    "NOT_FOUND": "File not found.",
+    "TYPE_NOT_ALLOWED": "This file type is not allowed.",
+    "TOO_LARGE": "The file is too large (max {max} MB).",
+    "NOT_UPLOADED": "The file hasn't been uploaded yet.",
+    "TYPE_MISMATCH": "The file content doesn't match its type (detected: {detected}).",
+    "IN_USE": "The file is still used in {count} place(s)."
+}

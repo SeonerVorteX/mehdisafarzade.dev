@@ -1,0 +1,12 @@
+{
+    "NOT_FOUND": "Not found.",
+    "SLUG_TAKEN": "The slug \"{slug}\" is already used ({locale}).",
+    "SLUG_REQUIRED": "A slug is required.",
+    "FALLBACK_REQUIRED": "The English translation can't be removed while this is published.",
+    "FALLBACK_INCOMPLETE": "The English translation is incomplete (missing: {missing}).",
+    "SCHEDULE_IN_PAST": "The scheduled time must be in the future.",
+    "INVALID_REFERENCE": "A referenced item doesn't exist or has the wrong type.",
+    "UNKNOWN_LOCALE": "Unknown language.",
+    "MISSING_FIELDS": "Some required fields are missing.",
+    "INVALID_SOCIAL": "The link for \"{key}\" is not allowed or not a valid https URL."
+}

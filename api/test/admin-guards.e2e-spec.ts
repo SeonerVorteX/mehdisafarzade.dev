@@ -83,12 +83,12 @@ describe('admin guard coverage (e2e)', () => {
     it('every @AdminAuth route rejects a gated but anonymous caller with 401', async () => {
         const anon = new AdminClient(app);
         for (const r of routes.filter((x) => x.realm === 'auth')) {
-            const res =
-                r.method === 'get'
-                    ? await anon.get(r.path.replace('/v1/admin', ''))
-                    : r.method === 'delete'
-                      ? await anon.delete(r.path.replace('/v1/admin', ''))
-                      : await anon.post(r.path.replace('/v1/admin', ''));
+            const path = r.path.replace('/v1/admin', '');
+            const send = { get: anon.get, post: anon.post, put: anon.put, patch: anon.patch, delete: anon.delete }[
+                r.method as 'get' | 'post' | 'put' | 'patch' | 'delete'
+            ];
+            if (!send) throw new Error(`no client method for ${r.method} ${r.path}`);
+            const res = await send.call(anon, path);
             expect({ route: `${r.method} ${r.path}`, status: res.status }).toEqual({
                 route: `${r.method} ${r.path}`,
                 status: 401,

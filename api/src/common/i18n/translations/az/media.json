@@ -1,0 +1,8 @@
+{
+    "NOT_FOUND": "Fayl tapılmadı.",
+    "TYPE_NOT_ALLOWED": "Bu fayl növünə icazə verilmir.",
+    "TOO_LARGE": "Fayl çox böyükdür (maks. {max} MB).",
+    "NOT_UPLOADED": "Fayl hələ yüklənməyib.",
+    "TYPE_MISMATCH": "Faylın məzmunu növünə uyğun gəlmir (aşkarlandı: {detected}).",
+    "IN_USE": "Fayl hələ {count} yerdə istifadə olunur."
+}

@@ -80,6 +80,18 @@ export class AdminClient {
         return res;
     }
 
+    async put(path: string, body?: object) {
+        const res = await this.decorate(request(this.app.getHttpServer()).put(`/v1/admin${path}`)).send(body ?? {});
+        this.jar.absorb(res);
+        return res;
+    }
+
+    async patch(path: string, body?: object) {
+        const res = await this.decorate(request(this.app.getHttpServer()).patch(`/v1/admin${path}`)).send(body ?? {});
+        this.jar.absorb(res);
+        return res;
+    }
+
     async delete(path: string, opts: { csrf?: boolean; origin?: string | null } = {}) {
         const res = await this.decorate(request(this.app.getHttpServer()).delete(`/v1/admin${path}`), opts);
         this.jar.absorb(res);

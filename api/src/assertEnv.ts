@@ -63,6 +63,11 @@ export const ENV_RULES: Record<string, Rule> = {
     // Fail closed: required and must parse in production. Dev/test default: loopback.
     ADMIN_TRUSTED_SOURCES: { prodRequired: true, kind: 'ips' },
 
+    // Content → web revalidation webhook and draft previews (shared with the web app).
+    WEB_REVALIDATE_URLS: { prodRequired: true, kind: 'string' },
+    REVALIDATE_SECRET: { prodRequired: true, kind: 'secret', min: 32 },
+    PREVIEW_SECRET: { prodRequired: true, kind: 'secret', min: 32 },
+
     // Admin realm (Phase 3)
     ADMIN_JWT_SECRET: { required: true, kind: 'secret', min: 32 },
     ADMIN_PENDING_JWT_SECRET: { required: true, kind: 'secret', min: 32 },

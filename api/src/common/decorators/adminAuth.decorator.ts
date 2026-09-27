@@ -1,4 +1,12 @@
-import { applyDecorators, createParamDecorator, SetMetadata, UseGuards, type ExecutionContext } from '@nestjs/common';
+import {
+    applyDecorators,
+    createParamDecorator,
+    SetMetadata,
+    UseGuards,
+    UseInterceptors,
+    type ExecutionContext,
+} from '@nestjs/common';
+import { AuditInterceptor } from '../interceptors/audit.interceptor';
 import type { AdminPrincipal, AdminRequest } from 'src/api/admin/auth/auth.types';
 import { AdminCsrfGuard, AdminOriginGuard } from '../guards/adminCsrf.guard';
 import { AdminDeviceGuard } from '../guards/adminDevice.guard';
@@ -13,11 +21,13 @@ import { AdminJwtGuard } from '../guards/adminJwt.guard';
 export const ADMIN_REALM_KEY = 'adminRealm';
 export type AdminRealm = 'auth' | 'public';
 
-/** Authenticated admin API: gate device + access JWT (session + device bound) + CSRF on mutations. */
+/** Authenticated admin API: gate device + access JWT (session + device bound) + CSRF on mutations + audit. */
 export const AdminAuth = () =>
     applyDecorators(
         SetMetadata(ADMIN_REALM_KEY, 'auth' satisfies AdminRealm),
         UseGuards(AdminDeviceGuard, AdminJwtGuard, AdminCsrfGuard),
+        // Every successful authenticated mutation is written to the audit log (brief §6).
+        UseInterceptors(AuditInterceptor),
     );
 
 /** Pre-session admin routes (login, TOTP, refresh, pending): gate device + same-origin check on mutations. */

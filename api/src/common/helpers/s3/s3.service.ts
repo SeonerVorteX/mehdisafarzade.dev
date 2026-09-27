@@ -30,6 +30,10 @@ export class S3Service {
                   endpoint: S3.endpoint,
                   forcePathStyle: S3.forcePathStyle,
                   credentials: { accessKeyId: S3.accessKeyId, secretAccessKey: S3.secretAccessKey },
+                  // SDK ≥3.729 defaults to flexible checksums, which bakes the CRC32 of an EMPTY body
+                  // into presigned PUT URLs (every browser upload then fails with BadDigest).
+                  requestChecksumCalculation: 'WHEN_REQUIRED',
+                  responseChecksumValidation: 'WHEN_REQUIRED',
               })
             : null;
         if (!this.client) this.logger.warn('S3 is not configured: media endpoints will return 503');
@@ -53,7 +57,8 @@ export class S3Service {
                 ContentType: contentType,
                 ContentLength: contentLength,
             }),
-            { expiresIn },
+            // Bind the declared type and size into the signature: the browser can't swap either.
+            { expiresIn, signableHeaders: new Set(['content-type', 'content-length']) },
         );
     }
 

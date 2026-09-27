@@ -49,6 +49,9 @@ describe('validateEnv', () => {
             MAIL_FROM: 'x <no-reply@example.com>',
             CONTACT_NOTIFY_TO: 'me@example.com',
             IP_HASH_PEPPER: 'q'.repeat(40),
+            WEB_REVALIDATE_URLS: 'http://10.231.0.21:3000/api/revalidate',
+            REVALIDATE_SECRET: 'r'.repeat(40),
+            PREVIEW_SECRET: 'v'.repeat(40),
         };
 
         it('refuses to start in production when it is missing', () => {
