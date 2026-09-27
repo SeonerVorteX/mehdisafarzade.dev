@@ -27,7 +27,11 @@ function Invoke-GateCli([string[]]$GateArgs) {
         $out = & $shell @all 2>&1 | ForEach-Object { "$_" }
         $code = $LASTEXITCODE
     } finally { $ErrorActionPreference = $prev }
-    return [pscustomobject]@{ Code = $code; Output = ($out -join "`n") }
+    $text = $out -join "`n"
+    # pwsh 7 on Linux renders a child's error with ANSI colours and wraps it at the console
+    # width behind '     | ' gutters. Flat = no escapes, no gutters, no whitespace, for substring checks.
+    $flat = ($text -replace '\x1b\[[0-9;?]*[A-Za-z]', '' -replace '(?m)^\s*\|', '' -replace '\s+', '')
+    return [pscustomobject]@{ Code = $code; Output = $text; Flat = $flat }
 }
 
 function Invoke-InContainer([string]$Cmd) {
@@ -60,7 +64,7 @@ try {
     Write-Host '> device name validation (case-sensitive)'
     $r = Invoke-GateCli @('enroll', '-Device', 'LAPTOP', '-PrintUrl', '-TimeoutSec', '5')
     Test-Case 'enroll -Device LAPTOP is rejected' ($r.Code -ne 0) $r.Output
-    Test-Case '...with a lowercase explanation' ($r.Output -match 'lowercase' -and $r.Output -match "Did you mean 'laptop'") $r.Output
+    Test-Case '...with a lowercase explanation' ($r.Flat -match 'lowercase' -and $r.Flat.Contains("Didyoumean'laptop'")) $r.Output
     Test-Case '...and nothing was written' ((Invoke-InContainer 'cat /etc/nginx/device-gate/localhost.map 2>/dev/null | wc -l').Trim() -in @('0', ''))
 
     foreach ($bad in @('Pc', 'a b', 'x;rm', '-pc', 'with.dot', ('a' * 33))) {

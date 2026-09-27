@@ -68,7 +68,11 @@ cp "$src/snippets/device-gate.conf" "$src/snippets/portfolio-proxy.conf" "$work/
 cp "$src/sites-enabled/portfolio.conf" "$work/gate/sites-enabled/"
 
 # Generated in a container: identical in CI and on Windows (Git's openssl lacks a config file).
-docker run --rm -v "$(winpath "$work/gate/certs"):/out" alpine/openssl req -x509 -nodes -newkey rsa:2048 -days 2 \
+# On Linux the container must write as the invoking user: as root, the 0600 key is unreadable for
+# the (non-root) docker build context and nginx gets an empty key. Windows bind mounts ignore ownership.
+as_me=()
+command -v cygpath >/dev/null 2>&1 || as_me=(--user "$(id -u):$(id -g)")
+docker run --rm "${as_me[@]}" -v "$(winpath "$work/gate/certs"):/out" alpine/openssl req -x509 -nodes -newkey rsa:2048 -days 2 \
     -subj "/CN=mehdisafarzade.dev" -addext "subjectAltName=DNS:mehdisafarzade.dev,DNS:*.mehdisafarzade.dev" \
     -keyout /out/test.key -out /out/test.pem >/dev/null 2>&1
 cat >"$work/gate/snippets/portfolio-origin-tls.conf" <<'EOF'
