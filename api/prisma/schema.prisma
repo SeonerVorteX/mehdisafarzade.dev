@@ -472,7 +472,6 @@ model AdminUser {
   totpSecretEnc String?   @map("totp_secret_enc")
   /// null = TOTP not enrolled → no session may be issued (PLAN §0)
   totpEnabledAt DateTime? @map("totp_enabled_at")
-  googleSub     String?   @unique @map("google_sub")
   lastLoginAt   DateTime? @map("last_login_at")
   disabledAt    DateTime? @map("disabled_at")
   createdAt     DateTime  @default(now()) @map("created_at")

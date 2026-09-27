@@ -9,14 +9,7 @@
     "password": "Password",
     "submit": "Continue",
     "submitting": "Checking…",
-    "or": "or",
-    "google": "Continue with Google",
     "errors": {
-      "google_cancelled": "Google sign-in was cancelled.",
-      "google_denied": "This Google account is not allowed to sign in here.",
-      "google_state": "The Google sign-in expired or was tampered with. Please try again.",
-      "google_exchange": "Google sign-in failed. Please try again.",
-      "google_disabled": "Google sign-in is not configured.",
       "sessionExpired": "Your session has ended. Please sign in again."
     }
   },

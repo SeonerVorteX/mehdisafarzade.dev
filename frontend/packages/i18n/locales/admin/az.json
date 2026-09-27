@@ -9,14 +9,7 @@
     "password": "Şifrə",
     "submit": "Davam et",
     "submitting": "Yoxlanılır…",
-    "or": "və ya",
-    "google": "Google ilə davam et",
     "errors": {
-      "google_cancelled": "Google ilə giriş ləğv edildi.",
-      "google_denied": "Bu Google hesabı ilə burada daxil olmaq icazəli deyil.",
-      "google_state": "Google ilə girişin vaxtı bitib və ya dəyişdirilib. Yenidən cəhd edin.",
-      "google_exchange": "Google ilə giriş alınmadı. Yenidən cəhd edin.",
-      "google_disabled": "Google ilə giriş qurulmayıb.",
       "sessionExpired": "Sessiyanız bitdi. Yenidən daxil olun."
     }
   },

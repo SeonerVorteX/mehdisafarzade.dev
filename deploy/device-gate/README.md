@@ -1,6 +1,6 @@
 # Device gate
 
-`admin.mehdisafarzade.dev` answers **only** to browsers that hold an enrolled device cookie. nginx checks it before any admin page, asset (`/_next/*`), or admin API call (`/api/*`) is served. Everyone else gets a plain `404`, exactly like a path that doesn't exist. The admin panel still has its own login (password + TOTP, or Google + TOTP) behind the gate.
+`admin.mehdisafarzade.dev` answers **only** to browsers that hold an enrolled device cookie. nginx checks it before any admin page, asset (`/_next/*`), or admin API call (`/api/*`) is served. Everyone else gets a plain `404`, exactly like a path that doesn't exist. The admin panel still has its own login (email + password, then TOTP) behind the gate.
 
 - Enforced by `deploy/nginx/conf.d/device-gate.conf` (maps) and `deploy/nginx/snippets/device-gate.conf` (the check). Both are generic and can be reused for other sites.
 - Tested by `deploy/nginx/test/run.sh` (60 checks, runs in CI).

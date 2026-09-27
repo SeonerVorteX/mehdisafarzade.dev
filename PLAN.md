@@ -7,7 +7,7 @@ Status: **Phase 0 approved 2026-09-25** (decisions in §0). Branch `v2` is cut f
 | Topic | Decision |
 |---|---|
 | Admin session before TOTP | **None.** First login: password → forced TOTP enrollment → 10 single-use **recovery codes** shown once, stored as argon2 hashes → session. |
-| Google sign-in | Always followed by TOTP. Requires `email_verified`, email ∈ `ADMIN_GOOGLE_ALLOWLIST` **and** an existing, **active** (`disabledAt` null) `AdminUser`. No auto-provisioning. |
+| Google sign-in | **Removed (2026-09-27).** Admin login is email + password (argon2) → TOTP, behind the device gate, and nothing else. No OAuth client, no Google env vars, no `google_sub` column (migration `remove_admin_google_sub`), no `accounts.google.com` anywhere in the CSP. |
 | LinkedIn | `https://www.linkedin.com/in/mehdi-safarzade` |
 | Résumé | The 2026 GitHub PDF (en) is seeded; the Dec 2024 PDF is dropped. The 2026 résumé is the source for the experience timeline. |
 | GHCR | One `mehdisafarzade.dev-frontend` package with `web-*`/`admin-*` tags + **tag-aware retention** (§9.3). |
@@ -105,7 +105,7 @@ Versions come from Examination's `package.json` files, not guesses. Where Examin
 | Runtime | Node 22 (alpine) in Docker; Yarn 4.12.0 (frontend), 4.12.0 (api; Examination-api is 4.9.4, and a single version is simpler) |
 | Frontend | next ^16.1.6 (`proxy.ts` **at `src/proxy.ts`**), react/react-dom ^19.2.4, TS ^5 strict, turbo ^2.9.16, tailwindcss/@tailwindcss/postcss ^4.1, sass ^1.92, next-intl ^4.4, @tanstack/react-query ^5.90, react-hook-form ^7.75 + @hookform/resolvers ^5.2 + zod ^4.1, framer-motion ^12.23, dayjs ^1.11, clsx ^2.1, lucide-react ^1.8, react-hot-toast ^2.6, vitest |
 | Lint | ESLint 9 flat config (`eslint-config-next` matching Next 16), Prettier 3. Not `next lint`, which Next 16 removed. |
-| Backend | @nestjs/* **all ^11**, @nestjs/config + @nestjs/schedule at the versions compatible with Nest 11, prisma/@prisma/client ^6.18, ioredis (Examination's major), @nestjs/throttler ^6.5 + @nest-lab/throttler-storage-redis ^1.2, @nestjs/microservices ^11 + amqp-connection-manager ^4 + amqplib, @aws-sdk/client-s3 ^3.879 (+ `@aws-sdk/s3-request-presigner`), sharp ^0.34, @nestjs-modules/mailer ^2 + nodemailer ^7 + handlebars ^4.7, passport ^0.7 + passport-jwt + passport-google-oauth20, argon2 ^0.40, otplib ^12, nestjs-i18n ^10.5, class-validator/transformer, nest-winston + winston-daily-rotate-file, jest ^29 + supertest + pactum |
+| Backend | @nestjs/* **all ^11**, @nestjs/config + @nestjs/schedule at the versions compatible with Nest 11, prisma/@prisma/client ^6.18, ioredis (Examination's major), @nestjs/throttler ^6.5 + @nest-lab/throttler-storage-redis ^1.2, @nestjs/microservices ^11 + amqp-connection-manager ^4 + amqplib, @aws-sdk/client-s3 ^3.879 (+ `@aws-sdk/s3-request-presigner`), sharp ^0.34, @nestjs-modules/mailer ^2 + nodemailer ^7 + handlebars ^4.7, passport ^0.7 + passport-jwt, argon2 ^0.40, otplib ^12, nestjs-i18n ^10.5, class-validator/transformer, nest-winston + winston-daily-rotate-file, jest ^29 + supertest + pactum |
 | Data | Postgres 18 (prod `db` container; dev/test containers also 18 to match prod), Redis 7, RabbitMQ 3.13 |
 
 New dependencies Examination doesn't use, each with its reason:
@@ -118,7 +118,6 @@ New dependencies Examination doesn't use, each with its reason:
 - `@nestjs/swagger`: dev-only OpenAPI (brief §6).
 - `helmet`: security headers on the API.
 - `file-type`: magic-byte upload validation (brief §6).
-- `google-auth-library`: already used by Examination-api. Used to verify Google ID tokens / PKCE exchange.
 - **Not added:** blurhash (sharp produces a 16px WebP LQIP data-URI instead), a transliteration package (a small az/ru → latin table, unit-tested, in `packages/config`), and any Turnstile React wrapper (a ~30-line component that loads the official script).
 
 Left out on purpose, as the brief allows: MongoDB/Mongoose, the Python worker, payments, fingerprinting, Discord webhooks, OpenAI/Anthropic SDKs, GA4/GTM, cookie-consent banner (Cloudflare Web Analytics is cookieless, and the only cookies are strictly necessary: theme, `preferredLang`, Turnstile).
@@ -166,7 +165,7 @@ Page / PageTranslation  (slug per locale, bodyMarkdown, seo)  // e.g. /uses
 Media           id, s3Key, mime, width?, height?, size, lqip?(data URI), variants Json, status(PENDING READY FAILED), uploadedById
 MediaTranslation  alt, caption                    @@unique([mediaId, locale])
 ContactMessage  name, email, subject?, message, budget?, projectType?, locale, status, ipHash, userAgent, repliedAt?, notifiedAt?, autoReplyAt?
-AdminUser       email(unique), passwordHash, totpSecretEnc?, totpEnabledAt?, googleSub?, lastLoginAt?, disabledAt?
+AdminUser       email(unique), passwordHash, totpSecretEnc?, totpEnabledAt?, lastLoginAt?, disabledAt?
 AdminRecoveryCode  id, adminId, codeHash(argon2), usedAt?          // 10 per enrollment, regenerated = old set deleted
 AdminSession    id, adminId, deviceName, familyId, refreshHash(unique), ip?, ua?, createdAt, lastUsedAt, expiresAt, revokedAt?, replacedById?
 AuditLog        id, adminId?, deviceName, action, entity, entityId?, diff Json?, ip?, at
@@ -187,7 +186,7 @@ Public (read-only; returns only `PUBLISHED` content; Redis-cached under `pf:cach
 Server-to-server only (HMAC-signed with `PREVIEW_SECRET`, rejected without the signature, never linked): `GET /v1/preview/{posts|projects|pages}/:id?locale`, used by web draft mode.
 
 Admin (`/v1/admin/*`, reachable **only** via `admin.mehdisafarzade.dev/api/*`, §8):
-`auth/{login, totp/setup, totp/enable, totp/verify, refresh, logout, logout-all, me, sessions, google, google/callback}` · CRUD + `publish|unpublish|schedule|archive` for `posts`, `projects`, `experience`, `education`, `pages`; CRUD + `reorder` for `skills`, `tags`, projects, experience · `media/{presign, :id/finalize, :id (PATCH alt/caption), :id/usage, :id (DELETE → 409 if in use)}` · `messages` list/detail/status/`export.csv` · `settings/profile`, `settings/resume/:locale` · `translations/report` · `revalidate/all` · `audit` · `stats`.
+`auth/{login, totp/setup, totp/enable, totp/verify, refresh, logout, logout-all, me, pending, sessions}` · CRUD + `publish|unpublish|schedule|archive` for `posts`, `projects`, `experience`, `education`, `pages`; CRUD + `reorder` for `skills`, `tags`, projects, experience · `media/{presign, :id/finalize, :id (PATCH alt/caption), :id/usage, :id (DELETE → 409 if in use)}` · `messages` list/detail/status/`export.csv` · `settings/profile`, `settings/resume/:locale` · `translations/report` · `revalidate/all` · `audit` · `stats`.
 
 Swagger at `/v1/docs` in dev only. `packages/api/types.ts` is **hand-maintained** (Examination style), and an API e2e test snapshots the OpenAPI schema so contract drift fails CI.
 
@@ -293,13 +292,13 @@ nginx runs on the host, so "over the Docker network" means the loopback-publishe
   ```
   The harness in §10.4 tests this exact ordering.
 - **Found by the harness (Phase 3):** (1) `map_hash_bucket_size 128;` is required in `conf.d/device-gate.conf` (the `host:token` keys exceed the 64-byte default and nginx refuses to load; the live `nginx.conf` doesn't set it, checked with `nginx -T`). (2) The unlock redirect uses `absolute_redirect off` so it works on non-443 ports. (3) Keep `device-gate.conf` loading before any server that includes the snippet (it defines the `dg_enroll` log format).
-- **Local dev gate:** `deploy/nginx/dev/` runs the same two files in nginx:1.24 on `https://localhost:8443` (plain `localhost` because Google OAuth accepts only `localhost` as a non-public redirect host). `gate.ps1 -Target local` manages it.
+- **Local dev gate:** `deploy/nginx/dev/` runs the same two files in nginx:1.24 on `https://localhost:8443` (plain `localhost`: no hosts-file entry needed, and browsers treat it as a secure context). `gate.ps1 -Target local` manages it.
 - The **404 body** is nginx's default 404 page, the same as any unknown path, so it gives nothing away. `server_tokens off` is already global (verify in Phase 9).
 - **File permissions:** `/etc/nginx/device-gate/` is `0700 root`, and files are `0600 root`. The nginx master reads includes as root, so that's fine.
 
 ### 8.3 Admin auth (behind the gate)
 
-Mirrors `examination-api/src/api/admin/auth/*` (argon2, otplib, `AdminOtpLockoutService`, pending-token step, Google realm), with the improvements agreed in Phase 0.
+Mirrors `examination-api/src/api/admin/auth/*` (argon2, otplib, `AdminOtpLockoutService`, pending-token step; Examination's Google admin login is deliberately NOT mirrored), with the improvements agreed in Phase 0.
 
 Password flow:
 1. `POST /api/auth/login {email, password}` → argon2 verify (constant-time dummy hash when the email is unknown).
@@ -309,11 +308,6 @@ Password flow:
 3. Session = access JWT (`__Host-pf_at`, 10 min, `sub`, `sid`, `dev`) + refresh token (`__Host-pf_rt`, opaque 256-bit, 14 days sliding, **rotated on every use** with reuse detection: presenting a replaced token revokes the whole `familyId`). Both are httpOnly, Secure, `SameSite=Strict`, `Path=/`, host-only on the admin host.
 4. **Device binding:** `AdminSession.deviceName` = `X-Admin-Device` at login. Refresh and every guarded request must present the same device, otherwise 401 and the session is revoked. A token stolen from the laptop is useless when replayed as `pc`.
 
-Google flow (callback on the admin host, so it goes through the gate):
-- `GET /api/auth/google` → state + PKCE verifier in `__Host-pf_oauth` (httpOnly, **Lax**, 10 min, because the callback is a cross-site navigation) → Google.
-- `GET /api/auth/google/callback` → verify state/PKCE, `email_verified === true`, **email ∈ `ADMIN_GOOGLE_ALLOWLIST` (env) AND matches an existing, active `AdminUser`**. No auto-provisioning. Links `googleSub` on first use, and after that the `sub` must match. An admin without TOTP enrolled who signs in with Google is sent into the same forced enrollment.
-- Then the **same TOTP step** as password login (Examination does this too once OTP is verified). Examination passes the pending token in the redirect query string (`?pending=…`). Here it goes in the `__Host-pf_pending` cookie instead.
-- **SameSite=Strict pitfall:** cookies set in the callback aren't sent on a redirect chain that started cross-site (from accounts.google.com). So the callback answers with a tiny same-origin HTML page (meta refresh to `/login/totp`, CSP-hashed) instead of a 302. That makes the next navigation same-site.
 
 CSRF on cookie-authed mutations: (a) `SameSite=Strict`, (b) the API rejects any non-GET under `/v1/admin` whose `Origin` (falling back to `Sec-Fetch-Site`) isn't the admin origin, and (c) a double-submit token (`__Host-pf_csrf`, readable by JS, echoed in `X-CSRF-Token`). (b) and (c) are both enforced; each is cheap.
 
@@ -460,7 +454,7 @@ Ordered: (1) SSL/TLS → Full (strict), create an Origin Certificate for `mehdis
 | 0 | Read, ask, plan, VPS read-only inspection | ☑ you approve this plan + answer §17 |
 | 1 | Move the legacy site to `legacy/`. Scaffold `frontend/` (Yarn 4 + Turbo, packages, two empty apps) and `api/` (Nest 11 skeleton). Shared configs, dev compose (`portfolio-*` containers/ports), root + per-folder `CLAUDE.md`/`AGENTS.md`, `ci.yml`, `.gitignore` rules for maps/.local | `yarn ci` green in both |
 | 2 | API foundation: `assertEnv`, envelope/interceptor/filter, nestjs-i18n (az/en/ru), Prisma schema + first migration + idempotent seed, Redis, RMQ, S3, mailer, logger, health, throttler | migrate + seed run; e2e health passes |
-| 3 | Admin auth realm (password, forced TOTP enrollment + recovery codes, Google, refresh rotation, device binding, CSRF, lockout, audit) + route-enumerating guard e2e. `deploy/nginx` gate files + **gate test harness** + `gate.ps1` (with `-Target local`) + README. A **local gate container** (`portfolio-gate-dev`, nginx 1.24, same snippet/maps) fronts the dev admin app + API | ☑ you run the stack locally, enroll your browser through the local gate with `gate.ps1 enroll -Target local`, and log in to a bare admin shell with password + TOTP (+ Google if configured) |
+| 3 | Admin auth realm (password, forced TOTP enrollment + recovery codes, refresh rotation, device binding, CSRF, lockout, audit) + route-enumerating guard e2e. `deploy/nginx` gate files + **gate test harness** + `gate.ps1` (with `-Target local`) + README. A **local gate container** (`portfolio-gate-dev`, nginx 1.24, same snippet/maps) fronts the dev admin app + API | ☑ you run the stack locally, enroll your browser through the local gate with `gate.ps1 enroll -Target local`, and log in to a bare admin shell with password + TOTP |
 | 4 | Content APIs, public + admin, media pipeline, scheduling (with lock), revalidation webhook, preview endpoints | e2e for CRUD + publish rules |
 | 5 | Design system + `/_design`, i18n routing, theme, web layout shell | ☑ you approve the look |
 | 6 | Web pages, SEO, OG, sitemap/feeds, ⌘K, Turnstile widget, analytics beacon | Lighthouse ≥ 95 locally; Playwright smoke green |

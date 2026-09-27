@@ -101,7 +101,7 @@ export async function resetAdminState(app: TestApp): Promise<void> {
 
 export async function createAdmin(
     app: TestApp,
-    opts: { totp?: boolean; email?: string; disabled?: boolean; googleSub?: string } = {},
+    opts: { totp?: boolean; email?: string; disabled?: boolean } = {},
 ): Promise<{ id: string; email: string; secret?: string; recoveryCodes?: string[] }> {
     const prisma = app.get(PrismaService);
     const totp = app.get(TotpService);
@@ -114,7 +114,6 @@ export async function createAdmin(
             totpSecretEnc: secret ? totp.seal(secret) : null,
             totpEnabledAt: secret ? new Date() : null,
             disabledAt: opts.disabled ? new Date() : null,
-            googleSub: opts.googleSub ?? null,
         },
     });
     let recoveryCodes: string[] | undefined;

@@ -67,12 +67,4 @@ export const ADMIN_AUTH = {
     jwtSecret: env.ADMIN_JWT_SECRET ?? '',
     pendingJwtSecret: env.ADMIN_PENDING_JWT_SECRET ?? '',
     totpEncKey: env.TOTP_ENC_KEY ?? '',
-    google: {
-        clientId: env.ADMIN_GOOGLE_CLIENT_ID ?? '',
-        clientSecret: env.ADMIN_GOOGLE_CLIENT_SECRET ?? '',
-        allowlist: list(env.ADMIN_GOOGLE_ALLOWLIST).map((e) => e.toLowerCase()),
-        get enabled(): boolean {
-            return !!(this.clientId && this.clientSecret);
-        },
-    },
 };

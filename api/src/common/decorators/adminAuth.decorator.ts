@@ -11,7 +11,7 @@ import { AdminJwtGuard } from '../guards/adminJwt.guard';
  * admin route has no realm marker or answers without the required checks.
  */
 export const ADMIN_REALM_KEY = 'adminRealm';
-export type AdminRealm = 'auth' | 'public' | 'navigation';
+export type AdminRealm = 'auth' | 'public';
 
 /** Authenticated admin API: gate device + access JWT (session + device bound) + CSRF on mutations. */
 export const AdminAuth = () =>
@@ -20,16 +20,12 @@ export const AdminAuth = () =>
         UseGuards(AdminDeviceGuard, AdminJwtGuard, AdminCsrfGuard),
     );
 
-/** Pre-session admin routes (login, TOTP, refresh): gate device + same-origin check on mutations. */
+/** Pre-session admin routes (login, TOTP, refresh, pending): gate device + same-origin check on mutations. */
 export const AdminPublic = () =>
     applyDecorators(
         SetMetadata(ADMIN_REALM_KEY, 'public' satisfies AdminRealm),
         UseGuards(AdminDeviceGuard, AdminOriginGuard),
     );
-
-/** Top-level browser navigations (Google OAuth start/callback): gate device only. */
-export const AdminNavigation = () =>
-    applyDecorators(SetMetadata(ADMIN_REALM_KEY, 'navigation' satisfies AdminRealm), UseGuards(AdminDeviceGuard));
 
 export const CurrentAdmin = createParamDecorator((_: unknown, ctx: ExecutionContext): AdminPrincipal => {
     // passport's global `Express.User` augmentation makes `req.user` loosely typed; narrow it explicitly.

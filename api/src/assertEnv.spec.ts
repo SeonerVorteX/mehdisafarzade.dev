@@ -39,16 +39,4 @@ describe('validateEnv', () => {
             /ADMIN_JWT_SECRET must be at least/,
         );
     });
-
-    it('requires both Google OAuth values together', () => {
-        expect(validateEnv({ ...base, ADMIN_GOOGLE_CLIENT_ID: 'x.apps.googleusercontent.com' }).join()).toMatch(
-            /must be set together/,
-        );
-    });
-
-    it('validates the Google allowlist emails', () => {
-        expect(validateEnv({ ...base, ADMIN_GOOGLE_ALLOWLIST: 'me@example.com, nope' }).join()).toMatch(
-            /invalid email "nope"/,
-        );
-    });
 });

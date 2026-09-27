@@ -1,27 +1,18 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { APIError, applyApiErrorsToForm } from "@portfolio/api";
-import { adminPaths, type AdminAuthConfig, type AdminLoginResponse } from "@portfolio/api/admin";
+import { adminPaths, type AdminLoginResponse } from "@portfolio/api/admin";
 import { AuthCard } from "@/components/AuthCard/AuthCard";
 import { Field } from "@/components/Field/Field";
-import { ADMIN_API_BASE } from "@/config/env";
 import { adminFetch } from "@/lib/adminClient";
 import { safeNextPath } from "@/lib/session";
 
-const KNOWN_ERRORS = [
-  "google_cancelled",
-  "google_denied",
-  "google_state",
-  "google_exchange",
-  "google_disabled",
-  "sessionExpired",
-] as const;
+const KNOWN_ERRORS = ["sessionExpired"] as const;
 
 interface LoginPageProps {
   error?: string;
@@ -39,10 +30,6 @@ export function LoginPage({ error, next }: LoginPageProps) {
   type Values = z.infer<typeof schema>;
 
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { email: "", password: "" } });
-  const config = useQuery({
-    queryKey: ["admin-auth-config"],
-    queryFn: () => adminFetch<AdminAuthConfig>(adminPaths.auth.config).then((r) => r.data),
-  });
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {
@@ -89,17 +76,6 @@ export function LoginPage({ error, next }: LoginPageProps) {
           {form.formState.isSubmitting ? t("login.submitting") : t("login.submit")}
         </button>
       </form>
-      {config.data?.googleEnabled ? (
-        <>
-          <div className="auth__divider">
-            <span>{t("login.or")}</span>
-          </div>
-          {/* A full navigation (not fetch): the OAuth round-trip must be top-level. */}
-          <a className="button button--secondary" href={`${ADMIN_API_BASE}${adminPaths.auth.google}`}>
-            {t("login.google")}
-          </a>
-        </>
-      ) : null}
     </AuthCard>
   );
 }

@@ -1,34 +1,20 @@
 import request from 'supertest';
-import { GoogleAuthService, type GoogleIdentity } from 'src/api/admin/auth/google.service';
 import { ADMIN_COOKIES } from 'src/common/constants/admin';
 import { PrismaService } from 'src/common/helpers/prisma/prisma.service';
 import { createTestApp, type TestApp } from './utils/app';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, AdminClient, createAdmin, resetAdminState, signIn, totpAt } from './utils/admin';
-
-/** Google is faked at the service boundary; everything else (state, cookies, allowlist, TOTP) is real. */
-const fakeGoogle = {
-    identity: { sub: 'google-sub-1', email: ADMIN_EMAIL, emailVerified: true } as GoogleIdentity,
-    enabled: true,
-    redirectUri: 'https://localhost:8443/api/auth/google/callback',
-    createPkce: () => Promise.resolve({ verifier: 'v'.repeat(43), challenge: 'c'.repeat(43) }),
-    authUrl: (state: string) => `https://accounts.google.com/o/oauth2/v2/auth?state=${state}`,
-    exchange: () => Promise.resolve(fakeGoogle.identity),
-};
 
 describe('admin auth (e2e)', () => {
     let app: TestApp;
     let prisma: PrismaService;
 
     beforeAll(async () => {
-        app = await createTestApp({
-            override: (b) => b.overrideProvider(GoogleAuthService).useValue(fakeGoogle),
-        });
+        app = await createTestApp();
         prisma = app.get(PrismaService);
     });
 
     beforeEach(async () => {
         await resetAdminState(app);
-        fakeGoogle.identity = { sub: 'google-sub-1', email: ADMIN_EMAIL, emailVerified: true };
     });
 
     afterAll(async () => {
@@ -290,71 +276,20 @@ describe('admin auth (e2e)', () => {
         });
     });
 
-    describe('Google sign-in', () => {
-        async function startGoogle(c: AdminClient) {
-            const start = await c.get('/auth/google', { origin: null });
-            expect(start.status).toBe(302);
-            const state = new URL(start.headers.location).searchParams.get('state')!;
-            expect(c.jar.raw.get(ADMIN_COOKIES.OAUTH)).toMatch(/SameSite=Lax/i);
-            return state;
-        }
+    describe('password + TOTP is the only way in', () => {
+        it.each(['/auth/google', '/auth/google/callback?state=x&code=y', '/auth/config'])(
+            'GET %s does not exist (Google sign-in removed)',
+            async (path) => {
+                const c = new AdminClient(app);
+                expect((await c.get(path, { origin: null })).status).toBe(404);
+            },
+        );
 
-        it('allowlisted active admin → TOTP step (never a direct session)', async () => {
-            const { secret } = await createAdmin(app, { totp: true });
-            const c = new AdminClient(app);
-            const state = await startGoogle(c);
-            const cb = await c.get(`/auth/google/callback?state=${state}&code=abc`, { origin: null });
-            expect(cb.status).toBe(200);
-            expect(cb.text).toContain('url=/login/totp');
-            expect(c.jar.get(ADMIN_COOKIES.ACCESS)).toBeUndefined();
-            expect((await c.get('/auth/pending')).body.data).toEqual({ step: 'totp', via: 'google' });
-            expect((await c.post('/auth/totp/verify', { code: totpAt(secret!, 1) })).status).toBe(200);
-            expect((await c.get('/auth/me')).body.data.googleLinked).toBe(true);
-        });
-
-        it('a not-yet-enrolled admin is sent to enrollment', async () => {
-            await createAdmin(app);
-            const c = new AdminClient(app);
-            const state = await startGoogle(c);
-            const cb = await c.get(`/auth/google/callback?state=${state}&code=abc`, { origin: null });
-            expect(cb.text).toContain('url=/login/totp-setup');
-        });
-
-        it.each([
-            ['not in the allowlist', { email: 'someone@else.test' }, 'google_denied'],
-            ['unverified email', { emailVerified: false }, 'google_denied'],
-        ])('denies %s', async (_label, patch, error) => {
-            await createAdmin(app, { totp: true });
-            fakeGoogle.identity = { ...fakeGoogle.identity, ...patch };
-            const c = new AdminClient(app);
-            const state = await startGoogle(c);
-            const cb = await c.get(`/auth/google/callback?state=${state}&code=abc`, { origin: null });
-            expect(cb.text).toContain(`/login?error=${error}`);
-            expect(c.jar.get(ADMIN_COOKIES.PENDING)).toBeUndefined();
-        });
-
-        it('denies an allowlisted email with no admin account (no auto-provisioning)', async () => {
-            const c = new AdminClient(app);
-            const state = await startGoogle(c);
-            const cb = await c.get(`/auth/google/callback?state=${state}&code=abc`, { origin: null });
-            expect(cb.text).toContain('/login?error=google_denied');
-            expect(await prisma.adminUser.count()).toBe(0);
-        });
-
-        it('denies a Google account whose sub differs from the linked one', async () => {
-            await createAdmin(app, { totp: true, googleSub: 'someone-else' });
-            const c = new AdminClient(app);
-            const state = await startGoogle(c);
-            const cb = await c.get(`/auth/google/callback?state=${state}&code=abc`, { origin: null });
-            expect(cb.text).toContain('/login?error=google_denied');
-        });
-
-        it('rejects a forged state', async () => {
+        it('the pending step carries no sign-in method', async () => {
             await createAdmin(app, { totp: true });
             const c = new AdminClient(app);
-            await startGoogle(c);
-            const cb = await c.get('/auth/google/callback?state=forged&code=abc', { origin: null });
-            expect(cb.text).toContain('/login?error=google_state');
+            await c.post('/auth/login', { email: ADMIN_EMAIL, password: ADMIN_PASSWORD });
+            expect((await c.get('/auth/pending')).body.data).toEqual({ step: 'totp' });
         });
     });
 });

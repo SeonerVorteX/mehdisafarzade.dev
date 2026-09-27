@@ -30,11 +30,3 @@ export function setPendingCookie(res: Response, token: string): void {
 export function clearPendingCookie(res: Response): void {
     res.clearCookie(ADMIN_COOKIES.PENDING, { secure: true, path: '/', sameSite: 'strict' });
 }
-
-export function setOauthCookie(res: Response, value: string): void {
-    res.cookie(ADMIN_COOKIES.OAUTH, value, hostOnly('lax', true, ADMIN_TTL.OAUTH_S));
-}
-
-export function clearOauthCookie(res: Response): void {
-    res.clearCookie(ADMIN_COOKIES.OAUTH, { secure: true, path: '/', sameSite: 'lax' });
-}

@@ -12,15 +12,12 @@ export const ADMIN_COOKIES = {
     CSRF: '__Host-pf_csrf',
     /** "password OK, TOTP pending" JWT (httpOnly, SameSite=Strict) */
     PENDING: '__Host-pf_pending',
-    /** Google OAuth state + PKCE verifier (httpOnly, SameSite=Lax: the callback is a cross-site navigation) */
-    OAUTH: '__Host-pf_oauth',
 } as const;
 
 export const ADMIN_TTL = {
     ACCESS_S: 10 * 60,
     REFRESH_S: 14 * 24 * 60 * 60,
     PENDING_S: 5 * 60,
-    OAUTH_S: 10 * 60,
     /** a rotated refresh token presented again within this window is a benign tab race, not theft */
     REFRESH_RACE_GRACE_MS: 15 * 1000,
     /** cache of "session sid is valid" checks done by the access guard */

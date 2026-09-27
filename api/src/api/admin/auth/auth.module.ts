@@ -5,7 +5,6 @@ import { AdminJwtStrategy } from 'src/common/strategies/adminJwt.strategy';
 import { AdminLockoutService } from './adminLockout.service';
 import { AdminAuthController } from './auth.controller';
 import { AdminAuthService } from './auth.service';
-import { GoogleAuthService } from './google.service';
 import { SessionService } from './session.service';
 import { TotpService } from './totp.service';
 
@@ -13,14 +12,7 @@ import { TotpService } from './totp.service';
     // Secrets are passed per sign/verify call (access vs pending tokens use different keys).
     imports: [PassportModule, JwtModule.register({})],
     controllers: [AdminAuthController],
-    providers: [
-        AdminAuthService,
-        SessionService,
-        TotpService,
-        AdminLockoutService,
-        GoogleAuthService,
-        AdminJwtStrategy,
-    ],
+    providers: [AdminAuthService, SessionService, TotpService, AdminLockoutService, AdminJwtStrategy],
     exports: [SessionService],
 })
 export class AdminAuthModule {}

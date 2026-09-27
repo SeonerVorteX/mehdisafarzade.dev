@@ -49,12 +49,10 @@ dev/seaweedfs-s3.json     dev-only S3 credentials for portfolio-s3-dev
 - **Every admin handler carries exactly one realm decorator** (`common/decorators/adminAuth.decorator.ts`). `test/admin-guards.e2e-spec.ts` discovers all admin routes from Nest metadata and fails CI on a missing decorator or on any route that answers without the required checks.
   - `@AdminAuth()`: `AdminDeviceGuard` (X-Admin-Device from nginx, else **404**) → `AdminJwtGuard` (Passport `admin-jwt`: `__Host-pf_at` cookie, session `sid` still valid, token device = request device) → `AdminCsrfGuard` (unsafe methods: Origin = `ADMIN_ORIGIN` + double-submit `__Host-pf_csrf` / `X-CSRF-Token`).
   - `@AdminPublic()`: device + same-origin check (login, TOTP, refresh, config, pending).
-  - `@AdminNavigation()`: device only (Google OAuth start/callback, which are top-level navigations).
-- Sign-in state machine (`auth.service.ts`): password or Google (allowlist AND an active admin, `email_verified`, sub pinned) → `__Host-pf_pending` (5-min JWT, own secret, device-bound) → TOTP setup + enable (the first time, which returns 10 argon2-hashed recovery codes once) or TOTP/recovery-code verify → session. **No session before TOTP.**
+- Sign-in state machine (`auth.service.ts`): email + password (argon2; the only first factor, Google was removed) → `__Host-pf_pending` (5-min JWT, own secret, device-bound) → TOTP setup + enable (the first time, which returns 10 argon2-hashed recovery codes once) or TOTP/recovery-code verify → session. **No session before TOTP.**
 - Sessions (`session.service.ts`): 10-min access JWT + opaque rotating refresh token (sha256 in DB). Replaying a rotated token revokes the whole family, except within a 15 s tab-race grace. A device mismatch on refresh also revokes the family. Access checks are Redis-cached for 60 s, and revocation deletes the cache keys.
 - TOTP secrets are AES-256-GCM sealed (`common/utils/secretBox.util.ts`, key `TOTP_ENC_KEY`). Codes are burned in Redis for 95 s (no replay). Per-account lockouts (`adminLockout.service.ts`): TOTP 5/15 min, password 10/15 min per email.
 - `AuditService` records auth events (success, failures, recovery-code use, refresh reuse, logout) with device + IP. Diffs are redacted.
-- Google is done with `google-auth-library` (code + PKCE + ID-token verification). The callback answers with a same-origin HTML bounce page rather than a 302, because SameSite=Strict cookies aren't sent on a redirect chain that began cross-site.
 
 ## Services and data
 

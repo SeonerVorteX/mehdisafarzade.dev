@@ -62,9 +62,6 @@ export const ENV_RULES: Record<string, Rule> = {
     ADMIN_JWT_SECRET: { required: true, kind: 'secret', min: 32 },
     ADMIN_PENDING_JWT_SECRET: { required: true, kind: 'secret', min: 32 },
     TOTP_ENC_KEY: { required: true, kind: 'secret', min: 44 },
-    ADMIN_GOOGLE_CLIENT_ID: { kind: 'string' },
-    ADMIN_GOOGLE_CLIENT_SECRET: { kind: 'secret', min: 16 },
-    ADMIN_GOOGLE_ALLOWLIST: { kind: 'emails' },
 };
 
 const LOCAL_HOSTS = /^(localhost|127\.0\.0\.1|::1|\[::1\]|portfolio-[a-z0-9-]+)$/i;
@@ -131,11 +128,6 @@ export function validateEnv(env: NodeJS.ProcessEnv): string[] {
                 /* reported above */
             }
         }
-    }
-
-    // Both Google values or neither.
-    if (!!env.ADMIN_GOOGLE_CLIENT_ID !== !!env.ADMIN_GOOGLE_CLIENT_SECRET) {
-        errors.push('ADMIN_GOOGLE_CLIENT_ID and ADMIN_GOOGLE_CLIENT_SECRET must be set together');
     }
 
     return errors;

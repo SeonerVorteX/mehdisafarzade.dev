@@ -14,4 +14,4 @@ export type AdminRequest = Request & { user?: AdminPrincipal; adminDevice?: stri
 export type AccessTokenPayload = { sub: string; sid: string; dev: string };
 
 export type PendingPurpose = 'setup' | 'verify';
-export type PendingTokenPayload = { sub: string; purpose: PendingPurpose; dev: string; via: 'password' | 'google' };
+export type PendingTokenPayload = { sub: string; purpose: PendingPurpose; dev: string };

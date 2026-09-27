@@ -5,7 +5,6 @@
  */
 export const adminPaths = {
   auth: {
-    config: "/auth/config",
     pending: "/auth/pending",
     login: "/auth/login",
     totpSetup: "/auth/totp/setup",
@@ -17,7 +16,6 @@ export const adminPaths = {
     me: "/auth/me",
     sessions: "/auth/sessions",
     session: (id: string) => `/auth/sessions/${encodeURIComponent(id)}`,
-    google: "/auth/google",
   },
 } as const;
 
@@ -30,8 +28,7 @@ export const ADMIN_COOKIE = {
 
 export type LoginStep = "totp" | "totp-setup";
 
-export type AdminAuthConfig = { googleEnabled: boolean };
-export type AdminPending = { step: LoginStep | null; via: "password" | "google" | null };
+export type AdminPending = { step: LoginStep | null };
 export type AdminLoginResponse = { step: LoginStep };
 export type AdminTotpSetup = { otpauthUrl: string; secret: string; account: string };
 export type AdminTotpEnable = { recoveryCodes: string[] };
@@ -44,7 +41,6 @@ export type AdminMe = {
   sessionId: string;
   totpEnabledAt: string | null;
   lastLoginAt: string | null;
-  googleLinked: boolean;
   remainingRecoveryCodes: number;
 };
 

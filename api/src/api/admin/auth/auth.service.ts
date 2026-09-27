@@ -2,14 +2,13 @@ import { ForbiddenException, HttpException, HttpStatus, Injectable, Unauthorized
 import { JwtService } from '@nestjs/jwt';
 import type { AdminUser } from '@prisma/client';
 import * as argon from 'argon2';
-import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
 import { ADMIN_JWT, ADMIN_TTL } from 'src/common/constants/admin';
 import { ADMIN_AUTH } from 'src/common/constants/env';
 import { AuditService } from 'src/common/helpers/audit/audit.service';
 import { PrismaService } from 'src/common/helpers/prisma/prisma.service';
 import { AdminLockoutService } from './adminLockout.service';
 import type { AdminPrincipal, PendingPurpose, PendingTokenPayload } from './auth.types';
-import { GoogleAuthService } from './google.service';
 import { SessionService, type IssuedSession } from './session.service';
 import { looksLikeRecoveryCode, normalizeRecoveryCode, TotpService } from './totp.service';
 
@@ -24,10 +23,11 @@ const lockedError = () => new HttpException('i18n:auth.ACCOUNT_LOCKED', HttpStat
 /**
  * Admin sign-in state machine (PLAN §8.3, decisions in §0):
  *
- *   password ──┐                    ┌─ TOTP enrolled ────► pending(verify) ─► totp/verify ─┐
- *              ├─► active admin? ───┤                                                    ├─► session
- *   google ────┘  (+ allowlist)     └─ not enrolled ─────► pending(setup) ─► setup+enable┘   (+ recovery codes once)
+ *                                ┌─ TOTP enrolled ─► pending(verify) ─► totp/verify ──────┐
+ *   email + password ─► active? ───┤                                                       ├─► session
+ *                                └─ not enrolled ──► pending(setup) ─► setup + enable ───┘   (+ recovery codes once)
  *
+ * Password (argon2) is the only first factor (Google sign-in was removed, decision 2026-09-27).
  * No session of any kind exists before TOTP is enrolled and verified.
  */
 @Injectable()
@@ -38,7 +38,6 @@ export class AdminAuthService {
         private readonly sessions: SessionService,
         private readonly totp: TotpService,
         private readonly lockout: AdminLockoutService,
-        private readonly google: GoogleAuthService,
         private readonly audit: AuditService,
     ) {}
 
@@ -64,13 +63,13 @@ export class AdminAuthService {
             throw new UnauthorizedException('i18n:auth.INVALID_CREDENTIALS');
         }
         await this.lockout.clearPassword(email);
-        return this.startSecondFactor(admin, 'password', meta);
+        return this.startSecondFactor(admin, meta);
     }
 
-    private startSecondFactor(admin: AdminUser, via: 'password' | 'google', meta: ReqMeta) {
+    private startSecondFactor(admin: AdminUser, meta: ReqMeta) {
         const step: LoginStep = admin.totpEnabledAt ? 'totp' : 'totp-setup';
         const purpose: PendingPurpose = admin.totpEnabledAt ? 'verify' : 'setup';
-        const pending = this.jwt.sign({ sub: admin.id, purpose, dev: meta.device, via } satisfies PendingTokenPayload, {
+        const pending = this.jwt.sign({ sub: admin.id, purpose, dev: meta.device } satisfies PendingTokenPayload, {
             secret: ADMIN_AUTH.pendingJwtSecret,
             expiresIn: ADMIN_TTL.PENDING_S,
             issuer: ADMIN_JWT.ISSUER,
@@ -78,7 +77,7 @@ export class AdminAuthService {
             algorithm: 'HS256',
         });
         this.audit.log({
-            action: `auth.${via}_ok`,
+            action: 'auth.password_ok',
             entity: 'admin_user',
             entityId: admin.id,
             deviceName: meta.device,
@@ -163,7 +162,7 @@ export class AdminAuthService {
             deviceName: meta.device,
             ip: meta.ip,
         });
-        const issued = await this.finishLogin(admin, pending.via, meta);
+        const issued = await this.finishLogin(admin, meta);
         return { issued, recoveryCodes: codes };
     }
 
@@ -203,7 +202,7 @@ export class AdminAuthService {
                 ip: meta.ip,
             });
         }
-        const issued = await this.finishLogin(admin, pending.via, meta);
+        const issued = await this.finishLogin(admin, meta);
         const remainingRecoveryCodes = await this.prisma.adminRecoveryCode.count({
             where: { adminId: admin.id, usedAt: null },
         });
@@ -226,7 +225,7 @@ export class AdminAuthService {
         return false;
     }
 
-    private async finishLogin(admin: AdminUser, via: 'password' | 'google', meta: ReqMeta): Promise<IssuedSession> {
+    private async finishLogin(admin: AdminUser, meta: ReqMeta): Promise<IssuedSession> {
         const issued = await this.sessions.create(admin, meta.device, meta);
         await this.prisma.adminUser.update({ where: { id: admin.id }, data: { lastLoginAt: new Date() } });
         this.audit.log({
@@ -236,7 +235,7 @@ export class AdminAuthService {
             adminId: admin.id,
             deviceName: meta.device,
             ip: meta.ip,
-            diff: { via, sessionId: issued.session.id },
+            diff: { sessionId: issued.session.id },
         });
         return issued;
     }
@@ -286,51 +285,7 @@ export class AdminAuthService {
             sessionId: principal.sessionId,
             totpEnabledAt: admin.totpEnabledAt,
             lastLoginAt: admin.lastLoginAt,
-            googleLinked: !!admin.googleSub,
             remainingRecoveryCodes,
         };
-    }
-
-    // ── Google ──────────────────────────────────────────────────────────────
-
-    /** Returns the pending token for the next step, or an error code for the login page. */
-    async googleLogin(
-        state: { expected?: string; received?: string; verifier?: string },
-        code: string | undefined,
-        meta: ReqMeta,
-    ): Promise<{ ok: true; step: LoginStep; pending: string } | { ok: false; error: string }> {
-        const deny = (error: string, detail?: string) => {
-            this.audit.log({
-                action: 'auth.google_denied',
-                entity: 'admin_user',
-                deviceName: meta.device,
-                ip: meta.ip,
-                diff: { error, detail },
-            });
-            return { ok: false as const, error };
-        };
-        if (!this.google.enabled) return deny('google_disabled');
-        if (!state.expected || !state.received || !state.verifier || !code) return deny('google_state');
-        const a = Buffer.from(state.expected);
-        const b = Buffer.from(state.received);
-        if (a.length !== b.length || !timingSafeEqual(a, b)) return deny('google_state');
-
-        let identity;
-        try {
-            identity = await this.google.exchange(code, state.verifier);
-        } catch (err) {
-            return deny('google_exchange', (err as Error).message);
-        }
-        if (!identity.emailVerified) return deny('google_denied', 'email_not_verified');
-        if (!ADMIN_AUTH.google.allowlist.includes(identity.email)) return deny('google_denied', 'not_allowlisted');
-
-        const admin = await this.prisma.adminUser.findUnique({ where: { email: identity.email } });
-        if (!admin || admin.disabledAt) return deny('google_denied', 'no_active_admin');
-        if (admin.googleSub && admin.googleSub !== identity.sub) return deny('google_denied', 'sub_mismatch');
-        if (!admin.googleSub)
-            await this.prisma.adminUser.update({ where: { id: admin.id }, data: { googleSub: identity.sub } });
-
-        const { step, pending } = this.startSecondFactor(admin, 'google', meta);
-        return { ok: true, step, pending };
     }
 }

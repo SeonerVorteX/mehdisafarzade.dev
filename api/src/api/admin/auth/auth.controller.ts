@@ -8,37 +8,20 @@ import {
     NotFoundException,
     Param,
     Post,
-    Query,
     Req,
     Res,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
-import { randomBytes } from 'node:crypto';
 import { ADMIN_COOKIES } from 'src/common/constants/admin';
 import { THROTTLE } from 'src/common/constants/rateLimits';
-import {
-    AdminAuth,
-    AdminDevice,
-    AdminNavigation,
-    AdminPublic,
-    CurrentAdmin,
-} from 'src/common/decorators/adminAuth.decorator';
-import { RawResponse } from 'src/common/decorators/rawResponse.decorator';
+import { AdminAuth, AdminDevice, AdminPublic, CurrentAdmin } from 'src/common/decorators/adminAuth.decorator';
 import { StrictIpThrottle } from 'src/common/decorators/strictIpThrottle.decorator';
 import { getClientIp, getUserAgent } from 'src/common/utils/request.util';
 import { AdminAuthService, type ReqMeta } from './auth.service';
 import type { AdminPrincipal } from './auth.types';
-import {
-    clearOauthCookie,
-    clearPendingCookie,
-    clearSessionCookies,
-    setOauthCookie,
-    setPendingCookie,
-    setSessionCookies,
-} from './cookies';
+import { clearPendingCookie, clearSessionCookies, setPendingCookie, setSessionCookies } from './cookies';
 import { AdminLoginDto, TotpCodeDto, TotpVerifyDto } from './dto/auth.dto';
-import { GoogleAuthService } from './google.service';
 import { SessionService } from './session.service';
 
 const AuthThrottle = () => Throttle({ default: { limit: THROTTLE.AUTH_LIMIT, ttl: THROTTLE.AUTH_TTL_MS } });
@@ -51,22 +34,10 @@ function meta(req: Request, device: string): ReqMeta {
     return { device, ip: getClientIp(req), userAgent: getUserAgent(req) };
 }
 
-/** Same-origin HTML bounce: a navigation that STARTED cross-site (Google) wouldn't carry SameSite=Strict cookies on a plain 302. */
-function bounce(res: Response, path: string): void {
-    const safe = path.replace(/[^a-zA-Z0-9/_?=&-]/g, '');
-    res.status(200)
-        .type('html')
-        .setHeader('Cache-Control', 'no-store')
-        .send(
-            `<!doctype html><html><head><meta charset="utf-8"><meta name="referrer" content="no-referrer">` +
-                `<meta http-equiv="refresh" content="0;url=${safe}"><title>…</title></head>` +
-                `<body><a href="${safe}">Continue</a></body></html>`,
-        );
-}
-
 /**
  * Admin auth realm: `/v1/admin/auth/*`, reached in production only as
  * `https://admin.mehdisafarzade.dev/api/auth/*` through the nginx device gate.
+ * Sign-in is email + password (argon2) → TOTP, nothing else.
  * Every handler carries an admin realm decorator (enforced by e2e).
  */
 @Controller('admin/auth')
@@ -74,14 +45,7 @@ export class AdminAuthController {
     constructor(
         private readonly auth: AdminAuthService,
         private readonly sessions: SessionService,
-        private readonly google: GoogleAuthService,
     ) {}
-
-    @Get('config')
-    @AdminPublic()
-    config() {
-        return { googleEnabled: this.google.enabled };
-    }
 
     /** Where is this browser in the sign-in flow? (drives /login/totp vs /login/totp-setup) */
     @Get('pending')
@@ -89,9 +53,9 @@ export class AdminAuthController {
     pending(@Req() req: Request, @AdminDevice() device: string) {
         try {
             const p = this.auth.readPending(cookie(req, ADMIN_COOKIES.PENDING), device);
-            return { step: p.purpose === 'setup' ? 'totp-setup' : 'totp', via: p.via };
+            return { step: p.purpose === 'setup' ? 'totp-setup' : 'totp' };
         } catch {
-            return { step: null, via: null };
+            return { step: null };
         }
     }
 
@@ -223,53 +187,5 @@ export class AdminAuthController {
         if (!target) throw new NotFoundException();
         await this.sessions.revokeFamily(target.familyId);
         return { message: 'auth.SESSION_REVOKED' };
-    }
-
-    // ── Google (top-level navigations) ──────────────────────────────────────
-
-    @Get('google')
-    @AdminNavigation()
-    @RawResponse()
-    @StrictIpThrottle()
-    @AuthThrottle()
-    async googleStart(@Res() res: Response) {
-        if (!this.google.enabled) return bounce(res, '/login?error=google_disabled');
-        const state = randomBytes(24).toString('base64url');
-        const { verifier, challenge } = await this.google.createPkce();
-        setOauthCookie(res, JSON.stringify({ state, verifier }));
-        res.setHeader('Cache-Control', 'no-store');
-        res.redirect(302, this.google.authUrl(state, challenge));
-    }
-
-    @Get('google/callback')
-    @AdminNavigation()
-    @RawResponse()
-    @StrictIpThrottle()
-    @AuthThrottle()
-    async googleCallback(
-        @Req() req: Request,
-        @Res() res: Response,
-        @AdminDevice() device: string,
-        @Query('state') receivedState?: string,
-        @Query('code') code?: string,
-        @Query('error') error?: string,
-    ) {
-        let expected: { state?: string; verifier?: string } = {};
-        try {
-            expected = JSON.parse(cookie(req, ADMIN_COOKIES.OAUTH) ?? '{}') as typeof expected;
-        } catch {
-            /* treated as missing state */
-        }
-        clearOauthCookie(res);
-        if (error) return bounce(res, '/login?error=google_cancelled');
-
-        const result = await this.auth.googleLogin(
-            { expected: expected.state, received: receivedState, verifier: expected.verifier },
-            code,
-            meta(req, device),
-        );
-        if (!result.ok) return bounce(res, `/login?error=${result.error}`);
-        setPendingCookie(res, result.pending);
-        return bounce(res, result.step === 'totp' ? '/login/totp' : '/login/totp-setup');
     }
 }
