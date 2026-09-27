@@ -1,0 +1,173 @@
+@use "mixins" as *;
+@use "variables" as *;
+@use "breakpoints" as *;
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid $color-border;
+  background: color-mix(in srgb, #{$color-bg} 82%, transparent);
+  backdrop-filter: saturate(1.4) blur(12px);
+
+  &__inner {
+    @include flex(row, space-between, center);
+    gap: rem(16);
+    height: $header-h;
+  }
+
+  &__brand {
+    @include flex(row, flex-start, center);
+    gap: rem(10);
+    text-decoration: none;
+  }
+
+  &__mark {
+    @include flex(row, center, center);
+    width: rem(32);
+    height: rem(32);
+    border-radius: $radius-sm;
+    background: $color-accent;
+    color: $color-accent-fg;
+    font-family: $font-mono;
+    font-size: $fs-xxs;
+    font-weight: $fw-bold;
+    letter-spacing: 0.02em;
+  }
+
+  &__name {
+    font-family: $font-display;
+    font-size: $fs-lg;
+    letter-spacing: $tracking-tight;
+
+    @include bp-down(xs) {
+      @include visually-hidden;
+    }
+  }
+
+  &__tools {
+    @include flex(row, flex-end, center);
+    gap: rem(8);
+  }
+}
+
+.site-nav {
+  @include bp-down(md) {
+    display: none;
+  }
+
+  &__list {
+    @include flex(row, center, center);
+    gap: rem(4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__link {
+    display: block;
+    padding: rem(8) rem(12);
+    border-radius: $radius-full;
+    text-decoration: none;
+    @include font($color-fg-secondary, $fs-xs, $fw-medium);
+    transition:
+      color $dur-fast $ease-out,
+      background-color $dur-fast $ease-out;
+
+    @include hover {
+      color: $color-fg;
+      background: $color-bg-sunken;
+    }
+  }
+}
+
+.site-nav-mobile {
+  position: relative;
+
+  @include bp-up(md) {
+    display: none;
+  }
+
+  summary {
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &__panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + #{rem(8)});
+    min-width: rem(200);
+    padding: rem(8);
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    background: $color-bg-elevated;
+    box-shadow: $shadow-card;
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .site-nav__link {
+      border-radius: $radius-sm;
+    }
+  }
+}
+
+.site-footer {
+  margin-top: rem(96);
+  border-top: 1px solid $color-border;
+
+  &__inner {
+    display: grid;
+    gap: rem(24);
+    padding-block: rem(40);
+
+    @include bp-up(md) {
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+    }
+  }
+
+  &__rights {
+    font-weight: $fw-medium;
+  }
+
+  &__built {
+    @include font($color-muted, $fs-xs);
+  }
+
+  &__links {
+    @include flex(row, flex-start, center);
+    flex-wrap: wrap;
+    gap: rem(16);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    a {
+      @include font($color-fg-secondary, $fs-xs, $fw-medium);
+      text-decoration: none;
+
+      @include hover {
+        color: $color-fg;
+      }
+    }
+  }
+
+  &__top {
+    @include flex(row, flex-start, center, true);
+    gap: rem(6);
+    @include micro-label;
+    text-decoration: none;
+
+    @include hover {
+      color: $color-fg;
+    }
+  }
+}

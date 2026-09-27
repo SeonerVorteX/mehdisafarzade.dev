@@ -6,8 +6,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const t = await getTranslations("home");
 
   return (
-    <main className="placeholder">
+    <section className="container placeholder">
       <p>{t("placeholder")}</p>
-    </main>
+    </section>
   );
 }

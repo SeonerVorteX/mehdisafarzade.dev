@@ -21,6 +21,15 @@ Yarn 4 + Turbo workspace. It mirrors `D:\Files\Examination\examination` (read-on
 - Server calls: `lib/getServerAdmin.ts` (`server-only`) → `INTERNAL_API_URL/admin/*`, forwarding the cookies + `x-admin-device` that nginx set.
 - Screens: `/login` → `/login/totp` or `/login/totp-setup` (QR + recovery codes shown once) → `/` (bare shell: identity, device, sessions, sign out).
 
+## Web design system (Phase 5)
+
+- **Tokens:** `packages/ui/styles/root.scss` is the only place raw values live (light/dark mixins, accent mixins, spacing, type scale, motion). `packages/ui/lib/tokens.test.ts` parses it and fails on any text/surface or accent pair below WCAG AA.
+- **Theme:** `THEME_SCRIPT` (`packages/ui/lib/theme.ts`) runs inline in `<head>`, reads the `theme` cookie (default `system`) and sets `data-theme` + `data-theme-pref` before paint. The layout never reads cookies, so pages stay static/ISR. `ThemeToggle` writes the cookie (shared domain in production).
+- **Fonts** (`apps/web/src/styles/fonts.ts`): Inter (UI), JetBrains Mono (code/labels), Fraunces (display), Literata (display on `ru`: the candidates have no Cyrillic). All via next/font; exposed as `--font-*` variables on `<html>`.
+- **Styles:** Examination-style global partials (`apps/web/src/styles/_base.scss`, `_typography.scss`, `components/_*.scss`) pulled in by `main.scss`. Partials `@use "mixins" / "variables" / "breakpoints"` (resolved through `sassOptions.loadPaths`).
+- **Client messages:** the layout's `NextIntlClientProvider` gets only `SHELL_CLIENT_NAMESPACES` (`src/i18n/clientMessages.ts`). A page with its own client islands nests a provider with its extra namespaces. Everything else renders on the server and its strings never ship to the browser.
+- **Style tile:** `app/[locale]/%5Fdesign` (`%5F` = `_`, since `_folders` are private in Next). Dev only: production renders a 404 with no tile metadata. It and `styles/components/_design.scss` go away once the look is built out.
+
 ## Rules
 
 1. `page.tsx` stays a thin server component. Put interactive UI in a co-located `*Page.tsx` or `views/`, and server fetchers in `lib/getServer*.ts`.

@@ -1348,6 +1348,7 @@ __metadata:
   resolution: "@portfolio/ui@workspace:packages/ui"
   dependencies:
     "@portfolio/api": "workspace:*"
+    "@portfolio/config": "workspace:*"
     "@tanstack/react-query": "npm:^5.90"
     "@types/react": "npm:^19"
     clsx: "npm:^2.1"

@@ -1,0 +1,115 @@
+@use "mixins" as *;
+@use "variables" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(#{$header-h} + #{rem(16)});
+
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: $color-bg;
+  font-family: $font-sans;
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  @include font($color-fg, $fs-sm, $fw-regular, $lh-md);
+  transition:
+    background-color $dur $ease-out,
+    color $dur $ease-out;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: $color-accent;
+  color: $color-accent-fg;
+}
+
+:focus-visible {
+  @include focus-ring;
+}
+
+a {
+  color: inherit;
+}
+
+.visually-hidden {
+  @include visually-hidden;
+}
+
+.skip-link {
+  position: fixed;
+  top: rem(8);
+  left: rem(8);
+  z-index: 100;
+  padding: rem(8) rem(14);
+  border-radius: $radius-sm;
+  background: $color-fg;
+  color: $color-bg;
+  text-decoration: none;
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+  }
+}
+
+.site-main {
+  flex: 1;
+  outline: none;
+}
+
+.container {
+  width: 100%;
+  max-width: $page-max-width;
+  margin-inline: auto;
+  padding-inline: $gutter;
+}
+
+.placeholder {
+  @include flex(column, center, center);
+  gap: rem(12);
+  min-height: 60dvh;
+  text-align: center;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: rem(10);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: rem(14);
+}

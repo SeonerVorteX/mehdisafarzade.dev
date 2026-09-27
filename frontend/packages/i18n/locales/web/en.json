@@ -10,5 +10,99 @@
     "title": "Page not found",
     "body": "The page you are looking for doesn't exist or has moved.",
     "home": "Back to home"
+  },
+  "nav": {
+    "label": "Main",
+    "work": "Work",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact",
+    "menu": "Menu",
+    "home": "Home"
+  },
+  "footer": {
+    "rights": "© {year} Mehdi Safarzade",
+    "builtWith": "Built with Next.js and NestJS. Hosted on a small VPS.",
+    "elsewhere": "Elsewhere",
+    "backToTop": "Back to top"
+  },
+  "design": {
+    "metaTitle": "Style tile",
+    "label": "Phase 5 · style tile · dev only",
+    "title": "Style tile",
+    "intro": "Pick one display face and one accent. Use the header to switch theme and language; every block below updates live.",
+    "controls": "Tile controls",
+    "accent": "Accent",
+    "vermilion": "Vermilion",
+    "lime": "Acid lime",
+    "grid": "Show 12-column grid",
+    "sections": {
+      "display": "Display typeface",
+      "text": "Body, UI and code",
+      "scale": "Type scale",
+      "color": "Colour and contrast",
+      "components": "Components",
+      "layout": "Bento and timeline",
+      "motion": "Motion"
+    },
+    "candidate": "Candidate {letter}",
+    "cyrillicNote": "No Cyrillic in this family, so Russian pages set headlines in Literata instead (switch to RU to see it).",
+    "variable": "Variable: weight + optical size",
+    "single": "Single weight (400), roman + italic",
+    "sampleHeadline": "I build calm, fast software for real people.",
+    "sampleName": "Mehdi Safarzade",
+    "sampleRole": "Full-stack developer · Baku",
+    "sampleQuote": "Good software disappears into the work it enables.",
+    "glyphs": "Glyphs",
+    "bodyTitle": "Inter for reading and UI",
+    "body": "I design and ship production platforms end to end: data models, APIs, admin tools and the interfaces people use every day. This paragraph is set at the body size with a comfortable measure, so you can judge rhythm and colour at reading length.",
+    "bodySmall": "Secondary text, captions and metadata use the secondary and muted greys.",
+    "codeLabel": "Code · JetBrains Mono",
+    "swatches": "Tokens (contrast against the page background)",
+    "onAccent": "Text on accent",
+    "accentText": "Accent as text",
+    "buttons": "Buttons",
+    "primary": "Start a project",
+    "secondary": "View work",
+    "ghost": "Read the blog",
+    "link": "Inline link",
+    "disabled": "Disabled",
+    "chips": "Tags",
+    "form": "Form fields",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "messagePlaceholder": "Tell me about the project…",
+    "projectType": "Project type",
+    "projectTypes": {
+      "web": "Web app",
+      "api": "API / backend",
+      "other": "Something else"
+    },
+    "error": "Please enter a valid email address.",
+    "notice": "This page isn’t translated yet, so you’re reading the English version.",
+    "card": {
+      "label": "Case study",
+      "title": "Examination.az",
+      "body": "An exam platform for thousands of students: Next.js, NestJS, Postgres, RabbitMQ.",
+      "cta": "Read the case study"
+    },
+    "bento": {
+      "a": "Selected project",
+      "b": "Stack",
+      "c": "Now",
+      "d": "Writing"
+    },
+    "timeline": {
+      "role": "Full-stack developer",
+      "org": "Freelance",
+      "period": "2023 — now",
+      "summary": "Platforms, APIs and admin tools for clients in Azerbaijan and abroad."
+    },
+    "motionBody": "Reveals fade in and rise 8px over 250 ms. With reduced motion enabled in the OS, they appear instantly.",
+    "replay": "Replay",
+    "reduced": "Reduced motion: {state}",
+    "on": "on",
+    "off": "off"
   }
 }

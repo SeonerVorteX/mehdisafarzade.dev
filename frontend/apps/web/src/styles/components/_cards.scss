@@ -1,0 +1,96 @@
+@use "mixins" as *;
+@use "variables" as *;
+@use "breakpoints" as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: rem(12);
+  padding: rem(24);
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  background: $color-bg-elevated;
+  box-shadow: $shadow-card;
+
+  &--accent {
+    border-color: transparent;
+    background: $color-accent;
+    color: $color-accent-fg;
+
+    .micro-label {
+      color: inherit;
+      opacity: 0.8;
+    }
+  }
+
+  &__media {
+    aspect-ratio: 16 / 9;
+    margin: rem(-8) rem(-8) rem(8);
+    border-radius: $radius-lg;
+    // Stand-in for a real LQIP → AVIF image (Phase 6).
+    background:
+      radial-gradient(120% 90% at 20% 10%, $color-accent-soft, transparent 60%),
+      linear-gradient(135deg, $color-bg-sunken, $color-border);
+  }
+
+  &__cta {
+    @include flex(row, flex-start, center, true);
+    gap: rem(6);
+    margin-top: auto;
+    color: $color-accent-text;
+    font-weight: $fw-medium;
+    text-decoration: none;
+
+    @include hover {
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+  }
+}
+
+// 12-column bento (PLAN §7 layout)
+.bento {
+  display: grid;
+  gap: rem(16);
+  grid-template-columns: 1fr;
+
+  @include bp-up(md) {
+    grid-template-columns: repeat(12, 1fr);
+
+    &__a {
+      grid-column: span 7;
+      grid-row: span 2;
+    }
+    &__b {
+      grid-column: span 5;
+    }
+    &__c {
+      grid-column: span 5;
+    }
+    &__d {
+      grid-column: span 12;
+    }
+  }
+}
+
+.timeline {
+  margin: rem(48) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid $color-border;
+
+  &__item {
+    display: grid;
+    gap: rem(8) rem(32);
+    padding: rem(24) 0;
+    border-bottom: 1px solid $color-border;
+
+    @include bp-up(md) {
+      grid-template-columns: rem(200) 1fr;
+    }
+  }
+
+  &__role {
+    font-size: $fs-xl;
+  }
+}

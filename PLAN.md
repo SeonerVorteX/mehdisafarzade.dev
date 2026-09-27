@@ -11,7 +11,7 @@ Status: **Phase 0 approved 2026-09-25** (decisions in §0). Branch `v2` is cut f
 | LinkedIn | `https://www.linkedin.com/in/mehdi-safarzade` |
 | Résumé | The 2026 GitHub PDF (en) is seeded; the Dec 2024 PDF is dropped. The 2026 résumé is the source for the experience timeline. |
 | GHCR | One `mehdisafarzade.dev-frontend` package with `web-*`/`admin-*` tags + **tag-aware retention** (§9.3). |
-| Display font | Fraunces vs Instrument Serif side by side in the Phase 5 style tile. |
+| Display font | Fraunces vs Instrument Serif side by side in the Phase 5 style tile (`/[locale]/_design`, dev only). **Finding (2026-09-27):** neither family has Cyrillic, so `ru` pages set headlines in Literata (`html[lang="ru"]` in `root.scss`). Chaining Literata after the display face doesn't work: next/font's full-range metric fallback (Times) catches Cyrillic first. Accent: vermilion vs acid lime on the same tile, both AA-checked by `packages/ui/lib/tokens.test.ts`. |
 | AOP | **Per-hostname AOP with our own client cert** for www/apex/api/admin (§9.6), available on the Free plan. Zone-level stays as the fallback until it's verified. |
 | RabbitMQ vhost | `portfolio` (no slash). |
 | Postgres | Role `portfolio` owns only DB `portfolio`, no SUPERUSER/CREATEDB/CREATEROLE. No `portfolio_migrator` is needed (see §9.5). |

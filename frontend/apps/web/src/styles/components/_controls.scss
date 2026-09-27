@@ -1,0 +1,210 @@
+@use "mixins" as *;
+@use "variables" as *;
+
+// Segmented control (theme, language, tile toggles)
+.segmented {
+  @include flex(row, flex-start, center, true);
+  gap: rem(2);
+  padding: rem(3);
+  border: 1px solid $color-border;
+  border-radius: $radius-full;
+  background: $color-bg-sunken;
+
+  &__item {
+    @include flex(row, center, center, true);
+    gap: rem(6);
+    min-width: rem(30);
+    height: rem(30);
+    padding: 0 rem(8);
+    border: 0;
+    border-radius: $radius-full;
+    background: transparent;
+    color: $color-muted;
+    cursor: pointer;
+    text-decoration: none;
+    transition:
+      color $dur-fast $ease-out,
+      background-color $dur-fast $ease-out;
+
+    @include hover {
+      color: $color-fg;
+    }
+
+    &[data-active] {
+      background: $color-bg-elevated;
+      color: $color-fg;
+      box-shadow: $shadow-card;
+    }
+
+    &--text {
+      font-family: $font-mono;
+      font-size: $fs-xxs;
+      font-weight: $fw-medium;
+      letter-spacing: 0.04em;
+    }
+  }
+}
+
+.icon-button {
+  @include flex(row, center, center, true);
+  width: rem(38);
+  height: rem(38);
+  border: 1px solid $color-border;
+  border-radius: $radius-full;
+  background: $color-bg-elevated;
+  cursor: pointer;
+}
+
+// Buttons
+.btn {
+  @include flex(row, center, center, true);
+  gap: rem(8);
+  min-height: rem(44);
+  padding: 0 rem(20);
+  border: 1px solid transparent;
+  border-radius: $radius-full;
+  cursor: pointer;
+  text-decoration: none;
+  @include font($color-fg, $fs-sm, $fw-medium, 1);
+  transition:
+    transform $dur-fast $ease-out,
+    background-color $dur-fast $ease-out,
+    border-color $dur-fast $ease-out;
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: $color-accent;
+    color: $color-accent-fg;
+    // accent-text always has ≥4.5:1 on the page, so the edge stays visible even where the
+    // fill itself doesn't (lime on light is 1.2:1; WCAG 1.4.11 needs 3:1 for boundaries).
+    border-color: $color-accent-text;
+
+    @include hover(":not(:disabled)") {
+      background: color-mix(in srgb, #{$color-accent} 88%, #{$color-fg});
+    }
+  }
+
+  &--secondary {
+    background: $color-bg-elevated;
+    border-color: $color-border-strong;
+
+    @include hover(":not(:disabled)") {
+      border-color: $color-fg;
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $color-fg-secondary;
+
+    @include hover(":not(:disabled)") {
+      color: $color-fg;
+      background: $color-bg-sunken;
+    }
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: rem(28);
+  padding: 0 rem(12);
+  border: 1px solid $color-border;
+  border-radius: $radius-full;
+  background: $color-bg-elevated;
+  @include font($color-fg-secondary, $fs-xs, $fw-medium, 1);
+
+  &[data-active] {
+    border-color: transparent;
+    background: $color-accent-soft;
+    color: $color-accent-text;
+  }
+}
+
+.notice {
+  display: flex;
+  gap: rem(10);
+  align-items: flex-start;
+  padding: rem(12) rem(14);
+  border: 1px solid $color-border;
+  border-left: 3px solid $color-accent;
+  border-radius: $radius-md;
+  background: $color-bg-elevated;
+  @include font($color-fg-secondary, $fs-xs, $fw-regular, $lh-md);
+
+  svg {
+    flex: none;
+    margin-top: rem(2);
+  }
+
+  &--info {
+    border-left-color: $color-border-strong;
+  }
+}
+
+// Forms
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: rem(6);
+
+  &__label {
+    @include font($color-fg-secondary, $fs-xs, $fw-medium);
+  }
+
+  &__error {
+    @include font($color-error, $fs-xs);
+  }
+}
+
+.input {
+  width: 100%;
+  min-height: rem(44);
+  padding: rem(10) rem(14);
+  border: 1px solid $color-border-strong;
+  border-radius: $radius-md;
+  background: $color-bg-elevated;
+  transition: border-color $dur-fast $ease-out;
+
+  &::placeholder {
+    color: $color-muted;
+  }
+
+  &:hover {
+    border-color: $color-muted;
+  }
+
+  &:focus-visible {
+    outline-offset: 0;
+    border-color: $color-focus;
+  }
+
+  &[aria-invalid="true"] {
+    border-color: $color-error;
+  }
+}
+
+textarea.input {
+  resize: vertical;
+}
+
+.check {
+  @include flex(row, flex-start, center, true);
+  gap: rem(8);
+  @include font($color-fg-secondary, $fs-xs);
+  cursor: pointer;
+
+  input {
+    width: rem(16);
+    height: rem(16);
+    accent-color: $color-accent;
+  }
+}

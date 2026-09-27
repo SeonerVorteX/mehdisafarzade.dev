@@ -15,7 +15,7 @@ The phase plan is in `PLAN.md` §16. Every phase ends with `yarn ci` green in th
 | 2 Backend foundation | done |
 | 3 Admin auth + device gate | done (☑) |
 | 4 Content APIs | done |
-| 5 Design system + style tile | in progress |
+| 5 Design system + style tile | done, awaiting the owner's ☑ (`/en/_design`, `/az/_design`, `/ru/_design` in dev) |
 
 ## Device gate (read before touching `deploy/nginx` or admin routing)
 

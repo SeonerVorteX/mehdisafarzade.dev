@@ -10,5 +10,99 @@
     "title": "Səhifə tapılmadı",
     "body": "Axtardığınız səhifə mövcud deyil və ya köçürülüb.",
     "home": "Ana səhifəyə qayıt"
+  },
+  "nav": {
+    "label": "Əsas",
+    "work": "İşlər",
+    "blog": "Bloq",
+    "about": "Haqqımda",
+    "contact": "Əlaqə",
+    "menu": "Menyu",
+    "home": "Ana səhifə"
+  },
+  "footer": {
+    "rights": "© {year} Mehdi Səfərzadə",
+    "builtWith": "Next.js və NestJS ilə hazırlanıb. Kiçik bir VPS-də işləyir.",
+    "elsewhere": "Digər yerlərdə",
+    "backToTop": "Yuxarı qayıt"
+  },
+  "design": {
+    "metaTitle": "Stil lövhəsi",
+    "label": "Mərhələ 5 · stil lövhəsi · yalnız dev",
+    "title": "Stil lövhəsi",
+    "intro": "Bir başlıq şrifti və bir aksent rəngi seçin. Mövzunu və dili başlıqdan dəyişin; aşağıdakı bütün bloklar dərhal yenilənir.",
+    "controls": "Lövhə ayarları",
+    "accent": "Aksent",
+    "vermilion": "Vermilyon",
+    "lime": "Turş laym",
+    "grid": "12 sütunlu şəbəkəni göstər",
+    "sections": {
+      "display": "Başlıq şrifti",
+      "text": "Mətn, interfeys və kod",
+      "scale": "Şrift ölçüləri",
+      "color": "Rəng və kontrast",
+      "components": "Komponentlər",
+      "layout": "Bento və xronologiya",
+      "motion": "Hərəkət"
+    },
+    "candidate": "Namizəd {letter}",
+    "cyrillicNote": "Bu ailədə kiril yoxdur, ona görə rus səhifələrində başlıqlar Literata ilə yığılır (görmək üçün RU-ya keçin).",
+    "variable": "Dəyişən: qalınlıq + optik ölçü",
+    "single": "Tək qalınlıq (400), düz + kursiv",
+    "sampleHeadline": "Real insanlar üçün sakit və sürətli proqramlar qururam.",
+    "sampleName": "Mehdi Səfərzadə",
+    "sampleRole": "Full-stack developer · Bakı",
+    "sampleQuote": "Yaxşı proqram imkan verdiyi işin içində görünməz olur.",
+    "glyphs": "Hərflər",
+    "bodyTitle": "Oxu və interfeys üçün Inter",
+    "body": "İstehsal platformalarını başdan-sona layihələndirib təhvil verirəm: məlumat modelləri, API-lər, admin alətləri və insanların hər gün istifadə etdiyi interfeyslər. Bu abzas əsas mətn ölçüsündə, rahat sətir uzunluğu ilə yığılıb ki, ritmi və rəngi oxu uzunluğunda qiymətləndirə biləsiniz.",
+    "bodySmall": "İkinci dərəcəli mətn, izahlar və metadata ikinci dərəcəli və solğun boz rənglərdən istifadə edir.",
+    "codeLabel": "Kod · JetBrains Mono",
+    "swatches": "Tokenlər (səhifə fonuna qarşı kontrast)",
+    "onAccent": "Aksent üzərində mətn",
+    "accentText": "Mətn kimi aksent",
+    "buttons": "Düymələr",
+    "primary": "Layihəyə başla",
+    "secondary": "İşlərə bax",
+    "ghost": "Bloqu oxu",
+    "link": "Mətndaxili keçid",
+    "disabled": "Deaktiv",
+    "chips": "Teqlər",
+    "form": "Forma sahələri",
+    "name": "Ad",
+    "email": "E-poçt",
+    "message": "Mesaj",
+    "messagePlaceholder": "Layihə haqqında yazın…",
+    "projectType": "Layihə növü",
+    "projectTypes": {
+      "web": "Veb tətbiq",
+      "api": "API / backend",
+      "other": "Başqa bir şey"
+    },
+    "error": "Etibarlı e-poçt ünvanı daxil edin.",
+    "notice": "Bu səhifə hələ tərcümə olunmayıb, ona görə ingiliscə versiyanı oxuyursunuz.",
+    "card": {
+      "label": "Keys",
+      "title": "Examination.az",
+      "body": "Minlərlə tələbə üçün imtahan platforması: Next.js, NestJS, Postgres, RabbitMQ.",
+      "cta": "Keysi oxu"
+    },
+    "bento": {
+      "a": "Seçilmiş layihə",
+      "b": "Texnologiyalar",
+      "c": "İndi",
+      "d": "Yazılar"
+    },
+    "timeline": {
+      "role": "Full-stack developer",
+      "org": "Frilans",
+      "period": "2023 — indi",
+      "summary": "Azərbaycanda və xaricdə müştərilər üçün platformalar, API-lər və admin alətləri."
+    },
+    "motionBody": "Görünmə effektləri 250 ms ərzində solğunluqdan çıxır və 8px qalxır. ƏS-də azaldılmış hərəkət aktivdirsə, dərhal görünür.",
+    "replay": "Təkrarla",
+    "reduced": "Azaldılmış hərəkət: {state}",
+    "on": "aktiv",
+    "off": "deaktiv"
   }
 }

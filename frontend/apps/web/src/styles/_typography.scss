@@ -1,0 +1,131 @@
+@use "mixins" as *;
+@use "variables" as *;
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: $font-display;
+  font-weight: $fw-regular;
+  line-height: $lh-sm;
+  letter-spacing: $tracking-tight;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.display-xl {
+  @include display($fs-5xl);
+}
+.display-lg {
+  @include display($fs-4xl);
+  line-height: 1.05;
+}
+.display-md {
+  @include display($fs-2xl);
+  line-height: $lh-sm;
+}
+.display-sm {
+  @include display($fs-xl);
+  line-height: $lh-sm;
+}
+
+.lead {
+  max-width: 62ch;
+  @include font($color-fg-secondary, $fs-md, $fw-regular, $lh-md);
+}
+
+.text-secondary {
+  color: $color-fg-secondary;
+}
+
+.micro-label {
+  margin: 0;
+  @include micro-label;
+}
+
+.prose {
+  max-width: 68ch;
+
+  > * + * {
+    margin-top: rem(16);
+  }
+
+  h3 {
+    font-size: $fs-xl;
+  }
+
+  a {
+    color: $color-accent-text;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-thickness $dur-fast $ease-out;
+
+    @include hover {
+      text-decoration-thickness: 2px;
+    }
+  }
+}
+
+code {
+  font-family: $font-mono;
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  border-radius: $radius-xs;
+  background: $color-bg-sunken;
+  border: 1px solid $color-border;
+}
+
+.code-block {
+  margin: 0;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  background: $color-bg-sunken;
+  overflow: hidden;
+
+  figcaption {
+    padding: rem(10) rem(16);
+    border-bottom: 1px solid $color-border;
+  }
+
+  pre {
+    margin: 0;
+    padding: rem(16);
+    overflow-x: auto;
+    font-size: $fs-xs;
+    line-height: $lh-md;
+  }
+
+  code {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: inherit;
+  }
+}
+
+.section-heading {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: end;
+  gap: rem(16) rem(24);
+  margin-bottom: rem(40);
+
+  &__numeral {
+    font-family: $font-display;
+    font-size: $fs-5xl;
+    line-height: 0.8;
+    letter-spacing: $tracking-tight;
+    color: $color-accent-text;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  &__title {
+    margin-top: rem(8);
+    font-size: $fs-3xl;
+  }
+}

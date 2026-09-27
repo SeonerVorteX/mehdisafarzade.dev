@@ -64,3 +64,22 @@
   white-space: nowrap;
   border: 0;
 }
+
+// Mono micro-label (PLAN §7 design direction): small caps-like tracking, muted.
+@mixin micro-label($color: $color-muted) {
+  font-family: $font-mono;
+  font-size: $fs-xxs;
+  font-weight: $fw-medium;
+  letter-spacing: $tracking-label;
+  text-transform: uppercase;
+  color: $color;
+}
+
+@mixin display($size: $fs-4xl, $weight: $fw-regular) {
+  font-family: $font-display;
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $lh-xs;
+  letter-spacing: $tracking-tight;
+  font-optical-sizing: auto;
+}
