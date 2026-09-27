@@ -21,7 +21,7 @@
 type Rule = {
     required?: boolean;
     prodRequired?: boolean;
-    kind?: 'url' | 'int' | 'bool' | 'secret' | 'email' | 'emails' | 'string';
+    kind?: 'url' | 'int' | 'bool' | 'secret' | 'email' | 'ips' | 'string';
     /** Minimum length for secrets (bytes of entropy matter more, but this catches placeholders). */
     min?: number;
 };
@@ -57,6 +57,11 @@ export const ENV_RULES: Record<string, Rule> = {
     CONTACT_NOTIFY_TO: { prodRequired: true, kind: 'email' },
 
     IP_HASH_PEPPER: { prodRequired: true, kind: 'secret', min: 32 },
+
+    // Exact peer IPs allowed to send X-Admin-Device / X-Real-IP (PLAN §9.2). Production:
+    // the portfolio bridge gateway (host nginx) + the admin containers' blue/green IPs.
+    // Fail closed: required and must parse in production. Dev/test default: loopback.
+    ADMIN_TRUSTED_SOURCES: { prodRequired: true, kind: 'ips' },
 
     // Admin realm (Phase 3)
     ADMIN_JWT_SECRET: { required: true, kind: 'secret', min: 32 },
@@ -98,11 +103,22 @@ export function validateEnv(env: NodeJS.ProcessEnv): string[] {
             case 'email':
                 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) errors.push(`${key} must be an email address`);
                 break;
-            case 'emails':
-                for (const e of value.split(',').map((s) => s.trim())) {
-                    if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) errors.push(`${key} has an invalid email "${e}"`);
+            case 'ips': {
+                // Kept import-free (see file header): a strict IPv4 check + a coarse IPv6 shape
+                // check. The runtime parser (trustedSources.util) re-validates with node:net.
+                const entries = value
+                    .split(',')
+                    .map((s) => s.trim())
+                    .filter(Boolean);
+                if (entries.length === 0) errors.push(`${key} must list at least one IP`);
+                for (const e of entries) {
+                    const ipv4 = /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/.test(e);
+                    const ipv6 = /^[0-9a-f:.]+$/i.test(e) && e.includes(':');
+                    if (e.includes('/')) errors.push(`${key}: "${e}" is a CIDR range; list exact IPs only`);
+                    else if (!ipv4 && !ipv6) errors.push(`${key}: "${e}" is not an IP address`);
                 }
                 break;
+            }
             case 'secret':
                 if (rule.min && value.length < rule.min) errors.push(`${key} must be at least ${rule.min} characters`);
                 if (/^(changeme|secret|password|xxx+|todo)$/i.test(value))

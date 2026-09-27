@@ -31,11 +31,11 @@ Sources this plan is built from, in priority order:
 
 | # | Finding | Effect on this plan |
 |---|---|---|
-| F1 | **Examination's frontend containers publish on `0.0.0.0:4001/4002/4101/4102/4201/4202`, and Docker's iptables rules run ahead of UFW** (`DOCKER-USER` chain is empty). Confirmed from outside: `http://<server-ip>:4201/` → `307` (Examination admin), `:4001/` → `200` (landing). These bypass Cloudflare, nginx, Authenticated Origin Pulls and every nginx rate limit. UFW only denies 4001/4002/4101/4102, not 4201/4202, but that doesn't matter because Docker's rules are evaluated first. | Every portfolio container publishes on **`127.0.0.1` only**. This is a hard rule, and CI checks for it (the deploy fails if a compose `ports:` entry doesn't start with `127.0.0.1:`). The device gate is useless on any host whose upstream is also published on a public port, so Examination's ports must be fixed before the gate is reused for `examination-admin`. I'm not touching Examination (see §16). |
+| F1 | **Examination's frontend containers publish on `0.0.0.0:4001/4002/4101/4102/4201/4202`, and Docker's iptables rules run ahead of UFW** (`DOCKER-USER` chain is empty). Confirmed from outside: `http://<server-ip>:4201/` → `307` (Examination admin), `:4001/` → `200` (landing). These bypass Cloudflare, nginx, Authenticated Origin Pulls and every nginx rate limit. UFW only denies 4001/4002/4101/4102, not 4201/4202, but that doesn't matter because Docker's rules are evaluated first. | Portfolio containers publish **no host ports** at all (§9.2: fixed IPs on the `portfolio` bridge, reached by host nginx; the deploy check fails on any published API port). The device gate is useless on any host whose upstream is also published publicly, so Examination's ports must be fixed before the gate is reused for `examination-admin` (the owner handles that separately). |
 | F2 | UFW has both the Cloudflare-only `80,443` rules **and** `80/443 ALLOW Anywhere`, so the Cloudflare-only rules have no effect. | No change needed for us: the protection is AOP (`ssl_verify_client on`) on every vhost, which we copy. Noted in `DEPLOY.md` as a possible later hardening step (drop the `Anywhere` rules). |
 | F3 | TLS uses Cloudflare origin certs in `/etc/ssl/cloudflare/` plus `cf-origin-pull-ca.pem`. There's no certbot and no `/etc/letsencrypt`. | Portfolio cert goes to `/etc/ssl/cloudflare/mehdisafarzade.dev.{pem,key}` (key `0600`). |
 | F4 | Postgres 18 (`db`) has one role, `postgres` (superuser), and databases `postgres` and `examination`. RabbitMQ has vhost **`examination`** (no leading slash) and user `examination`. Redis 7 has no ACL users (just `requirepass`). | New Postgres role `portfolio` (NOSUPERUSER, NOCREATEDB) that owns database `portfolio`. RabbitMQ vhost **`portfolio`** (no slash, same as the live naming; `/portfolio` would need `%2F` in URLs) with user `portfolio` given permissions on that vhost only. Redis: DB index `1` + key prefix `pf:`, as agreed. The shared-password caveat is in §15 R6. |
-| F5 | Free host ports: 3001/3002 and 4001–4202 are taken. **Portfolio uses 3101/3102 (api), 4301/4302 (web), 4311/4312 (admin), all bound to `127.0.0.1`.** Docker network `backend` holds Examination + `db`/`redis`/`rabbitmq`, and Examination's frontends reach their API at `http://api:3000`. | Portfolio service names are `portfolio-api`, `portfolio-web`, `portfolio-admin`. See §9.2 for the network layout. |
+| F5 | Free host ports: 3001/3002 and 4001–4202 are taken. **Superseded 2026-09-27: portfolio containers publish no host ports at all.** nginx reaches them on the `portfolio` bridge at fixed IPs (§9.2). Docker networks on the VPS: `bridge` 172.17.0.0/16, `backend` 172.18.0.0/16, no custom address pools; Examination's frontends reach their API at `http://api:3000`. | Portfolio service names are `portfolio-api`, `portfolio-web`, `portfolio-admin` (+ `-blue`/`-green`). |
 | F6 | nginx is 1.24.0. `conf.d/` is empty but included in `http {}`. `snippets/` exists. `/etc/nginx/device-gate/` doesn't exist. `deploy-nginx.sh` and `check-drift.sh` handle **only** `nginx.conf` and `sites-enabled/*.conf`. | The generic gate maps go in `conf.d/device-gate.conf` and the per-server check in `snippets/device-gate.conf`, so both VPS scripts need extending (§10.3). Because they never read `/etc/nginx/device-gate/`, the secret maps already stay out of the mirror repo; I'll add an explicit exclusion anyway so that stays true if the scripts later switch to syncing whole directories. nginx 1.24 means `listen 443 ssl http2;` (not `http2 on;`), as `VPS/CLAUDE.md` N15 records. |
 | F7 | Resources: 6 vCPU, 11 GiB RAM (9.5 available), 66 GB disk free, 3.6 GB of reclaimable images. | Plenty of room. Two colours × three services at about 150–250 MB each is fine. |
 | F8 | `/apps/examination/local.dump` (9 MB, `-rw-r--r--`, in a `755` directory) is readable by every local user. | Not ours. Reported to you, not touched. |
@@ -128,9 +128,9 @@ Left out on purpose, as the brief allows: MongoDB/Mongoose, the Python worker, p
 
 | | dev (local) | test (local) | prod (VPS) |
 |---|---|---|---|
-| web | :5600 | Playwright against `next start` :5600 | `portfolio-web`, 127.0.0.1:4301 (blue) / :4302 (green) |
-| admin | :5603 | — | `portfolio-admin`, 127.0.0.1:4311 / :4312 |
-| api | :3100 | e2e in-process | `portfolio-api`, 127.0.0.1:3101 / :3102 |
+| web | :5600 | Playwright against `next start` :5600 | `portfolio-web-{blue,green}` at 10.231.0.21 / .22:3000, **no host port** |
+| admin | :5603 | — | `portfolio-admin-{blue,green}` at 10.231.0.31 / .32:3000, **no host port** |
+| api | :3100 | e2e in-process | `portfolio-api-{blue,green}` at 10.231.0.11 / .12:3000, **no host port** |
 | Postgres | `portfolio-db-dev` :5436 | `portfolio-db-test` :5437 | shared `db`, database `portfolio`, role `portfolio` |
 | Redis | `portfolio-redis-dev` :6382 | same, DB 2 | shared `redis`, DB `1`, prefix `pf:` |
 | RabbitMQ | `portfolio-rabbitmq-dev` :5673 / mgmt :15673 | same | shared `rabbitmq`, vhost `portfolio`, user `portfolio` |
@@ -250,11 +250,11 @@ nginx  server admin.mehdisafarzade.dev  (ssl_verify_client on)
    │ 2. if ($dg_device = "") { return 404; }   ← server-level, before every location, incl /_next/* and /api/*
    │    (exception: location = /__dg/unlock, which is itself 404 unless an unlock key is live)
    │
-   ├── location /api/  ──►  proxy_pass http://127.0.0.1:310x/v1/admin/   (portfolio-api, active colour)
+   ├── location /api/  ──►  proxy_pass http://10.231.0.1x:3000/v1/admin/  (portfolio-api, active colour, bridge IP)
    │                         proxy_set_header X-Admin-Device $dg_device;  (overwrites any client value)
    │                         Cookie passes through → API sets __Host-pf_* cookies on the admin host
    │
-   └── location /       ──►  proxy_pass http://127.0.0.1:431x             (portfolio-admin Next app)
+   └── location /       ──►  proxy_pass http://10.231.0.3x:3000           (portfolio-admin Next app, bridge IP)
                              proxy_set_header X-Admin-Device $dg_device;
                              Admin SSR → http://portfolio-api:3000/v1/admin/* over the "portfolio" network,
                              forwarding the Cookie + X-Admin-Device it received.
@@ -325,7 +325,7 @@ What `enroll` does:
 1. Generate a token (32 random bytes → base64url, 43 chars) and an unlock key (32 bytes) locally with `RandomNumberGenerator`.
 2. Over **one** `ssh root@examination` session, with values sent on **stdin** (never argv, so they can't be seen in `ps`): back up the map and unlock files, append `"host:token" device;` and `"host:key" token;`, run `nginx -t`, reload. On failure, restore the backup and `nginx -t && reload`.
 3. `Start-Process https://admin…/__dg/unlock?k=<key>`, or print the URL with `-PrintUrl`.
-4. Poll for up to 120 s (or until Enter) until nginx shows a gate-passing request from that device (the script checks a device-specific ping: `curl` with the cookie from the server itself against `127.0.0.1` + `Host` header, which confirms the map entry works). Then remove the unlock line, `nginx -t`, reload.
+4. Poll for up to 180 s (or until Enter) for a line `<host> <device> 302` in the secret-free enrollment log `/var/log/nginx/device-gate.log`, which proves the browser used the link and got the cookie. Then remove the unlock line, `nginx -t`, reload (always, in `finally`).
 5. Store `{site, device, enrolledAt}` in `.local/devices.json` (no token).
 
 `revoke` removes that device's line. `list` shows device names from the server map with the file's line metadata, **stripping tokens server-side before anything crosses SSH** (`awk` prints field 2 only). `rotate` is revoke + enroll. The map files never get `cat`'d to the terminal. The README covers enrollment, cleared cookies / other browser profiles / incognito (each profile is its own device, so re-enroll), a lost laptop (`revoke` from the PC), and adding another site.
@@ -345,10 +345,41 @@ What `enroll` does:
 /etc/ssl/cloudflare/mehdisafarzade.dev.{pem,key}
 ```
 
-### 9.2 Docker networks
-- `backend` (existing, external): **only `portfolio-api`** joins it, for `db`/`redis`/`rabbitmq`.
-- `portfolio` (new, external, created once): `portfolio-api`, `portfolio-web-{blue,green}`, `portfolio-admin-{blue,green}`. The web and admin containers **don't** join `backend`, so they can't reach Examination or the shared data services at all.
-- Aliases: each api colour has a colour-specific alias (`portfolio-api-blue` / `-green`). The stable alias `portfolio-api`, which web/admin use as `INTERNAL_API_URL=http://portfolio-api:3000`, belongs to the **active** colour only. After the nginx flip, the deploy script moves it (`docker network disconnect` + `connect --alias portfolio-api`). Phase 9 proves this before we rely on it. The fallback is for web/admin to call the API through nginx on the host gateway.
+### 9.2 Docker networks and the IP plan (decided 2026-09-27)
+
+nginx on the VPS is a **host process**, not a container. So instead of publishing ports on `127.0.0.1` (which any process on the host could also reach), portfolio containers publish **no host ports**. nginx reaches them on a dedicated bridge network at **fixed IPs**, and the API trusts proxy headers only from exact peers.
+
+| | Address | Notes |
+|---|---|---|
+| network | `portfolio`, **10.231.0.0/24** | Outside Docker's default pools (172.17–31/16, 192.168/16) and every host route. Checked read-only on the VPS: `bridge` 172.17/16, `backend` 172.18/16, no custom pools. |
+| gateway | **10.231.0.1** | Host side of the bridge: **host nginx** appears as this address. Trusted. |
+| api blue / green | 10.231.0.11 / .12 | Also joins `backend` (for `db`/`redis`/`rabbitmq`). |
+| web blue / green | 10.231.0.21 / .22 | **Not trusted.** Doesn't join `backend`. |
+| admin blue / green | 10.231.0.31 / .32 | Trusted (admin SSR forwards the cookie + `X-Admin-Device` + `X-Real-IP` nginx gave it). Doesn't join `backend`. |
+| container port | 3000 | Everything listens on 3000 inside its container. |
+
+`deploy/ip-plan.env` is the single machine-readable source of these values. The compose files (`networks.portfolio.ipv4_address`), the CI-generated `upstreams/portfolio_*_targets.conf` (`server 10.231.0.1x:3000;`), `ADMIN_TRUSTED_SOURCES`, and the deploy check all read from it. Create the network once (Phase 9, with approval): `docker network create --driver bridge --subnet 10.231.0.0/24 --gateway 10.231.0.1 portfolio`.
+
+**Trust boundary.** `ADMIN_TRUSTED_SOURCES=10.231.0.1,10.231.0.31,10.231.0.32`: **exact IPs only**, no CIDR, never the web containers, nothing on `backend`.
+- `AdminDeviceGuard` returns 404 unless the TCP peer is in that list AND `X-Admin-Device` is well-formed.
+- `getClientIp()` honors `X-Real-IP` only from those peers; otherwise it uses the socket address. `X-Forwarded-For` is never read.
+- **Fail closed:** in production the API refuses to start if the list is missing, empty, contains a CIDR, or doesn't parse (`assertEnv`). Dev/test default: `127.0.0.1,::1` (Docker Desktop delivers the local gate's requests from loopback).
+- Proven by `api/test/admin-trust.e2e-spec.ts`: real TCP connections from distinct loopback source IPs model gateway/admin (accepted) and web/backend/other (404, `X-Real-IP` ignored).
+
+**Deploy-time check** (`deploy/checks/verify-api-isolation.sh <colour>`): runs after the new colour is up and before the nginx flip, and fails the deploy on any of:
+- a published API port
+- the API not at its planned IP
+- `ADMIN_TRUSTED_SOURCES` ≠ plan
+- the gateway (host nginx) not accepted
+- a probe from another portfolio IP, from the live web container, or from the `backend` network not getting 404
+- nginx not pinning `X-Real-IP $remote_addr` in every portfolio location
+- anything listening on the old loopback ports
+
+`deploy/checks/test/run.sh` runs the check against stub containers in CI: a correct setup passes, and published-port, trust-everyone and web-in-trust-list setups all fail.
+
+**Residual risk, accepted:** any process on the VPS host itself also connects from the gateway address and is therefore trusted. The host is single-owner (root only); an attacker with a shell there can read the device-gate maps anyway.
+
+**Aliases.** Web/admin call the API at `INTERNAL_API_URL=http://portfolio-api:3000/v1`. The stable alias `portfolio-api` belongs to the **active** api colour; after the nginx flip the deploy script moves it (`docker network disconnect` + `connect --alias portfolio-api`). Proven in Phase 9 before we rely on it; the fallback is the active api colour's fixed IP.
 
 ### 9.3 Images and CI (GHCR)
 - `ghcr.io/seonervortex/mehdisafarzade.dev-api:<sha>` (+ `:cache`).
@@ -366,7 +397,7 @@ What `enroll` does:
 ### 9.4 nginx (`deploy/nginx/sites-enabled/portfolio.conf`)
 - Port 80: every host → 301 https. Apex → `https://www.mehdisafarzade.dev$request_uri`.
 - 443 servers for `www`, apex (301), `api`, `admin`: Cloudflare origin cert, `ssl_client_certificate cf-origin-pull-ca.pem` + `ssl_verify_client on` on **every** vhost, `listen 443 ssl http2`, gzip (already global), `/_next/static/` 1y immutable on www/admin, `Connection ""`, the same proxy headers as `examination.conf`.
-- api: `location = /health { allow 127.0.0.1; deny all; }`, `location ~* ^/v1/admin { return 404; }`, `location = /v1/contact` with a `limit_req` zone (`pf_contact`, 10r/m burst 5), `client_max_body_size 1m` (uploads go straight to S3 via a presigned PUT, so the API never receives large bodies).
+- api: `location = /v1/health { allow 127.0.0.1; deny all; }`, `location ~* ^/v1/admin { return 404; }`, `location = /v1/contact` with a `limit_req` zone (`pf_contact`, 10r/m burst 5), `client_max_body_size 1m` (uploads go straight to S3 via a presigned PUT, so the API never receives large bodies).
 - admin: the gate snippet, `/api/` → api upstream `/v1/admin/`, `/` → admin upstream, `limit_req` on `/api/auth/` (`pf_admin_auth`, 30r/m burst 5).
 - New `limit_req_zone`s go in `conf.d/portfolio.conf` (http level), so `nginx.conf` isn't edited at all.
 
@@ -418,7 +449,7 @@ Nodemailer SES transport (Examination's mailer pattern + Handlebars templates in
 
 0. **Before the first push of `v2`: disconnect Vercel's Git integration** (or set an Ignored Build Step to `exit 0`). Otherwise every push to `v2` triggers a failing Preview build, because there's no root `package.json`. I'll remind you before I push anything.
 1. Prepare the server (the §9.5 items, each shown to you first) and deploy both stacks while Vercel still serves production.
-2. Verify. Note that `curl --resolve …:443:<ip>` from outside **can't pass AOP** (the origin requires Cloudflare's client cert), so it only works from the VPS itself against `127.0.0.1` colour ports. End-to-end verification uses **temporary proxied hostnames** `v2`, `v2-api`, `v2-admin` (added to the vhosts' `server_name`, and removed afterwards). Check the gate (404 without the cookie, the panel with it), contact round-trip, Turnstile, OG images, sitemap, feeds, hreflang, analytics beacon.
+2. Verify. Note that `curl --resolve …:443:<ip>` from outside **can't pass AOP** (the origin requires Cloudflare's client cert), so direct checks run only on the VPS itself, against the containers' bridge IPs (`http://10.231.0.1x:3000`, §9.2). End-to-end verification uses **temporary proxied hostnames** `v2`, `v2-api`, `v2-admin` (added to the vhosts' `server_name`, and removed afterwards). Check the gate (404 without the cookie, the panel with it), contact round-trip, Turnstile, OG images, sitemap, feeds, hreflang, analytics beacon.
 3. Lower the TTLs of the Vercel records (proxied records are "Auto", so this mainly concerns any DNS-only leftovers), then switch `www`, apex, `api`, `admin` to proxied A records → VPS IP, and remove the Vercel records.
 4. Re-run the checks on the real hosts. Watch the logs for 24 h.
 5. Keep the Vercel project deployable for 48 h as a rollback (switching DNS back is the rollback). Then remove the domain from Vercel and delete the project.
@@ -460,7 +491,7 @@ Ordered: (1) SSL/TLS → Full (strict), create an Origin Certificate for `mehdis
 | 6 | Web pages, SEO, OG, sitemap/feeds, ⌘K, Turnstile widget, analytics beacon | Lighthouse ≥ 95 locally; Playwright smoke green |
 | 7 | Admin CMS screens + draft preview | ☑ trilingual post end to end |
 | 8 | Contact pipeline end to end (RMQ → SES, localized), anti-spam, inbox | round-trip in dev (SES sandbox with verified addresses) |
-| 9 | Dockerfiles, compose (127.0.0.1-only, CI-checked), deploy workflows, rollback scripts, nginx files + proposed VPS-mirror diff, `DEPLOY.md`, `CLOUDFLARE.md`, the §9.5 command list | ☑ you review before **any** server change or deploy |
+| 9 | Dockerfiles, compose (no published ports, fixed IPs from `deploy/ip-plan.env`, CI-checked), `portfolio` network creation, admin trust-boundary check (`deploy/checks/verify-api-isolation.sh`) in deploy-api.yml before the flip, deploy workflows, rollback scripts, nginx files + proposed VPS-mirror diff, `DEPLOY.md`, `CLOUDFLARE.md`, the §9.5 command list | ☑ you review before **any** server change or deploy |
 | 10 | Delete `legacy/`, resolve `SEED_REVIEW.md` with you, final docs | `v2` ready to merge (you say when) |
 
 Commits: conventional, one or more per phase, on `v2`, local until you approve a push (and Vercel is disconnected first).

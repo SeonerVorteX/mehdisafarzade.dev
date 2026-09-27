@@ -4,6 +4,8 @@
  * `src/assertEnv.ts` has already validated them by the time this loads in
  * `main.ts`. Tests set what they need via `test/e2e.env` / jest setup.
  */
+import { parseTrustedSources } from '../utils/trustedSources.util';
+
 const env = process.env;
 
 function bool(v: string | undefined, fallback = false): boolean {
@@ -62,6 +64,15 @@ export const MAIL = {
 };
 
 export const IP_HASH_PEPPER = env.IP_HASH_PEPPER ?? '';
+
+/**
+ * Exact peer IPs trusted to send X-Admin-Device and X-Real-IP (see trustedSources.util).
+ * Production: required (assertEnv refuses to boot otherwise). Dev/test default: loopback.
+ * On Docker Desktop, the local gate container's requests reach the host API from 127.0.0.1.
+ */
+export const ADMIN_TRUSTED_SOURCES: ReadonlySet<string> = parseTrustedSources(
+    env.ADMIN_TRUSTED_SOURCES ?? (IS_PRODUCTION ? '' : '127.0.0.1,::1'),
+).ips;
 
 export const ADMIN_AUTH = {
     jwtSecret: env.ADMIN_JWT_SECRET ?? '',

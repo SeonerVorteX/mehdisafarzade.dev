@@ -19,7 +19,14 @@ async function adminServerGet<T>(path: string): Promise<T | null> {
     const { data } = await fetchJSON<T>(path, {
       baseUrl: base,
       cache: "no-store",
-      headers: { cookie, "x-admin-device": device, "user-agent": h.get("user-agent") ?? undefined },
+      headers: {
+        cookie,
+        "x-admin-device": device,
+        // The admin container is a trusted peer (ADMIN_TRUSTED_SOURCES), so the API honors
+        // the visitor IP nginx gave us, for audit logs and throttling.
+        "x-real-ip": h.get("x-real-ip") ?? undefined,
+        "user-agent": h.get("user-agent") ?? undefined,
+      },
     });
     return data;
   } catch (err) {

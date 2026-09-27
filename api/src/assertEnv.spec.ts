@@ -34,6 +34,46 @@ describe('validateEnv', () => {
         expect(errors).toMatch(/IP_HASH_PEPPER is required/);
     });
 
+    describe('ADMIN_TRUSTED_SOURCES (fail closed in production)', () => {
+        const prod = {
+            ...base,
+            NODE_ENV: 'production',
+            S3_REGION: 'eu-central-1',
+            S3_BUCKET: 'b',
+            S3_ACCESS_KEY_ID: 'k',
+            S3_SECRET_ACCESS_KEY: 's'.repeat(20),
+            MAIL_HOST: 'smtp',
+            MAIL_PORT: '587',
+            MAIL_USER: 'u',
+            MAIL_PASS: 'p'.repeat(12),
+            MAIL_FROM: 'x <no-reply@example.com>',
+            CONTACT_NOTIFY_TO: 'me@example.com',
+            IP_HASH_PEPPER: 'q'.repeat(40),
+        };
+
+        it('refuses to start in production when it is missing', () => {
+            expect(validateEnv(prod).join()).toMatch(/ADMIN_TRUSTED_SOURCES is required/);
+        });
+
+        it('refuses an empty or blank list', () => {
+            expect(validateEnv({ ...prod, ADMIN_TRUSTED_SOURCES: ' , ' }).join()).toMatch(/at least one IP/);
+        });
+
+        it('refuses CIDR ranges and non-IPs', () => {
+            const errors = validateEnv({ ...prod, ADMIN_TRUSTED_SOURCES: '10.231.0.0/24,nginx' }).join();
+            expect(errors).toMatch(/CIDR range; list exact IPs only/);
+            expect(errors).toMatch(/"nginx" is not an IP address/);
+        });
+
+        it('accepts the exact production list', () => {
+            expect(validateEnv({ ...prod, ADMIN_TRUSTED_SOURCES: '10.231.0.1,10.231.0.31,10.231.0.32' })).toEqual([]);
+        });
+
+        it('is optional outside production (defaults to loopback)', () => {
+            expect(validateEnv(base)).toEqual([]);
+        });
+    });
+
     it('rejects short or placeholder secrets', () => {
         expect(validateEnv({ ...base, ADMIN_JWT_SECRET: 'changeme' }).join()).toMatch(
             /ADMIN_JWT_SECRET must be at least/,

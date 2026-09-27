@@ -28,6 +28,7 @@ async function refreshSession(req: NextRequest): Promise<string[] | null> {
       headers: {
         cookie: `${ADMIN_COOKIE.REFRESH}=${refresh}`,
         "x-admin-device": device,
+        "x-real-ip": req.headers.get("x-real-ip") ?? "",
         origin: ADMIN_URL,
         "user-agent": req.headers.get("user-agent") ?? "",
         accept: "application/json",

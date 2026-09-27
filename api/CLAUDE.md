@@ -57,7 +57,7 @@ dev/seaweedfs-s3.json     dev-only S3 credentials for portfolio-s3-dev
 ## Services and data
 
 - **Redis:** one shared client with `keyPrefix` (`pf:` in prod, `pf-test:` in e2e). Write keys *without* the prefix. The DB index comes from `REDIS_URL` (prod `/1`, dev `/1`, e2e `/2`).
-- **Client IP:** `getClientIp()` trusts `X-Real-IP` (set by nginx) in production only, never `X-Forwarded-For[0]`, which is spoofable.
+- **Trust boundary:** `ADMIN_TRUSTED_SOURCES` (exact IPs; prod = portfolio bridge gateway + admin blue/green, see `deploy/ip-plan.env`). `AdminDeviceGuard` 404s unless the TCP peer is in it, and `getClientIp()` honors `X-Real-IP` only from it (never `X-Forwarded-For`). Production refuses to boot without a valid list. Tested by `test/admin-trust.e2e-spec.ts` with distinct loopback source IPs.
 - **Throttling:** Redis-backed `AppThrottlerGuard` (APP_GUARD, a single `default` throttler, per-route `@Throttle` overrides, `@StrictIpThrottle()` for pre-auth routes).
 - **S3:** optional outside production. Without it, media calls return 503. In dev it's SeaweedFS on :9002 (MinIO no longer publishes images).
 - **Mail:** optional outside production (JSON transport). Dev uses Mailpit (SMTP :1026, UI http://localhost:8026).

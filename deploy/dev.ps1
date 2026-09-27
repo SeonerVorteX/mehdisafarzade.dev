@@ -124,6 +124,8 @@ RABBITMQ_URL=amqp://portfolio:portfolio@localhost:5673/portfolio
 WEB_ORIGIN=http://localhost:5600
 ADMIN_ORIGIN=https://localhost:8443
 CORS_EXTRA_ORIGINS=
+# Peers trusted to send X-Admin-Device / X-Real-IP. Docker Desktop delivers the local gate's requests from loopback.
+ADMIN_TRUSTED_SOURCES=127.0.0.1,::1
 
 # SeaweedFS S3 (portfolio-s3-dev); credentials from dev/seaweedfs-s3.json
 S3_REGION=eu-central-1
