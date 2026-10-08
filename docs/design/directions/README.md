@@ -9,6 +9,32 @@ Three directions for the site, each a real mini home page built on the same true
 
 ---
 
+## Mix (your pick, 2026-10-08): A as the base, with C's warmth and B's proof
+
+Live at `/_design/directions/mix`; screenshots `mix-*.png`.
+
+- **From A (base):** structure, Geologica, the route line (stages in the hero, then one rail down the page ending at "Start a conversation"), the night-indigo dark theme, sodium amber for every action, and the precision and restraint.
+- **From C:** warmth.
+  - Two full-bleed colour fields. Testimonials sit on sodium amber, and the line runs straight through it. The contact form sits on ultramarine.
+  - At night these become deep ochre and deep blue, so they glow rather than glare.
+  - The light theme moves from A's cold lavender (`#F3F5FA`) to a warm neutral (`#F5F4F0`), well short of the cream cluster.
+- **From B:** proof beside the claim, visible without scrolling on desktop: your Prodata role (with a "now" dot) and the shortest verbatim client quote (with a labelled translation in az/ru). On phones the order is headline → form → route → proof, so the working action stays first.
+- **Dropped:** C's envelope, airmail and Nunito; B's lattice and brown dark theme.
+
+| Tokens | Light | Dark |
+|---|---|---|
+| Ground | `#F5F4F0` | Night `#10162A` |
+| Surface | `#FFFFFF` | `#18213B` |
+| Ink / muted | `#14192B` / `#555A68` | `#E7EBF6` / `#9BA5C1` |
+| Line | Ultramarine `#2F4FD8` | `#7D97FF` |
+| Actions | Sodium `#F2B544` with ink text | same |
+| Amber field | `#F2B544`, ink text | `#4A360C`, text `#F6E8C9` |
+| Blue field | `#2F4FD8`, white text | `#22348F`, text `#E7EBF6` |
+
+Measured: the hero's Send button bottom is at 817px (en) / 857px (ru) in a 1440×900 window, at 787px in 1280×800, and at 788px in 390×844.
+
+---
+
 ## A. Line (closest to Linear)
 
 **Rationale.** PRODUCT.md's lead claim is "whole product, one person". A is that claim drawn literally: a product is one route (data model, API, admin tools, interface, server, in production), and I ride it from the first stop to the last. The hero shows the six stages with Examination.az as the example, and the line ends in your project: the message form. Linear's discipline (quiet ground, one family, hairlines, subtle depth) with one warm signal colour so it doesn't go cold.

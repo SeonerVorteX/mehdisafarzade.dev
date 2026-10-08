@@ -33,7 +33,8 @@
       "intro": "Sayt üçün üç istiqamət, hamısı eyni real məzmun üzərində. Birini seçin və ya qarışdırın.",
       "a": "Line: Linear-a ən yaxın. Məhsul bir marşrutdur, mən onu ilk dayanacaqdan sonuncuya qədər keçirəm.",
       "b": "Pane: ortada. Dəqiq çərçivələr, rəng yalnız şüşələrin içində, Şəki şəbəkələri kimi.",
-      "c": "Post: Josh Comeau-ya ən yaxın. Hər sübut bir məktubdur, əlaqə forması isə zərfdir."
+      "c": "Post: Josh Comeau-ya ən yaxın. Hər sübut bir məktubdur, əlaqə forması isə zərfdir.",
+      "mix": "Qarışıq: əsas A, üstəlik C-nin rəng sahələri və istiliyi, B-nin başlıq yanında sübutu."
     },
     "nav": {
       "work": "İşlər",
@@ -109,10 +110,10 @@
     },
     "words": {
       "translation": "Tərcümə",
-      "q1": "Mehdi indiyədək birgə işlədiyim ən yaxşı developerlərdən biridir. … O, təkcə bacarıqlı və tez öyrənən deyil, həm də münasibəti əladır, tez-tez ünsiyyət saxlayır və tapşırıqlara insani yanaşma gətirir … Bütün kateqoriyalarda 6 ulduza layiqdir - 5 azdır.",
+      "q1": "Mehdi indiyədək birgə işlədiyim ən yaxşı developerlərdən biridir. … O, təkcə bacarıqlı və tez öyrənən deyil, həm də münasibəti əladır, tez-tez ünsiyyət saxlayır və tapşırıqlara insani yanaşma gətirir … Bütün kateqoriyalarda 6 ulduza layiqdir — 5 azdır.",
       "q1By": "Agentlik sahibi",
       "q1Source": "Upwork, 2025",
-      "q2": "… Biznes tələblərini nə qədər tez qavradığı, həm də onları seçdiyim texnologiyalara (AWS, NodeJS, ...) nə qədər çevik tətbiq edə bildiyi məni çox sevindirdi. O, həmişə müddətlərə əməl edirdi və əlçatan olmasını təmin etmək üçün çox proaktiv planlama aparırdı - üstəlik ünsiyyət bacarığı hər şeyin son dərəcə rəvan getməsini təmin etdi. …",
+      "q2": "… Biznes tələblərini nə qədər tez qavradığı, həm də onları seçdiyim texnologiyalara (AWS, NodeJS, ...) nə qədər çevik tətbiq edə bildiyi məni çox sevindirdi. O, həmişə müddətlərə əməl edirdi və əlçatan olmasını təmin etmək üçün çox proaktiv planlama aparırdı — üstəlik ünsiyyət bacarığı hər şeyin son dərəcə rəvan getməsini təmin etdi. …",
       "q2By": "Mark Bosshard, StrategicAI-ın CEO-su",
       "q2Source": "LinkedIn",
       "all": "Bütün tövsiyələr",

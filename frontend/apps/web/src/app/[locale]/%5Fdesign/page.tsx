@@ -24,7 +24,7 @@ export default async function DesignIndex({ params }: { params: Promise<{ locale
       <h1 className="display-lg">{t("title")}</h1>
       <p className="lead">{t("intro")}</p>
       <ul>
-        {(["a", "b", "c"] as const).map((d) => (
+        {(["mix", "a", "b", "c"] as const).map((d) => (
           <li key={d}>
             <Link href={`/_design/directions/${d}`}>{t(d)}</Link>
           </li>
