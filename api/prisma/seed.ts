@@ -10,7 +10,7 @@ import * as path from 'node:path';
 import { CreateBucketCommand, HeadBucketCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { PrismaClient, type Locale } from '@prisma/client';
 import * as argon from 'argon2';
-import { EDUCATION, EXPERIENCE, PROFILE, PROJECTS, SAMPLE_POST, SKILLS, USES_PAGE } from './seed-data';
+import { EDUCATION, EXPERIENCE, PROFILE, PROJECTS, SAMPLE_POST, SKILLS, TESTIMONIALS, USES_PAGE } from './seed-data';
 
 const LOCALES: Locale[] = ['en', 'az', 'ru'];
 const prisma = new PrismaClient();
@@ -95,7 +95,8 @@ async function seedProfile(client: S3Client | null) {
             id: 'profile',
             email: PROFILE.email,
             socials: PROFILE.socials,
-            availableForWork: PROFILE.availableForWork,
+            availableForFreelance: PROFILE.availableForFreelance,
+            availableForRoles: PROFILE.availableForRoles,
             needsReview: true,
             translations: {
                 create: LOCALES.map((locale) => ({
@@ -110,8 +111,10 @@ async function seedProfile(client: S3Client | null) {
             },
         },
     });
-    // English résumé only (decision 2026-09-25); az/ru are uploaded later via the CMS.
-    const resumeId = await seedMedia(client, 'resume-en-2026.pdf', 'application/pdf', 'Résumé: Mehdi Safarzade');
+    // English résumé only; az/ru are uploaded later via the CMS. The 2026 CV (2026-10-08)
+    // supersedes resume-en-2026.pdf. SEED_REVIEW S-10: it must not ship while it still
+    // lists a reference's email address.
+    const resumeId = await seedMedia(client, 'resume-without-phone.pdf', 'application/pdf', 'Résumé: Mehdi Safarzade');
     if (resumeId) {
         await prisma.profileResume.upsert({
             where: { profileId_locale: { profileId: 'profile', locale: 'en' } },
@@ -245,6 +248,35 @@ async function seedSamplePost() {
     log('sample post (DRAFT)');
 }
 
+/** Real, verbatim recommendations (2026-10-08). Published, but flagged for the owner's review. */
+async function seedTestimonials() {
+    for (const [i, t] of TESTIMONIALS.entries()) {
+        await prisma.testimonial.upsert({
+            where: { key: t.key },
+            update: {},
+            create: {
+                key: t.key,
+                quote: t.quote,
+                quoteLocale: 'en',
+                authorName: t.authorName ?? null,
+                source: t.source,
+                period: t.period ?? null,
+                url: t.url ?? null,
+                order: i,
+                status: 'PUBLISHED',
+                needsReview: true,
+                translations: {
+                    create: LOCALES.map((locale) => ({
+                        locale,
+                        authorLabel: t.authorLabel[locale],
+                        quoteTranslation: locale === 'en' ? null : t.translation[locale],
+                    })),
+                },
+            },
+        });
+    }
+}
+
 async function seedPages() {
     await prisma.page.upsert({
         where: { key: USES_PAGE.key },
@@ -280,6 +312,7 @@ async function main() {
     await seedExperience();
     await seedProjects(client);
     await seedSamplePost();
+    await seedTestimonials();
     await seedPages();
     log('done');
 }

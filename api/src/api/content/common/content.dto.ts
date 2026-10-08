@@ -265,8 +265,8 @@ export class SkillDto {
     name?: string;
 
     @IsOptional()
-    @IsIn(['LANGUAGE', 'FRAMEWORK', 'DATA', 'CLOUD_DEVOPS', 'TOOLING', 'SOFT'], msg('IS_ENUM'))
-    category?: 'LANGUAGE' | 'FRAMEWORK' | 'DATA' | 'CLOUD_DEVOPS' | 'TOOLING' | 'SOFT';
+    @IsIn(['LANGUAGE', 'FRAMEWORK', 'DATA', 'CLOUD_DEVOPS', 'TOOLING', 'AI', 'SOFT'], msg('IS_ENUM'))
+    category?: 'LANGUAGE' | 'FRAMEWORK' | 'DATA' | 'CLOUD_DEVOPS' | 'TOOLING' | 'AI' | 'SOFT';
 
     @IsOptional()
     @Type(() => Number)
@@ -315,9 +315,15 @@ export class ProfileBaseDto {
     @MaxLength(254, msg('MAX_LENGTH'))
     email?: string;
 
+    /** Open to freelance projects (shown subtly on the site while on). */
     @IsOptional()
     @IsBoolean(msg('IS_BOOLEAN'))
-    availableForWork?: boolean;
+    availableForFreelance?: boolean;
+
+    /** Open to full- or part-time roles (shown subtly on the site while on). */
+    @IsOptional()
+    @IsBoolean(msg('IS_BOOLEAN'))
+    availableForRoles?: boolean;
 
     /** { github, linkedin, upwork, … }: URL values; a "<PLACEHOLDER>" is kept but hidden publicly. */
     @IsOptional()

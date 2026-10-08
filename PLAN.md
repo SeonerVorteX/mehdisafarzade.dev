@@ -159,7 +159,8 @@ Experience      id, org, orgUrl?, location?, startedAt, endedAt?, order, status,
 ExperienceTranslation  title, summary, bulletsMarkdown
 Education (same shape as Experience)         // UNEC — the brief lists it on /about
 Skill           id, name, category(enum: LANGUAGE FRAMEWORK DATA CLOUD_DEVOPS TOOLING SOFT), level?, icon?, order, featured
-SiteProfile     singleton (id = 'profile'): email, socials Json (validated), availableForWork, resumes → ProfileResume(locale, mediaId)
+SiteProfile     singleton (id = 'profile'): email, socials Json (validated), availableForFreelance + availableForRoles (two independent flags, 2026-10-08), resumes → ProfileResume(locale, mediaId)
+Testimonial     verbatim quote + quoteLocale, optional authorName (consent only), source UPWORK|LINKEDIN, period, url?, order, status; translations(locale, authorLabel, quoteTranslation?) — site labels translations as translations (2026-10-08)
 SiteProfileTranslation  name, headline, pitch, bioMarkdown, seoTitle, seoDescription
 Page / PageTranslation  (slug per locale, bodyMarkdown, seo)  // e.g. /uses
 Media           id, s3Key, mime, width?, height?, size, lqip?(data URI), variants Json, status(PENDING READY FAILED), uploadedById

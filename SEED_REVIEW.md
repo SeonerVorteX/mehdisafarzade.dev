@@ -2,60 +2,71 @@
 
 Content that goes into the seed but is **not confirmed as current**. Each item is seeded with `needsReview: true` and appears on the admin dashboard until it's cleared in the CMS. Items marked **DRAFT** are seeded unpublished and never shown on the public site until you publish them.
 
-Sources:
-- **GH**: GitHub `origin/main` @ `b2adc49` (2026-06-18): `src/data/data.ts`, `public/documents/Resume.pdf` (2026 résumé).
-- **OLD**: legacy history (`fb7e394`): the 9-project `data.ts`. The Dec 2024 résumé is **not** used (decision 2026-09-25).
+Sources, newest first (a newer source wins where they differ):
+- **CV26**: your 2026 CV, `api/prisma/seed-assets/resume-without-phone.pdf`, plus `PRODUCT_UPDATE_PROMPT.md` (2026-10-08). Where the two differ, the prompt wins, since it's newer and more exact.
+- **GH**: GitHub `origin/main` @ `b2adc49` (2026-06-18): `src/data/data.ts`, the older 2026 résumé (removed from the seed 2026-10-08).
+- **OLD**: legacy history (`fb7e394`): the 9-project `data.ts`.
 - **ANS**: your Phase 0 answers.
 
 Status key: ☐ open · ✔ resolved (with date + decision)
 
-## Blocking (needs your input before Phase 6 goes live)
+## Profile (needs your input before Phase 6 goes live)
 
 | ID | Item | Seeded value | Why it needs review |
 |---|---|---|---|
-| S-01 | Upwork profile URL | `<UPWORK_PROFILE_URL>` placeholder; the link is hidden while it's a placeholder | ANS: "I'll fill this in" |
-| S-02 | LinkedIn URL | `https://www.linkedin.com/in/mehdi-safarzade` | ✔ 2026-09-25: confirmed (GH value; the old answer was out of date) |
-| S-03 | Bio / age | GH: "I'm a 19-year-old full-stack developer from Baku … professionally since 2021 … studying IT at UNEC" | Ages go stale. Proposal: drop the age and keep "since 2021". Needs az + ru translations. |
-| S-04 | Headline / pitch | Derived from the GH résumé summary: "Full-Stack Developer — TypeScript, Next.js & NestJS. I design, build and run production platforms end to end." | Newly written copy. Please confirm the tone (en), then az/ru. |
-| S-05 | "Available for work" flag | `true` | Is it currently true? It controls the hero badge. |
+| S-01 | Upwork profile URL | `https://www.upwork.com/freelancers/mehdisafarzade` | ✔ 2026-10-08 (CV26) |
+| S-02 | LinkedIn URL | `https://www.linkedin.com/in/mehdi-safarzade` | ✔ 2026-09-25 |
+| S-03 | Bio | First person, no age, "since 2021", Prodata, the remote-team line, Azerbaijani (native) + English B2+, Baku UTC+4, UNEC | ☐ Rewritten from CV26. You proofread az later (non-blocking for design). |
+| S-04 | Headline / pitch | "Full-Stack Web Developer & AI Engineer". Pitch: "I build whole web products on my own, from the data model and API to the interface and the server it runs on. Lately I also build AI systems: RAG pipelines and multi-agent assistants in production." | ☐ New copy. You proofread az later (non-blocking for design). |
+| S-05 | Availability | Two admin flags (2026-10-08): `availableForFreelance` = on, `availableForRoles` = on, each shown subtly only while on | ✔ 2026-10-08. The flags are yours to toggle in the admin. |
+| S-10 | Résumé PDF | CV26 `resume-without-phone.pdf` (en only), re-exported 2026-10-08 without your phone number or any reference email, Top Rated in the past tense | ✔ 2026-10-08. The only résumé in the seed; az/ru and later updates go through the admin (S3). |
 
-## Profile & experience (source: GH 2026 résumé, per decision 2026-09-25)
+## Profile & experience
 
 | ID | Item | Seeded value | Why |
 |---|---|---|---|
-| S-10 | English résumé PDF | the GH 2026 `Resume.pdf` (en only; az/ru hidden until uploaded) | ✔ 2026-09-25: use the 2026 PDF, drop Dec 2024. Still `needsReview`, because the PDF says "4+ years" and "Currently expanding into Java", which will go stale. |
-| S-11 | Heroic.art | Lead Full-Stack Developer, Mar 2025 – present, remote, heroic.art. Next.js + Vue 3 / Node + Express / PostgreSQL / AWS S3+EC2 | Still current? Is the client OK with being named publicly? |
-| S-12 | Self-employed (Upwork) | Full-Stack Developer, Aug 2024 – Mar 2025, "Top Rated, 100% JSS" (2026 résumé) | ☐ Top Rated / 100% JSS are live Upwork metrics. Still true? Do you want to keep freelancing listed as ended in Mar 2025 while the Upwork link (S-01) is on the site? |
-| S-13 | Mobius | Full-Stack Developer, Oct 2024 – Dec 2024, remote, mobius.az | Dates confirmed in both résumés. OK to name? |
-| S-14 | BakuDevsGroup | Backend Developer, Sep 2021 – Jan 2022 | ✔ 2026-09-25: 2026 résumé is authoritative |
-| S-15 | Education | UNEC, B.Sc. Information Technology, 2023 – 2027 (in progress) | Expected graduation year. |
-| S-16 | Languages (spoken) | Azerbaijani (native), Turkish (native), English | ☐ The 2026 résumé has no languages section. The old one said English "fluent" / Russian "basics", and the GH site data says "B2 English". Which level, and should Russian be listed at all? |
-| S-17 | Skills list | From GH résumé: TypeScript, JavaScript, Python, Java (beginner); Next.js, React, NestJS, Express, Node.js, Spring Boot (beginner); PostgreSQL, MongoDB, Prisma; AWS (S3, EC2, SES, Lambda, DynamoDB, Amplify), Docker, Nginx, Linux, Git, CI/CD; RabbitMQ; SCSS, Tailwind; Zod, RHF, Yarn Berry, Turborepo | Show the "beginner" items publicly, or keep them private? Levels are seeded as null (no bars), since skill-level bars read poorly. |
+| S-11 | Heroic.art | Lead Full-Stack Developer, Mar 2025 – May 2026. "The agency's only developer, responsible for the full product lifecycle; the owner handled QA and planning." Org link: heroic.art/about/ (team page). Mentions Fallout and Podspun. | ✔ 2026-10-08 (prompt §2) |
+| S-12 | Upwork (freelance) | Sep 2024 – Jul 2026 (ended). "10 contracts, about 600 hours, 100% Job Success Score. Earned Top Rated status." Repeat clients + notable contracts in the bullets | ✔ 2026-10-08. ☐ "$10K+ earned" was left as a `<yes \| no>` placeholder, so it stays **hidden** until you say yes. The freelance availability flag is independent. |
+| S-13 | Mobius | Full-Stack Developer, Oct – Dec 2024, remote agency team, React/Node/Express/MongoDB | ✔ 2026-10-08 (prompt §5) |
+| S-14 | BakuDevsGroup | Backend Developer, Sep 2021 – Jan 2022 | ✔ 2026-09-25 |
+| S-15 | Education | UNEC, B.Sc. Information Technology, 2023 – 2027 (in progress) | ✔ 2026-10-08 (prompt §5) |
+| S-16 | Languages | Azerbaijani (native), English (B2+ / upper-intermediate), in the bio | ✔ 2026-10-08 (prompt §5). Russian and Turkish are not listed. Say if you want them. |
+| S-17 | Skills | Added: Python (featured), Google ADK, n8n, AI agent development, RAG (new `AI` category), Kubernetes, Redux, Mapbox GL, D3, GSAP, Stripe | ✔ 2026-10-08: Java / Spring Boot hidden (not seeded) until used in a real project. |
+| S-18 | Prodata MMC | AI and Data Engineer, Jul 2026 – present (matches CV26). Named publicly. No location. | ☐ Your answer had `<…>` placeholders. Defaults: **named**, because the public résumé PDF already names Prodata MMC; **location omitted**. Tell me Baku or remote, or ask for the "agri-tech company" wording instead. |
 
 ## Projects
 
 | ID | Item | Seeded as | Why |
 |---|---|---|---|
-| S-20 | **Examination.az** (flagship) | PUBLISHED, featured, `needsReview`. Case study from **public info only**: university exam-prep platform for Azerbaijani students; Next.js monorepo (Turborepo) with landing/app/admin; NestJS + PostgreSQL/Prisma; RabbitMQ for async processing; self-managed VPS behind nginx + Cloudflare; az/en/ru/tr. Links: https://www.examination.az | Your review for accuracy and what you're comfortable disclosing. **Nothing from `AUDIT.md`/`ROADMAP.md`/`PAYMENT.md`.** No user counts or revenue unless you give them. Screenshot: the GH `Examination.png` (533 KB). Replace it with a current capture? |
-| S-21 | Old UNEC "Examination System" (unec-examination.vercel.app, github.com/SeonerVorteX/examiner) | **not seeded** | ANS 9: replaced by S-20. |
-| S-22 | Personal Portfolio (this site) | DRAFT | OLD tags said Express/MongoDB (wrong). Re-describe it as v2 when it launches. |
-| S-23 | Project Updater (npm `project-updater`) | DRAFT | OLD. Still maintained? |
-| S-24 | Discord Moderation Bot | DRAFT | OLD. Merge with S-25 into one "Discord bots" project? |
-| S-25 | Discord Registration Bot | DRAFT | OLD |
-| S-26 | AI Voice Assistant ("charlie-ai-assistant", Python/TensorFlow) | DRAFT | OLD. Worth showing? |
-| S-27 | Live Chat Application (console-live-chat, Socket.io) | DRAFT | OLD |
-| S-28 | Simple RESTful API | **not seeded** | ANS 7: dropped |
-| S-29 | Todo Application | **not seeded** | ANS 7: dropped |
-| S-30 | Project images from `opengraph.githubassets.com` | not seeded; projects S-22…S-27 have no cover | External hot-linked OG images are replaced by uploads to the media library. |
+| S-20 | **Examination.az** (flagship) | PUBLISHED, featured. Public info only. | ☐ Your review for accuracy. Screenshot: the GH `examination-az.png`. Replace it with a current capture? |
+| S-22 | mehdisafarzade.dev (this site) | DRAFT | Re-describe it as v2 when it launches. No mention of the admin gate or security setup ("self-hosted on my own server" only). |
+| S-23 … S-27 | Project Updater, two Discord bots, AI Voice Assistant, Live Chat | DRAFT (now ordered after the new projects) | OLD. Still worth showing? |
+| S-30 | Old project images (`opengraph.githubassets.com`) | not seeded | Replaced by uploads to the media library. |
+| S-31 | **Fallout** (US nuclear test map) | PUBLISHED, featured, **no image**. Case study from the repo history (read-only). | ☐ You review it in the CMS. Screenshots stay off until you confirm permission. |
+| S-32 | **Podspun** | PUBLISHED, link to podspun.com. Only your contributions: Stripe payments, bug fixes, code quality, UI work to get it shipped. Skill tag: Stripe only. | ✔ 2026-10-08 (placeholder left, so the stack stays **Stripe only**) |
+| S-33 | **Smart-home check-in system** | PUBLISHED, no client name: "for a Swiss client on Upwork", Node.js on Lambda, React UI, Google Sheets + Hostex, hired four times | ☐ New card built from prompt §3 and testimonial 2. OK to show? |
 
-## Dropped (ANS 7), recorded for completeness
+## Testimonials (new 2026-10-08)
+
+Verbatim quotes; checked character for character against `PRODUCT_UPDATE_PROMPT.md`. az/ru carry a translation the site must label as a translation. All five are PUBLISHED with `needsReview`. No email or phone is stored anywhere.
+
+| ID | Author label | Source, period | Open question |
+|---|---|---|---|
+| S-50 | Agency owner | Upwork, 2025 | ☐ You proofread az later (non-blocking for design). |
+| S-51 | Client, Switzerland | Upwork, 2024 | ☐ Same, non-blocking |
+| S-52 | Client | Upwork, 2024–2025 | ☐ Same, non-blocking |
+| S-53 | Client | Upwork, 2024 | ☐ Same, non-blocking |
+| S-54 | **Mark Bosshard**, CEO of StrategicAI | LinkedIn, **no date** | ✔ 2026-10-08 (placeholder left, so the date stays **empty**; never guessed). Named with consent. |
+
+## Dropped, recorded for completeness
 
 - Discord invite `https://discord.gg/MTNkXHnX3b`: not seeded.
 - Typed-text hero (`typingTexts`) and `typed.js`: not ported.
 - "Web3 / blockchain / smart contracts" wording (OLD about text): not seeded.
 - "Young, talented software student…" hero line (OLD): not seeded.
 - `Illustration.svg` hero art, `404.svg`: not reused (new design). Kept in `legacy/` until Phase 10.
-- `Favicon.png` (542 B): replaced by the new brand mark in Phase 5.
+- `Favicon.png` (542 B): replaced by the new brand mark.
+- The older GH 2026 résumé PDF (`resume-en-2026.pdf`): removed; CV26 is the only seeded résumé (2026-10-08).
 
 ## Sample content
 

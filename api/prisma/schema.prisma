@@ -47,6 +47,13 @@ enum MessageStatus {
   @@map("message_status")
 }
 
+enum TestimonialSource {
+  UPWORK
+  LINKEDIN
+
+  @@map("testimonial_source")
+}
+
 enum MediaStatus {
   PENDING
   READY
@@ -61,6 +68,7 @@ enum SkillCategory {
   DATA
   CLOUD_DEVOPS
   TOOLING
+  AI
   SOFT
 
   @@map("skill_category")
@@ -355,19 +363,65 @@ model EducationTranslation {
 
 model SiteProfile {
   /// singleton: always "profile"
-  id               String   @id @default("profile")
-  email            String
+  id                    String   @id @default("profile")
+  email                 String
   /// { github, linkedin, upwork, ... } validated in the service layer
-  socials          Json     @default("{}")
-  availableForWork Boolean  @default(false) @map("available_for_work")
-  needsReview      Boolean  @default(false) @map("needs_review")
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
+  socials               Json     @default("{}")
+  /// Two independent availability signals, each shown subtly on the site only while on.
+  availableForFreelance Boolean  @default(false) @map("available_for_freelance")
+  availableForRoles     Boolean  @default(false) @map("available_for_roles")
+  needsReview           Boolean  @default(false) @map("needs_review")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
 
   translations SiteProfileTranslation[]
   resumes      ProfileResume[]
 
   @@map("site_profile")
+}
+
+/// A real recommendation, quoted VERBATIM in its original language (trim with "…" only;
+/// never reword, merge or invent). Other locales show the original plus a translation
+/// that the site labels as a translation. Never store anyone's email or phone here.
+model Testimonial {
+  id          String            @id @default(cuid())
+  key         String            @unique
+  /// the exact original wording
+  quote       String
+  quoteLocale Locale            @default(en) @map("quote_locale")
+  /// optional real name, only with the person's confirmed consent
+  authorName  String?           @map("author_name")
+  source      TestimonialSource
+  /// display date as given by the source, e.g. "2024" or "2024–2025"; null when unknown (never guessed)
+  period      String?
+  url         String?
+  order       Int               @default(0)
+  status      ContentStatus     @default(DRAFT)
+  needsReview Boolean           @default(false) @map("needs_review")
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+
+  translations TestimonialTranslation[]
+
+  @@index([status, order])
+  @@map("testimonials")
+}
+
+model TestimonialTranslation {
+  id               String   @id @default(cuid())
+  testimonialId    String   @map("testimonial_id")
+  locale           Locale
+  /// e.g. "Agency owner" / "Client, Switzerland" / "CEO of StrategicAI"
+  authorLabel      String   @map("author_label")
+  /// translation of `quote` for this locale; null in the quote's own locale
+  quoteTranslation String?  @map("quote_translation")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  testimonial Testimonial @relation(fields: [testimonialId], references: [id], onDelete: Cascade)
+
+  @@unique([testimonialId, locale])
+  @@map("testimonial_translations")
 }
 
 model SiteProfileTranslation {

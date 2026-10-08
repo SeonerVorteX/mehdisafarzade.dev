@@ -36,7 +36,8 @@ export class ProfileService {
             return {
                 email: p.email,
                 socials,
-                availableForWork: p.availableForWork,
+                availableForFreelance: p.availableForFreelance,
+                availableForRoles: p.availableForRoles,
                 locale: t.locale,
                 fallback: t.fallback,
                 name: t.t.name,
@@ -66,7 +67,8 @@ export class ProfileService {
             where: { id: PROFILE_ID },
             data: {
                 email: dto.email,
-                availableForWork: dto.availableForWork,
+                availableForFreelance: dto.availableForFreelance,
+                availableForRoles: dto.availableForRoles,
                 socials: dto.socials,
                 needsReview: dto.needsReview,
             },

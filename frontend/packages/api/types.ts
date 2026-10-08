@@ -24,7 +24,7 @@ export type MediaView = {
   variants: string[];
 };
 
-export type SkillCategory = "LANGUAGE" | "FRAMEWORK" | "DATA" | "CLOUD_DEVOPS" | "TOOLING" | "SOFT";
+export type SkillCategory = "LANGUAGE" | "FRAMEWORK" | "DATA" | "CLOUD_DEVOPS" | "TOOLING" | "AI" | "SOFT";
 export type Skill = {
   id: string;
   key: string;
@@ -42,7 +42,9 @@ export type SocialKey = "github" | "linkedin" | "upwork" | "x" | "telegram" | "s
 export type Profile = Localized & {
   email: string;
   socials: Partial<Record<SocialKey, string>>;
-  availableForWork: boolean;
+  /** Each is shown subtly (near the contact CTA) only while on; managed in the admin. */
+  availableForFreelance: boolean;
+  availableForRoles: boolean;
   name: string;
   headline: string;
   pitch: string;
