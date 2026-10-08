@@ -77,7 +77,7 @@ Supporting proof, never the lead:
 
 - **Profile and experience** in `api/prisma/seed-data.ts`, from the 2026 CV (`api/prisma/seed-assets/resume-without-phone.pdf`); open items in `SEED_REVIEW.md`. Roles: Prodata MMC (AI and Data Engineer, Jul 2026 – present), Heroic.art (Lead Full-Stack Developer, Mar 2025 – May 2026; listed on https://heroic.art/about/, link only, never embed its images), Upwork freelance (Sep 2024 – Jul 2026, ended; the freelance availability flag is independent of it), Mobius (Oct – Dec 2024), BakuDevsGroup (Sep 2021 – Jan 2022). Education: B.Sc. Information Technology, UNEC, 2023 – 2027.
 - **Projects:**
-  - *Examination.az* (flagship): public information only; screenshot in `api/prisma/seed-assets/`.
+  - *Examination.az* (flagship): public information only; its logo is in `api/prisma/seed-assets/examination-az.png` (no screenshot yet).
   - *Fallout* (an interactive map of every US nuclear test, 1945–1992; agency client project): main developer from Apr 2025, about 147 of the project's 200 commits. The deployment is offline. **No screenshots until permission is confirmed**; use a neutral placeholder.
   - *Podspun* (podspun.com): Mehdi's contributions only (Stripe payments, bug fixes, code quality, UI work to get it shipped), never presented as his product.
   - *Smart-home check-in system:* for a Swiss Upwork client, hired four times (Lambda, React UI, Google Sheets/Hostex).

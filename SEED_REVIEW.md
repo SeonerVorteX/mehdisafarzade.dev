@@ -38,7 +38,7 @@ Status key: ☐ open · ✔ resolved (with date + decision)
 
 | ID | Item | Seeded as | Why |
 |---|---|---|---|
-| S-20 | **Examination.az** (flagship) | PUBLISHED, featured. Public info only. | ☐ Your review for accuracy. Screenshot: the GH `examination-az.png`. Replace it with a current capture? |
+| S-20 | **Examination.az** (flagship) | PUBLISHED, featured. Public info only. | ☐ Your review for accuracy. Note: `examination-az.png` is the Examination.az **logo** (glowing shield), not a screenshot. It's used as the project's mark; a real screen capture of the current version is still needed. |
 | S-22 | mehdisafarzade.dev (this site) | DRAFT | Re-describe it as v2 when it launches. No mention of the admin gate or security setup ("self-hosted on my own server" only). |
 | S-23 … S-27 | Project Updater, two Discord bots, AI Voice Assistant, Live Chat | DRAFT (now ordered after the new projects) | OLD. Still worth showing? |
 | S-30 | Old project images (`opengraph.githubassets.com`) | not seeded | Replaced by uploads to the media library. |

@@ -20,6 +20,7 @@
     "ci": "yarn typecheck && yarn lint && yarn test && yarn i18n:check"
   },
   "devDependencies": {
+    "@playwright/test": "~1.62.0",
     "@tailwindcss/postcss": "^4.1",
     "@types/node": "^22",
     "@types/react": "^19",

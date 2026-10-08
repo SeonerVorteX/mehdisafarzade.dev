@@ -43,10 +43,6 @@ p {
   color: $color-fg-secondary;
 }
 
-.micro-label {
-  margin: 0;
-  @include micro-label;
-}
 
 .prose {
   max-width: 68ch;
@@ -105,27 +101,5 @@ code {
     border: 0;
     background: none;
     font-size: inherit;
-  }
-}
-
-.section-heading {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: end;
-  gap: rem(16) rem(24);
-  margin-bottom: rem(40);
-
-  &__numeral {
-    font-family: $font-display;
-    font-size: $fs-5xl;
-    line-height: 0.8;
-    letter-spacing: $tracking-tight;
-    color: $color-accent-text;
-    font-variant-numeric: lining-nums tabular-nums;
-  }
-
-  &__title {
-    margin-top: rem(8);
-    font-size: $fs-3xl;
   }
 }

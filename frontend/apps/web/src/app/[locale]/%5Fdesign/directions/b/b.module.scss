@@ -1,0 +1,872 @@
+// Direction B, "Pane": a Sheki shebeke window. Exact walnut lattice, colour only inside the panes,
+// and light coming through the glass. Tokens live here (dev-only direction).
+@use "functions" as *;
+@use "breakpoints" as *;
+
+@mixin light {
+  --wall: #eceae6;
+  --clear: #f8f9fa;
+  --ink: #1f1916;
+  --muted: #5c524b;
+  --frame: #3a2a20;
+  --cobalt: #2350b8;
+  --ruby: #ae2440;
+  --emerald: #167a54;
+  --amber: #e3a21a;
+  --on-glass: #ffffff;
+  --on-amber: #2a1d07;
+  --code: #2a1e16;
+  --light: rgb(255 255 255 / 34%);
+  color-scheme: light;
+}
+
+@mixin dark {
+  --wall: #22180f;
+  --clear: #2d2117;
+  --ink: #f4ede6;
+  --muted: #c0b2a6;
+  --frame: #5a4230; // night: the lattice catches the lamplight
+  --cobalt: #2d55c4; // deep jewel glass, lit from inside the house
+  --ruby: #b02a4a;
+  --emerald: #13744f;
+  --amber: #e8a92a;
+  --on-glass: #fff7ee;
+  --on-amber: #2a1d07;
+  --code: #160f0a;
+  --light: rgb(255 236 200 / 30%);
+  color-scheme: dark;
+}
+
+.root {
+  @include light;
+  --lattice: #{rem(8)};
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  min-height: 100dvh;
+  background: var(--wall);
+  color: var(--ink);
+  font-family: var(--font-commissioner), system-ui, sans-serif;
+  font-size: rem(17);
+  line-height: 1.6;
+  font-variation-settings: "FLAR" 0, "VOLM" 0;
+
+  ::selection {
+    background: var(--cobalt);
+    color: var(--on-glass);
+  }
+
+  // ink on the wall and clear glass, cream on coloured glass: ≥3:1 everywhere (WCAG 1.4.11)
+  :focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  :is(.cobalt, .ruby, .emerald) :focus-visible {
+    outline-color: #fff7ee;
+  }
+
+  @include bp-down(sm) {
+    --lattice: #{rem(6)};
+    font-size: rem(16);
+  }
+}
+
+// The shell's global h1–h4 rule sets its own face; every heading here uses the direction's family.
+.root :is(h1, h2, h3, h4) {
+  font-family: inherit; // the shell's display face must not leak in
+}
+
+:global(html[data-theme="dark"]) .root {
+  @include dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme])) .root {
+    @include dark;
+  }
+}
+
+// ── header ─────────────────────────────────────────────────────────────────
+.header {
+  background: var(--wall);
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  gap: rem(28);
+  max-width: rem(1280);
+  min-height: rem(72);
+  margin: 0 auto;
+  padding: 0 rem(24);
+
+  @include bp-down(md) {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  @include bp-down(sm) {
+    gap: rem(10);
+    padding: 0 rem(12) 0 rem(16);
+  }
+}
+
+.brand {
+  color: var(--ink);
+  font-size: rem(19);
+  font-weight: 700;
+  font-variation-settings: "FLAR" 100, "VOLM" 0;
+  text-decoration: none;
+  white-space: nowrap;
+
+  @include bp-down(sm) {
+    font-size: rem(16);
+  }
+}
+
+.nav {
+  display: flex;
+  gap: rem(26);
+  margin-left: auto;
+
+  a {
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: none;
+    background-image: linear-gradient(var(--amber), var(--amber));
+    background-size: 0 3px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 220ms var(--ease);
+
+    &:hover {
+      background-size: 100% 3px;
+    }
+  }
+
+  @include bp-down(md) {
+    order: 3;
+    width: 100%;
+    margin: 0;
+    padding: 0 0 rem(12);
+    overflow-x: auto;
+    gap: rem(20);
+    scrollbar-width: none;
+  }
+}
+
+.tools {
+  display: flex;
+  gap: rem(8);
+  margin-left: auto;
+
+  @include bp-up(md) {
+    margin-left: 0;
+  }
+
+  :global(.segmented) {
+    border: 2px solid var(--frame);
+    border-radius: rem(4);
+    background: var(--clear);
+  }
+
+  :global(.segmented__item--text) {
+    font-family: inherit;
+    font-size: #{rem(13)};
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  :global(.segmented__item) {
+    border-radius: rem(2);
+    color: var(--muted);
+
+    &[data-active] {
+      background: var(--frame);
+      color: var(--wall);
+      box-shadow: none;
+    }
+  }
+
+  @include bp-down(sm) {
+    gap: rem(6);
+
+    :global(.segmented) {
+      padding: 2px;
+    }
+
+    :global(.segmented__item) {
+      min-width: rem(32);
+      height: rem(32);
+      padding: 0 rem(6);
+    }
+  }
+}
+
+:global(html[data-theme="dark"]) .tools :global(.segmented__item[data-active]) {
+  background: var(--amber);
+  color: var(--on-amber);
+}
+
+// ── the window: walnut lattice holding panes ───────────────────────────────
+.main {
+  max-width: rem(1280);
+  margin: 0 auto;
+  padding: rem(16) rem(24) 0;
+  outline: none;
+
+  @include bp-down(sm) {
+    padding: rem(8) rem(12) 0;
+  }
+}
+
+.window {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--lattice);
+  padding: var(--lattice);
+  border-radius: rem(6);
+  background: var(--frame);
+  isolation: isolate;
+
+  // the light behind the glass follows the pointer
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle rem(220) at var(--lx, 50%) var(--ly, 50%), var(--light), transparent 70%);
+    mix-blend-mode: soft-light;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms var(--ease);
+  }
+
+  &[data-lit]::after {
+    opacity: 1;
+  }
+
+  @include bp-down(md) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.pane {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: rem(10);
+  min-width: 0;
+  padding: clamp(rem(20), 2.4vw, rem(36));
+  color: inherit;
+  text-decoration: none;
+  transition: filter 240ms var(--ease);
+
+  &:is(a):hover {
+    filter: brightness(1.05) saturate(1.05);
+  }
+}
+
+.clear {
+  background: var(--clear);
+  color: var(--ink);
+}
+
+.cobalt {
+  background: var(--cobalt);
+  color: var(--on-glass);
+}
+
+.ruby {
+  background: var(--ruby);
+  color: var(--on-glass);
+}
+
+.emerald {
+  background: var(--emerald);
+  color: var(--on-glass);
+}
+
+.amber {
+  background: var(--amber);
+  color: var(--on-amber);
+}
+
+.walnut {
+  background: var(--code);
+  color: #f4ede6;
+}
+
+.paneTitle {
+  font-size: rem(20);
+  font-weight: 700;
+  line-height: 1.25;
+  font-variation-settings: "FLAR" 100, "VOLM" 0;
+}
+
+.paneText {
+  font-size: rem(15);
+  line-height: 1.5;
+}
+
+// ── hero composition ───────────────────────────────────────────────────────
+.heroWindow {
+  grid-template-areas:
+    "text text text text text text text text proj proj proj proj"
+    "now now now proof proof proof start start start start start start";
+}
+
+.heroText {
+  grid-area: text;
+  justify-content: flex-end;
+  padding: clamp(rem(28), 4.5vw, rem(64));
+}
+.heroProject {
+  grid-area: proj;
+  justify-content: flex-end;
+}
+.heroNow {
+  grid-area: now;
+}
+.heroProof {
+  grid-area: proof;
+  margin: 0;
+}
+.heroStarter {
+  grid-area: start;
+}
+
+// coloured edge on clear glass: the colour lives in the glass's border band, not a fill
+.edgeCobalt {
+  box-shadow: inset 0 rem(8) 0 var(--cobalt);
+}
+
+.edgeEmerald {
+  box-shadow: inset 0 rem(8) 0 var(--emerald);
+}
+
+.heroLogo {
+  width: rem(44);
+  height: auto;
+  margin: rem(6) 0 auto;
+}
+
+.paneLinkTitle {
+  text-decoration: underline;
+  text-decoration-color: var(--cobalt);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.2em;
+}
+
+.proofLine {
+  margin-top: rem(6);
+  padding-top: rem(12);
+  border-top: 2px solid var(--wall);
+  font-size: rem(15);
+  font-weight: 700;
+}
+
+@include bp-down(md) {
+  .heroWindow {
+    grid-template-areas: "text" "start" "proj" "now" "proof";
+  }
+}
+
+.role {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.title {
+  max-width: 14ch;
+  margin: rem(12) 0 0;
+  font-size: clamp(rem(42), 5.2vw + rem(6), rem(86));
+  font-weight: 750;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  font-variation-settings: "FLAR" 100, "VOLM" 0;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 54ch;
+  margin: rem(22) 0 0;
+  color: var(--muted);
+  font-size: clamp(rem(17), 0.5vw + rem(15), rem(20));
+}
+
+.shortQuote {
+  margin: 0;
+
+  p {
+    margin: 0;
+    font-size: rem(19);
+    font-weight: 600;
+    line-height: 1.35;
+    font-variation-settings: "FLAR" 60, "VOLM" 0;
+  }
+}
+
+.starter {
+  display: flex;
+  flex-direction: column;
+  gap: rem(14);
+}
+
+.starterRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: rem(10);
+  align-items: end;
+
+  @include bp-down(sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: rem(6);
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}
+
+.fieldLabelOnGlass {
+  font-size: rem(14);
+  font-weight: 500;
+}
+
+.inputOnGlass {
+  width: 100%;
+  min-height: rem(46);
+  padding: rem(10) rem(12);
+  border: 1px solid var(--frame);
+  border-radius: rem(3);
+  background: rgb(255 255 255 / 94%);
+  color: #1f1916;
+  font: inherit;
+  font-size: rem(16);
+  resize: vertical;
+
+  &::placeholder {
+    color: #6b6058;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--amber);
+    outline-offset: 0;
+  }
+}
+
+.buttonOnGlass {
+  min-height: rem(46);
+  padding: 0 rem(22);
+  border: 2px solid var(--frame);
+  border-radius: rem(3);
+  background: var(--amber);
+  color: var(--on-amber);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 140ms var(--ease);
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.sent {
+  display: flex;
+  align-items: center;
+  gap: rem(10);
+  margin: 0;
+  font-size: rem(18);
+  font-weight: 700;
+}
+
+.availability {
+  display: flex;
+  flex-wrap: wrap;
+  gap: rem(6) rem(24);
+  margin: rem(16) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: rem(15);
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: rem(8);
+  }
+
+  li::before {
+    content: "";
+    width: rem(10);
+    height: rem(10);
+    background: var(--emerald);
+  }
+}
+
+// ── sections ───────────────────────────────────────────────────────────────
+.section {
+  padding-top: clamp(rem(64), 8vw, rem(112));
+}
+
+.h2 {
+  margin: 0 0 rem(24);
+  font-size: clamp(rem(30), 2.6vw + rem(14), rem(46));
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  font-variation-settings: "FLAR" 100, "VOLM" 0;
+}
+
+.h3 {
+  margin: 0;
+  font-size: clamp(rem(24), 1.2vw + rem(18), rem(32));
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  font-variation-settings: "FLAR" 80, "VOLM" 0;
+}
+
+.bodyLarge {
+  margin: 0;
+  max-width: 60ch;
+  font-size: rem(19);
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+}
+
+.stack {
+  margin: rem(6) 0 0;
+  color: var(--muted);
+  font-size: rem(15);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: rem(22);
+  margin: rem(10) 0 0;
+}
+
+.textLink {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--amber);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.2em;
+}
+
+.textLinkQuiet {
+  color: var(--muted);
+  text-underline-offset: 0.2em;
+}
+
+.workWindow {
+  grid-template-areas: "text text text text text text text text mark mark mark mark";
+}
+
+.workText {
+  grid-area: text;
+}
+
+.workMark {
+  grid-area: mark;
+  align-items: center;
+  justify-content: center;
+  min-height: rem(240);
+}
+
+.workLogo {
+  width: min(55%, rem(180));
+  height: auto;
+}
+
+@include bp-down(md) {
+  .workWindow {
+    grid-template-areas: "mark" "text";
+  }
+
+  .workMark {
+    min-height: rem(160);
+  }
+}
+
+.jobs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 3px solid var(--frame);
+}
+
+.job {
+  display: grid;
+  grid-template-columns: rem(240) 1fr;
+  gap: rem(24);
+  padding: rem(22) 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--frame) 30%, transparent);
+
+  @include bp-down(md) {
+    grid-template-columns: 1fr;
+    gap: rem(4);
+  }
+}
+
+.jobPeriod {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.jobTitle {
+  margin: 0;
+  font-size: rem(20);
+  font-weight: 700;
+  font-variation-settings: "FLAR" 60, "VOLM" 0;
+}
+
+.jobNote {
+  margin: rem(6) 0 0;
+  max-width: 64ch;
+  color: var(--muted);
+}
+
+.team {
+  max-width: 64ch;
+  margin: rem(18) 0 0;
+}
+
+.wordsWindow {
+  grid-template-areas: "q1 q1 q1 q1 q1 q1 q1 q2 q2 q2 q2 q2";
+
+  > :first-child {
+    grid-area: q1;
+  }
+
+  > :last-child {
+    grid-area: q2;
+  }
+
+  @include bp-down(lg) {
+    grid-template-areas: "q1" "q2";
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.quote {
+  margin: 0;
+  gap: rem(16);
+}
+
+.quoteText {
+  margin: 0;
+
+  p {
+    margin: 0;
+    font-size: clamp(rem(18), 0.5vw + rem(15), rem(21));
+    line-height: 1.5;
+  }
+}
+
+.amber .quoteText p {
+  font-weight: 500;
+}
+
+.quoteTranslation {
+  margin: 0;
+  font-size: rem(17);
+}
+
+.quoteBy {
+  font-weight: 700;
+}
+
+.quoteSource {
+  font-weight: 400;
+}
+
+.postWindow {
+  grid-template-areas: "post post post post post code code code code code code code";
+
+  @include bp-down(lg) {
+    grid-template-areas: "post" "code";
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.post {
+  grid-area: post;
+}
+
+.postLink {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--amber);
+    text-decoration-thickness: 3px;
+  }
+}
+
+.code {
+  grid-area: code;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+
+  pre {
+    margin: 0;
+    padding: rem(18) rem(22) rem(22);
+    overflow-x: auto;
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-size: rem(14);
+    line-height: 1.75;
+  }
+}
+
+.codeFile {
+  padding: rem(14) rem(22);
+  border-bottom: 2px solid #0f0a07;
+  color: #c0b2a6;
+  font-size: rem(13);
+}
+
+.codeLine {
+  display: block;
+}
+
+// the shell's inline-code chip (border, padding, tint) must not reach code inside a block
+.code code {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+.tok_kw {
+  color: #ec8aa0;
+}
+.tok_fn {
+  color: #8fb0ff;
+}
+.tok_prop {
+  color: #f2c25a;
+}
+.tok_str {
+  color: #7fd6a8;
+}
+.tok_com {
+  color: #a8998c;
+}
+.tok_pun,
+.tok_plain {
+  color: inherit;
+}
+
+.contactWindow {
+  grid-template-areas: "form form form form form form form text text text text text";
+
+  @include bp-down(lg) {
+    grid-template-areas: "form" "text";
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.contactForm_pane {
+  grid-area: form;
+  gap: rem(18);
+}
+
+.contactText {
+  grid-area: text;
+  justify-content: center;
+
+  p {
+    margin: 0;
+  }
+}
+
+.contactForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: rem(14);
+
+  .buttonOnGlass {
+    justify-self: start;
+  }
+
+  @include bp-down(sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── footer: the sill ───────────────────────────────────────────────────────
+.footer {
+  margin-top: clamp(rem(72), 9vw, rem(128));
+  background: var(--frame);
+  color: #eceef1;
+}
+
+.footerInner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: rem(10) rem(32);
+  max-width: rem(1280);
+  margin: 0 auto;
+  padding: rem(28) rem(24) rem(36);
+  font-size: rem(15);
+
+  p {
+    margin: 0;
+  }
+}
+
+.footerQuiet {
+  color: #cbbfb3;
+}
+
+.socials {
+  display: flex;
+  gap: rem(20);
+  margin: 0 0 0 auto;
+  padding: 0;
+  list-style: none;
+
+  a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+  }
+
+  @include bp-down(md) {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pane,
+  .window::after,
+  .buttonOnGlass,
+  .nav a {
+    transition: none;
+  }
+}

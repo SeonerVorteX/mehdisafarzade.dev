@@ -37,7 +37,7 @@
     }
 
     &--text {
-      font-family: $font-mono;
+      font-family: inherit;
       font-size: $fs-xxs;
       font-weight: $fw-medium;
       letter-spacing: 0.04em;
@@ -135,18 +135,13 @@
   align-items: flex-start;
   padding: rem(12) rem(14);
   border: 1px solid $color-border;
-  border-left: 3px solid $color-accent;
   border-radius: $radius-md;
-  background: $color-bg-elevated;
+  background: $color-bg-sunken;
   @include font($color-fg-secondary, $fs-xs, $fw-regular, $lh-md);
 
   svg {
     flex: none;
     margin-top: rem(2);
-  }
-
-  &--info {
-    border-left-color: $color-border-strong;
   }
 }
 

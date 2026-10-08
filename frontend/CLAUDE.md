@@ -21,14 +21,16 @@ Yarn 4 + Turbo workspace. It mirrors `D:\Files\Examination\examination` (read-on
 - Server calls: `lib/getServerAdmin.ts` (`server-only`) → `INTERNAL_API_URL/admin/*`, forwarding the cookies + `x-admin-device` that nginx set.
 - Screens: `/login` → `/login/totp` or `/login/totp-setup` (QR + recovery codes shown once) → `/` (bare shell: identity, device, sessions, sign out).
 
-## Web design system (Phase 5)
+## Web design system (Phase 5, in progress)
 
-- **Tokens:** `packages/ui/styles/root.scss` is the only place raw values live (light/dark mixins, accent mixins, spacing, type scale, motion). `packages/ui/lib/tokens.test.ts` parses it and fails on any text/surface or accent pair below WCAG AA.
-- **Theme:** `THEME_SCRIPT` (`packages/ui/lib/theme.ts`) runs inline in `<head>`, reads the `theme` cookie (default `system`) and sets `data-theme` + `data-theme-pref` before paint. The layout never reads cookies, so pages stay static/ISR. `ThemeToggle` writes the cookie (shared domain in production).
-- **Fonts** (`apps/web/src/styles/fonts.ts`): Inter (UI), JetBrains Mono (code/labels), Fraunces (display), Literata (display on `ru`: the candidates have no Cyrillic). All via next/font; exposed as `--font-*` variables on `<html>`.
-- **Styles:** Examination-style global partials (`apps/web/src/styles/_base.scss`, `_typography.scss`, `components/_*.scss`) pulled in by `main.scss`. Partials `@use "mixins" / "variables" / "breakpoints"` (resolved through `sassOptions.loadPaths`).
-- **Client messages:** the layout's `NextIntlClientProvider` gets only `SHELL_CLIENT_NAMESPACES` (`src/i18n/clientMessages.ts`). A page with its own client islands nests a provider with its extra namespaces. Everything else renders on the server and its strings never ship to the browser.
-- **Style tile:** `app/[locale]/%5Fdesign` (`%5F` = `_`, since `_folders` are private in Next). Dev only: production renders a 404 with no tile metadata. It and `styles/components/_design.scss` go away once the look is built out.
+- **Status (2026-10-08):** the first tile (Fraunces/Literata, vermilion/lime) was rejected. Three directions are built at `app/[locale]/%5Fdesign/directions/{a,b,c}` (dev only) with their own scoped tokens and fonts; screenshots and rationale in `docs/design/directions/`. The owner picks or mixes one; then its tokens move into `root.scss`, it gets a DESIGN.md, and the shell is rebuilt on it.
+- **Interim tokens:** `packages/ui/styles/root.scss` holds neutral placeholders; `packages/ui/lib/tokens.test.ts` still enforces WCAG AA on them.
+- **Product context:** `PRODUCT.md` (repo root) is binding for every design decision. Impeccable is installed as a plugin; Anthropic's frontend-design skill is vendored at `.claude/skills/frontend-design/`.
+- **Theme:** `THEME_SCRIPT` (`packages/ui/lib/theme.ts`) runs inline in `<head>`, reads the `theme` cookie (default `system`) and sets `data-theme` + `data-theme-pref` before paint. The layout never reads cookies, so pages stay static/ISR.
+- **Fonts:** one family per role, and it must cover Latin + Azerbaijani + Cyrillic. Verify real glyph coverage (cmap), not the declared subsets: Manrope, Golos Text, Wix Madefor, Rubik, Sofia Sans and Ubuntu Sans fail on az letters.
+- **Route groups:** `(site)/layout.tsx` renders the public chrome; `/_design/*` renders its own; `not-found.tsx` brings the chrome itself. The shell's global `h1–h4` font rule leaks into any route that sets its own face, so such routes must reset it (`.root :is(h1,h2,h3,h4) { font-family: inherit }`).
+- **Client messages:** the layout's `NextIntlClientProvider` gets only `SHELL_CLIENT_NAMESPACES` (`src/i18n/clientMessages.ts`).
+- **Captures:** `node apps/web/scripts/design-shots.mjs [a,b,c] [--first-viewport] [--out dir]` (Playwright 1.62, pinned to match the cached Chromium; reduced motion forced).
 
 ## Rules
 

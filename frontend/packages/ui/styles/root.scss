@@ -2,20 +2,21 @@
 // Theme: `html[data-theme="light"|"dark"]` is set before paint by THEME_SCRIPT
 // (lib/theme.ts). Without JS, `prefers-color-scheme` decides.
 //
-// PHASE 5 STYLE TILE: two accent candidates are defined (`vermilion` = default,
-// `lime` via `[data-accent="lime"]`). Once one is approved, the other block is deleted.
+// INTERIM (2026-10-08): the first Phase 5 world was rejected. These are neutral
+// placeholders for the shell only; the direction chosen at /_design/directions
+// replaces this file's palette, fonts and accent.
 
 @mixin light-tokens {
   color-scheme: light;
 
-  --color-bg: #f6f5f1;
+  --color-bg: #f5f6f8;
   --color-bg-elevated: #ffffff;
-  --color-bg-sunken: #edebe5;
+  --color-bg-sunken: #eceef2;
   --color-fg: #141417;
   --color-fg-secondary: #45454d;
   --color-muted: #65646d;
-  --color-border: #dedcd5;
-  --color-border-strong: #c4c2ba;
+  --color-border: #dcdfe5;
+  --color-border-strong: #c2c6cf;
 
   --color-success: #1f7a45;
   --color-warning: #9a5b00;
@@ -28,9 +29,9 @@
 @mixin dark-tokens {
   color-scheme: dark;
 
-  --color-bg: #0e0e10;
-  --color-bg-elevated: #17171a;
-  --color-bg-sunken: #0a0a0b;
+  --color-bg: #16181d;
+  --color-bg-elevated: #1e2127;
+  --color-bg-sunken: #121418;
   --color-fg: #ededf0;
   --color-fg-secondary: #b4b4bc;
   --color-muted: #8e8e98;
@@ -46,34 +47,22 @@
 }
 
 // accent: fill (buttons, highlights), fg (text ON the fill), text (accent-coloured text on bg), soft (tinted bg)
-@mixin accent-vermilion-light {
-  --color-accent: #d63a1c;
+@mixin accent-light {
+  --color-accent: #2f55d4;
   --color-accent-fg: #ffffff;
-  --color-accent-text: #c2331a;
-  --color-accent-soft: #fbe4dd;
+  --color-accent-text: #2f55d4;
+  --color-accent-soft: #e4e9fb;
 }
-@mixin accent-vermilion-dark {
-  --color-accent: #ff5a36;
-  --color-accent-fg: #0e0e10;
-  --color-accent-text: #ff6a4a;
-  --color-accent-soft: #3a1710;
-}
-@mixin accent-lime-light {
-  --color-accent: #c8f135;
-  --color-accent-fg: #0e0e10;
-  --color-accent-text: #4a6a00;
-  --color-accent-soft: #eef7c9;
-}
-@mixin accent-lime-dark {
-  --color-accent: #c8f135;
-  --color-accent-fg: #0e0e10;
-  --color-accent-text: #c8f135;
-  --color-accent-soft: #232c08;
+@mixin accent-dark {
+  --color-accent: #8aa4ff;
+  --color-accent-fg: #16181d;
+  --color-accent-text: #8aa4ff;
+  --color-accent-soft: #232b45;
 }
 
 :root {
   @include light-tokens;
-  @include accent-vermilion-light;
+  @include accent-light;
 
   /* radius */
   --radius-xs: 4px;
@@ -104,7 +93,7 @@
 
   /* typography: families come from next/font CSS variables */
   --font-sans: var(--font-inter, ui-sans-serif), system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --font-display: var(--font-fraunces, Georgia), Georgia, serif;
+  --font-display: var(--font-sans);
   --font-mono: var(--font-jetbrains, ui-monospace), SFMono-Regular, Menlo, Consolas, monospace;
 
   --fs-xxs: 12px;
@@ -137,40 +126,16 @@
   --dur: 250ms;
 }
 
-// Neither display candidate has Cyrillic, and next/font's metric-adjusted local fallback
-// (Times, full Unicode range) would catch Cyrillic glyphs before any later font in the stack.
-// So Russian pages set headlines in a Cyrillic-capable serif instead.
-html[lang="ru"] {
-  --font-display: var(--font-cyrillic-serif, Georgia), Georgia, serif;
-}
 
 html[data-theme="dark"] {
   @include dark-tokens;
-  @include accent-vermilion-dark;
+  @include accent-dark;
 }
 
 // No JS (or before the script ran): follow the OS.
 @media (prefers-color-scheme: dark) {
   html:not([data-theme]) {
     @include dark-tokens;
-    @include accent-vermilion-dark;
-  }
-}
-
-// ── Phase 5 tile only: the second accent candidate ─────────────────────────
-:root {
-  --tile-vermilion: #d63a1c;
-  --tile-lime: #c8f135;
-}
-[data-accent="lime"] {
-  @include accent-lime-light;
-}
-html[data-theme="dark"] [data-accent="lime"],
-html[data-theme="dark"][data-accent="lime"] {
-  @include accent-lime-dark;
-}
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme]) [data-accent="lime"] {
-    @include accent-lime-dark;
+    @include accent-dark;
   }
 }

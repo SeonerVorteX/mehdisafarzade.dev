@@ -1,0 +1,958 @@
+// Direction C, "Post": international correspondence. Letters received, dispatches sent, and an
+// envelope to address. Each section owns one flat colour field. Tokens live here (dev-only direction).
+@use "functions" as *;
+@use "breakpoints" as *;
+
+@mixin light {
+  --ground: #e8eefa;
+  --paper: #ffffff;
+  --ink: #1b2550;
+  --muted: #4c5780;
+  --blue: #2348b8;
+  --field: #2348b8;
+  --letters-field: #f2b132;
+  --on-letters: #1b2550;
+  --contact-field: #c2305e;
+  --on-contact: #ffffff;
+  --on-blue: #ffffff;
+  --on-blue-muted: #d3dcfa;
+  --rose: #c2305e;
+  --marigold: #f2b132;
+  --on-marigold: #1b2550;
+  --code: #1b2550;
+  --shadow: 0 2px 4px rgb(27 37 80 / 8%), 0 18px 40px -22px rgb(27 37 80 / 40%);
+  color-scheme: light;
+}
+
+@mixin dark {
+  --ground: #121931;
+  --paper: #1c2547;
+  --ink: #eef1fa;
+  --muted: #aab4d8;
+  --blue: #8fa8ff;
+  --field: #2a3c93;
+  --letters-field: #5a3e0e; // deep ochre: the marigold at night
+  --on-letters: #f7e9cf;
+  --contact-field: #5a1a33; // wine: the rose at night
+  --on-contact: #f7e6ec;
+  --on-blue: #eef1fa;
+  --on-blue-muted: #b9c4ee;
+  --rose: #ff86a5;
+  --marigold: #f6c35a;
+  --on-marigold: #121931;
+  --code: #0d1226;
+  --shadow: 0 2px 4px rgb(0 0 0 / 30%), 0 18px 40px -20px rgb(0 0 0 / 70%);
+  color-scheme: dark;
+}
+
+.root {
+  @include light;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1); // ease-out-quint: lands with weight, no overshoot
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --max: #{rem(1180)};
+
+  min-height: 100dvh;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  font-size: rem(18);
+  line-height: 1.65;
+
+  ::selection {
+    background: var(--marigold);
+    color: var(--on-marigold);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--rose);
+    outline-offset: 3px;
+    border-radius: rem(6);
+  }
+
+  @include bp-down(sm) {
+    font-size: rem(17);
+  }
+}
+
+// The shell's global h1–h4 rule sets its own face; every heading here uses the direction's family.
+.root :is(h1, h2, h3, h4) {
+  font-family: inherit; // the shell's display face must not leak in
+}
+
+:global(html[data-theme="dark"]) .root {
+  @include dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme])) .root {
+    @include dark;
+  }
+}
+
+// ── the blue field: header + hero ──────────────────────────────────────────
+.heroField {
+  background: var(--field);
+  color: var(--on-blue);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: rem(28);
+  max-width: var(--max);
+  min-height: rem(76);
+  margin: 0 auto;
+  padding: 0 rem(24);
+
+  @include bp-down(md) {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  @include bp-down(sm) {
+    gap: rem(10);
+    padding: 0 rem(12) 0 rem(16);
+  }
+}
+
+.brand {
+  color: inherit;
+  font-size: rem(20);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+
+  @include bp-down(sm) {
+    font-size: rem(16);
+  }
+}
+
+.nav {
+  display: flex;
+  gap: rem(6);
+  margin-left: auto;
+
+  a {
+    padding: rem(6) rem(14);
+    border-radius: rem(999);
+    color: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 160ms var(--ease-out);
+
+    &:hover {
+      background: rgb(255 255 255 / 16%);
+    }
+  }
+
+  @include bp-down(md) {
+    order: 3;
+    width: 100%;
+    margin: 0 0 0 rem(-14);
+    padding: 0 0 rem(12);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+}
+
+
+.tools {
+  display: flex;
+  gap: rem(8);
+  margin-left: auto;
+
+  @include bp-up(md) {
+    margin-left: 0;
+  }
+
+  :global(.segmented) {
+    border: 0;
+    background: rgb(0 0 0 / 14%);
+  }
+
+  :global(.segmented__item--text) {
+    font-family: inherit;
+    font-size: #{rem(13)};
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  :global(.segmented__item) {
+    color: inherit;
+    opacity: 0.8;
+
+    &[data-active] {
+      background: var(--paper);
+      color: var(--ink);
+      opacity: 1;
+    }
+  }
+
+  @include bp-down(sm) {
+    gap: rem(6);
+
+    :global(.segmented) {
+      padding: 2px;
+    }
+
+    :global(.segmented__item) {
+      min-width: rem(32);
+      height: rem(32);
+      padding: 0 rem(6);
+    }
+  }
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(rem(40), 6vw, rem(88)) rem(24) 0;
+
+  @include bp-down(sm) {
+    padding: rem(32) rem(16) 0;
+  }
+}
+
+.title {
+  grid-column: 1 / span 10;
+  max-width: 16ch;
+  margin: 0;
+  font-size: clamp(rem(42), 4.8vw + rem(10), rem(84));
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+
+  @include bp-down(lg) {
+    grid-column: 1 / -1;
+  }
+}
+
+.heroCopy {
+  grid-column: 1 / span 6;
+  padding-bottom: rem(48);
+
+  @include bp-down(lg) {
+    grid-column: 1 / -1;
+    padding-bottom: rem(32);
+  }
+}
+
+.roleInline {
+  color: var(--on-blue);
+  font-weight: 800;
+}
+
+.proof {
+  margin: rem(18) 0 0;
+  font-weight: 800;
+}
+
+.lede {
+  max-width: 54ch;
+  margin: rem(24) 0 0;
+  color: var(--on-blue-muted);
+  font-size: clamp(rem(18), 0.6vw + rem(15), rem(21));
+}
+
+// quiet, near the contact action (PRODUCT.md)
+.availability {
+  display: flex;
+  flex-direction: column;
+  gap: rem(4);
+  margin: rem(16) 0 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 800;
+
+  li::before {
+    content: "";
+    display: inline-block;
+    width: rem(9);
+    height: rem(9);
+    margin-right: rem(10);
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+
+// the envelope straddles the edge of the blue field, half in, half on the ground
+.heroEnvelope {
+  grid-column: 7 / -1;
+  align-self: end;
+  margin: rem(28) 0 rem(-96);
+  transform: rotate(-1deg);
+
+  @include bp-down(lg) {
+    grid-column: 1 / -1;
+    margin-bottom: rem(-120);
+    transform: none;
+  }
+}
+
+// ── envelope ───────────────────────────────────────────────────────────────
+.envelope {
+  position: relative;
+  display: grid;
+  gap: rem(14);
+  padding: rem(30) rem(28) rem(26);
+  border-radius: rem(10);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+
+  // the airmail border: the one place the stripes appear, marking "this goes out"
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: rem(8) solid transparent;
+    border-radius: inherit;
+    background: repeating-linear-gradient(-45deg, var(--rose) 0 rem(12), var(--paper) rem(12) rem(18), var(--blue) rem(18) rem(30), var(--paper) rem(30) rem(36))
+      border-box;
+    mask:
+      linear-gradient(#000 0 0) border-box,
+      linear-gradient(#000 0 0) padding-box;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  @include bp-down(sm) {
+    padding: rem(26) rem(20) rem(22);
+  }
+}
+
+.envelopeWide {
+  padding: rem(36) rem(34) rem(30);
+}
+
+.flap {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 55%;
+  background: var(--paper);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  filter: drop-shadow(0 4px 6px rgb(27 37 80 / 18%));
+  transform: rotateX(180deg);
+  transform-origin: top;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.envelope[data-sent] .flap {
+  opacity: 1;
+  transform: rotateX(0);
+  transition:
+    transform 520ms var(--ease-out),
+    opacity 120ms linear;
+}
+
+.stamp {
+  position: absolute;
+  top: rem(22);
+  right: rem(22);
+  display: grid;
+  place-items: center;
+  width: rem(64);
+  height: rem(76);
+  background: var(--marigold);
+  color: var(--on-marigold);
+  font-size: rem(13);
+  font-weight: 900;
+  // perforated edge
+  mask: radial-gradient(circle rem(4) at rem(4) rem(4), transparent 98%, #000) rem(-4) rem(-4) / rem(8) rem(8);
+}
+
+.addressTo {
+  margin: 0;
+  padding-right: rem(80);
+  font-size: rem(20);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.addressLabel {
+  display: inline-block;
+  min-width: rem(56);
+  color: var(--muted);
+  font-size: rem(15);
+  font-weight: 700;
+}
+
+.addressLine {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: rem(10);
+  padding-bottom: rem(6);
+  border-bottom: 2px dashed color-mix(in srgb, var(--muted) 45%, transparent);
+
+  input,
+  textarea {
+    width: 100%;
+    padding: rem(4) 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: rem(18);
+    resize: vertical;
+
+    &::placeholder {
+      color: var(--muted);
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &:focus-within {
+    border-bottom-color: var(--rose);
+    border-bottom-style: solid;
+  }
+
+  // shown only after the visitor has interacted (not on load)
+  &:has(:user-invalid) {
+    border-bottom-color: var(--rose);
+    border-bottom-style: solid;
+
+    .addressLabel {
+      color: var(--rose);
+    }
+  }
+}
+
+.sendButton {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: rem(10);
+  min-height: rem(48);
+  margin-top: rem(6);
+  padding: 0 rem(24);
+  border: 0;
+  border-radius: rem(999);
+  background: var(--rose);
+  color: var(--paper);
+  font: inherit;
+  font-size: rem(17);
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 260ms var(--ease);
+
+  &:hover {
+    transform: translateY(-2px) rotate(-1deg);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+:global(html[data-theme="dark"]) .sendButton {
+  color: #121931;
+}
+
+.sentNote {
+  margin: rem(6) 0 0;
+  font-weight: 800;
+  position: relative;
+  z-index: 3;
+}
+
+.sentMark {
+  position: absolute;
+  right: 18%;
+  bottom: 18%;
+  width: rem(110);
+  color: var(--rose);
+  opacity: 0;
+  transform: scale(1.6) rotate(-14deg);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.envelope[data-sent] .sentMark {
+  opacity: 0.9;
+  transform: scale(1) rotate(-14deg);
+  transition:
+    transform 360ms var(--ease) 420ms,
+    opacity 160ms linear 420ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .envelope[data-sent] .flap,
+  .envelope[data-sent] .sentMark,
+  .sendButton,
+  .nav a {
+    transition: none;
+  }
+}
+
+.postmark {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.postmarkText {
+  fill: currentColor;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+// ── sections ───────────────────────────────────────────────────────────────
+.main {
+  outline: none;
+}
+
+.h2 {
+  margin: 0 0 rem(28);
+  font-size: clamp(rem(32), 2.8vw + rem(14), rem(50));
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.dispatches {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: rem(168) rem(24) rem(96);
+
+  @include bp-down(lg) {
+    padding-top: rem(160);
+  }
+
+  @include bp-down(sm) {
+    padding: rem(170) rem(16) rem(72);
+  }
+}
+
+.post {
+  display: grid;
+  gap: rem(14);
+  max-width: rem(780);
+  padding: clamp(rem(24), 3vw, rem(44));
+  border-radius: rem(22);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.postMeta {
+  margin: 0;
+  color: var(--muted);
+  font-size: rem(15);
+  font-weight: 700;
+}
+
+.postTitle {
+  margin: 0;
+  font-size: clamp(rem(26), 1.6vw + rem(18), rem(36));
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    background-image: linear-gradient(var(--marigold), var(--marigold));
+    background-size: 100% 0.28em;
+    background-position: 0 92%;
+    background-repeat: no-repeat;
+    transition: background-size 240ms var(--ease-out);
+
+    &:hover {
+      background-size: 100% 0.42em;
+    }
+  }
+}
+
+.postExcerpt {
+  margin: 0;
+  max-width: 62ch;
+}
+
+.code {
+  margin: rem(6) 0;
+  border-radius: rem(14);
+  background: var(--code);
+  color: #eef1fa;
+  overflow: hidden;
+
+  pre {
+    margin: 0;
+    padding: rem(16) rem(20) rem(20);
+    overflow-x: auto;
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-size: rem(14);
+    line-height: 1.75;
+  }
+}
+
+.codeFile {
+  padding: rem(12) rem(20);
+  background: rgb(255 255 255 / 6%);
+  color: #aab4d8;
+  font-size: rem(13);
+  font-weight: 700;
+}
+
+.codeLine {
+  display: block;
+}
+
+// the shell's inline-code chip (border, padding, tint) must not reach code inside a block
+.code code {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+.tok_kw {
+  color: #ff9cb6;
+}
+.tok_fn {
+  color: #9db4ff;
+}
+.tok_prop {
+  color: #f6c35a;
+}
+.tok_str {
+  color: #8fe3c0;
+}
+.tok_com {
+  color: #8f9bc6;
+}
+.tok_pun,
+.tok_plain {
+  color: inherit;
+}
+
+.textLink {
+  justify-self: start;
+  color: var(--blue);
+  font-weight: 900;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--marigold);
+  text-underline-offset: 0.2em;
+}
+
+.textLinkQuiet {
+  color: var(--muted);
+  font-weight: 700;
+  text-underline-offset: 0.2em;
+}
+
+// letters: the marigold field
+.lettersField {
+  background: var(--letters-field);
+  color: var(--on-letters);
+}
+
+.inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: rem(96) rem(24);
+
+  @include bp-down(sm) {
+    padding: rem(64) rem(16);
+  }
+}
+
+.letters {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: rem(28);
+  align-items: start;
+
+  @include bp-down(lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.letter {
+  position: relative;
+  margin: 0;
+  padding: rem(34) rem(32) rem(28);
+  border-radius: rem(6);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+
+  &:first-child {
+    transform: rotate(-0.8deg);
+  }
+
+  &:last-child {
+    margin-top: rem(48);
+    transform: rotate(0.9deg);
+  }
+
+  @include bp-down(lg) {
+    &:last-child {
+      margin-top: 0;
+    }
+  }
+
+  @include bp-down(sm) {
+    padding: rem(26) rem(20) rem(22);
+  }
+}
+
+.letterMark {
+  float: right;
+  width: rem(84);
+  margin: rem(-8) rem(-8) rem(8) rem(16);
+  color: var(--blue);
+  opacity: 0.85;
+  transform: rotate(10deg);
+}
+
+.letterText {
+  margin: 0;
+
+  p {
+    margin: 0;
+    font-size: rem(19);
+    line-height: 1.6;
+  }
+}
+
+.letterTranslation {
+  margin: rem(14) 0 0;
+  font-size: rem(17);
+}
+
+.letterBy {
+  margin-top: rem(18);
+  font-weight: 900;
+}
+
+.letterSource {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+// postcard + itinerary on the plain ground
+.section {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: rem(96) rem(24) 0;
+
+  @include bp-down(sm) {
+    padding: rem(72) rem(16) 0;
+  }
+}
+
+.postcard {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  border-radius: rem(10);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+
+  @include bp-down(md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.postcardPicture {
+  display: grid;
+  place-items: center;
+  min-height: rem(300);
+  background: #0d1226;
+
+  @include bp-down(md) {
+    min-height: rem(200);
+  }
+}
+
+.postcardLogo {
+  width: min(42%, rem(170));
+  height: auto;
+}
+
+.postcardBack {
+  display: grid;
+  align-content: start;
+  gap: rem(10);
+  padding: clamp(rem(24), 3vw, rem(40));
+  border-left: 2px dashed color-mix(in srgb, var(--muted) 40%, transparent);
+
+  @include bp-down(md) {
+    border-left: 0;
+  }
+}
+
+.postcardTitle {
+  margin: 0;
+  font-size: rem(32);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.postcardSummary {
+  margin: 0;
+  font-size: rem(20);
+  font-weight: 700;
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+}
+
+.stack {
+  margin: 0;
+  color: var(--muted);
+  font-size: rem(15);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: rem(22);
+  margin: rem(6) 0 0;
+}
+
+.jobs {
+  display: grid;
+  gap: rem(4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.job {
+  display: grid;
+  grid-template-columns: rem(240) 1fr;
+  column-gap: rem(28);
+  padding: rem(22) 0;
+  border-bottom: 2px dashed color-mix(in srgb, var(--muted) 35%, transparent);
+
+  @include bp-down(md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.jobPeriod {
+  grid-row: span 2;
+  margin: 0;
+  color: var(--blue);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.jobTitle {
+  margin: 0;
+  font-size: rem(21);
+  font-weight: 900;
+}
+
+.jobOrg {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.jobNote {
+  margin: rem(4) 0 0;
+  max-width: 62ch;
+  color: var(--muted);
+}
+
+.team {
+  max-width: 62ch;
+  margin: rem(22) 0 0;
+}
+
+// contact: the rose field
+.contactField {
+  margin-top: rem(110);
+  background: var(--contact-field);
+  color: var(--on-contact);
+
+  // the default rose ring would vanish on the rose field
+  :focus-visible {
+    outline-color: var(--on-contact);
+  }
+}
+
+.contactInner {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: rem(48);
+  align-items: center;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: rem(96) rem(24);
+
+  @include bp-down(lg) {
+    grid-template-columns: 1fr;
+  }
+
+  @include bp-down(sm) {
+    padding: rem(64) rem(16);
+  }
+}
+
+.contactBody {
+  max-width: 46ch;
+  margin: rem(12) 0 0;
+  font-size: rem(19);
+}
+
+.contactMail {
+  color: inherit;
+  font-weight: 900;
+  text-underline-offset: 0.2em;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: rem(10) rem(32);
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: rem(32) rem(24) rem(40);
+  font-size: rem(15);
+
+  p {
+    margin: 0;
+  }
+
+  @include bp-down(sm) {
+    padding: rem(28) rem(16) rem(36);
+  }
+}
+
+.socials {
+  display: flex;
+  gap: rem(20);
+  margin: 0 0 0 auto;
+  padding: 0;
+  list-style: none;
+
+  a {
+    color: var(--ink);
+    font-weight: 800;
+    text-underline-offset: 0.2em;
+  }
+
+  @include bp-down(md) {
+    margin-left: 0;
+  }
+}

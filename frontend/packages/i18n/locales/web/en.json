@@ -26,83 +26,132 @@
     "elsewhere": "Elsewhere",
     "backToTop": "Back to top"
   },
-  "design": {
-    "metaTitle": "Style tile",
-    "label": "Phase 5 · style tile · dev only",
-    "title": "Style tile",
-    "intro": "Pick one display face and one accent. Use the header to switch theme and language; every block below updates live.",
-    "controls": "Tile controls",
-    "accent": "Accent",
-    "vermilion": "Vermilion",
-    "lime": "Acid lime",
-    "grid": "Show 12-column grid",
+  "directions": {
+    "metaTitle": "Design directions",
+    "index": {
+      "title": "Design directions",
+      "intro": "Three directions for the site, each built on the same real content. Pick one, or mix them.",
+      "a": "Line: closest to Linear. A product is one route, and I ride it from the first stop to the last.",
+      "b": "Pane: in between. Exact frames, colour only inside the panes, the way Sheki windows are made.",
+      "c": "Post: closest to Josh Comeau. Every proof is correspondence, and the contact form is an envelope."
+    },
+    "nav": {
+      "work": "Work",
+      "writing": "Writing",
+      "about": "About",
+      "contact": "Contact",
+      "menu": "Menu",
+      "label": "Main"
+    },
+    "hero": {
+      "name": "Mehdi Safarzade",
+      "role": "Full-stack web developer and AI engineer",
+      "title": "I build web products end to end, on my own.",
+      "lede": "The database, the API, the admin tools, the interface and the server it all runs on. Lately also AI: RAG pipelines and multi-agent assistants in production.",
+      "proof": "100% Job Success on Upwork across 10 contracts"
+    },
+    "route": {
+      "label": "One product, every stage",
+      "dataModel": "Data model",
+      "api": "API",
+      "admin": "Admin tools",
+      "interface": "Interface",
+      "server": "Server",
+      "production": "In production",
+      "caption": "Examination.az went through every stage with one developer: me.",
+      "next": "Next stop: your project"
+    },
+    "starter": {
+      "label": "Tell me what you’re building",
+      "placeholder": "A booking system for a small clinic…",
+      "email": "Your email",
+      "send": "Send",
+      "sent": "Sent. I’ll reply by email."
+    },
+    "availability": {
+      "freelance": "Open to freelance projects",
+      "roles": "Open to full-time and part-time roles",
+      "timezone": "Baku, UTC+4. My day overlaps with European working hours."
+    },
     "sections": {
-      "display": "Display typeface",
-      "text": "Body, UI and code",
-      "scale": "Type scale",
-      "color": "Colour and contrast",
-      "components": "Components",
-      "layout": "Bento and timeline",
-      "motion": "Motion"
+      "work": "Selected work",
+      "experience": "Where I’ve worked",
+      "words": "What clients say",
+      "writing": "Writing",
+      "contact": "Start a conversation"
     },
-    "candidate": "Candidate {letter}",
-    "cyrillicNote": "No Cyrillic in this family, so Russian pages set headlines in Literata instead (switch to RU to see it).",
-    "variable": "Variable: weight + optical size",
-    "single": "Single weight (400), roman + italic",
-    "sampleHeadline": "I build calm, fast software for real people.",
-    "sampleName": "Mehdi Safarzade",
-    "sampleRole": "Full-stack developer · Baku",
-    "sampleQuote": "Good software disappears into the work it enables.",
-    "glyphs": "Glyphs",
-    "bodyTitle": "Inter for reading and UI",
-    "body": "I design and ship production platforms end to end: data models, APIs, admin tools and the interfaces people use every day. This paragraph is set at the body size with a comfortable measure, so you can judge rhythm and colour at reading length.",
-    "bodySmall": "Secondary text, captions and metadata use the secondary and muted greys.",
-    "codeLabel": "Code · JetBrains Mono",
-    "swatches": "Tokens (contrast against the page background)",
-    "onAccent": "Text on accent",
-    "accentText": "Accent as text",
-    "buttons": "Buttons",
-    "primary": "Start a project",
-    "secondary": "View work",
-    "ghost": "Read the blog",
-    "link": "Inline link",
-    "disabled": "Disabled",
-    "chips": "Tags",
-    "form": "Form fields",
-    "name": "Name",
-    "email": "Email",
-    "message": "Message",
-    "messagePlaceholder": "Tell me about the project…",
-    "projectType": "Project type",
-    "projectTypes": {
-      "web": "Web app",
-      "api": "API / backend",
-      "other": "Something else"
+    "project": {
+      "summary": "An exam-preparation platform for university students in Azerbaijan.",
+      "role": "Built and run alone, from the data model to the production server.",
+      "cta": "Read the case study",
+      "alt": "Examination.az logo",
+      "live": "Visit examination.az",
+      "shotPending": "A screenshot goes here once I capture the current version."
     },
-    "error": "Please enter a valid email address.",
-    "notice": "This page isn’t translated yet, so you’re reading the English version.",
-    "card": {
-      "label": "Case study",
-      "title": "Examination.az",
-      "body": "An exam platform for thousands of students: Next.js, NestJS, Postgres, RabbitMQ.",
-      "cta": "Read the case study"
+    "experience": {
+      "prodata": {
+        "title": "AI and Data Engineer",
+        "period": "Jul 2026 – now",
+        "note": "An agricultural question-answering assistant: RAG over documents and live data, with several agents behind one chat."
+      },
+      "heroic": {
+        "title": "Lead Full-Stack Developer",
+        "period": "Mar 2025 – May 2026",
+        "note": "The agency’s only developer, building most of its client work."
+      },
+      "upwork": {
+        "title": "Full-stack developer, freelance",
+        "period": "Sep 2024 – Jul 2026",
+        "note": "10 contracts, about 600 hours, 100% Job Success. Earned Top Rated status."
+      },
+      "team": "I’ve also worked inside remote teams: at Mobius, and at Heroic.art with the owner as QA and project manager.",
+      "more": "Full experience"
     },
-    "bento": {
-      "a": "Selected project",
-      "b": "Stack",
-      "c": "Now",
-      "d": "Writing"
+    "words": {
+      "translation": "Translation",
+      "q1": "Mehdi is one of the best developers I've ever worked with. … He's not just skilled and quick to learn, but his attitude is great, has frequent communication, and also bringing a human element to the requests … He deserves 6 stars in all categories - 5 too small.",
+      "q1By": "Agency owner",
+      "q1Source": "Upwork, 2025",
+      "q2": "… I was absolutely thrilled by how fast he grasped the business requirements, but also how flexibly he was able to apply them to my choice of technology (AWS, NodeJS, ...). He always met the deadlines and did a very proactive planning to ensure his availability - plus his communication skill made everything going extremely smooth. …",
+      "q2By": "Mark Bosshard, CEO of StrategicAI",
+      "q2Source": "LinkedIn",
+      "all": "All recommendations",
+      "q3": "He's smart, great attitude, creative, highly capable. In a world of Upwork bots, he's 100% human but also better than a bot.",
+      "q3By": "Client, Upwork, 2024"
     },
-    "timeline": {
-      "role": "Full-stack developer",
-      "org": "Freelance",
-      "period": "2023 — now",
-      "summary": "Platforms, APIs and admin tools for clients in Azerbaijan and abroad."
+    "post": {
+      "title": "Re-running a seed without overwriting edits",
+      "excerpt": "A seed script is easy to write once. Running it again after people have edited the content is where it bites. One rule keeps a re-seed safe.",
+      "meta": "Sample post, October 2026, 4 min read",
+      "file": "seed.ts",
+      "cta": "Read the post",
+      "all": "All writing"
     },
-    "motionBody": "Reveals fade in and rise 8px over 250 ms. With reduced motion enabled in the OS, they appear instantly.",
-    "replay": "Replay",
-    "reduced": "Reduced motion: {state}",
-    "on": "on",
-    "off": "off"
+    "contact": {
+      "title": "Tell me what you’re building",
+      "body": "Projects, roles, or a question about something I wrote. I read every message myself and reply by email.",
+      "name": "Your name",
+      "email": "Your email",
+      "message": "Your message",
+      "send": "Send message",
+      "sent": "Sent. Thanks, I’ll reply by email.",
+      "direct": "Or write directly to"
+    },
+    "footer": {
+      "built": "Built with Next.js and NestJS, self-hosted on my own server.",
+      "rights": "© 2026 Mehdi Safarzade"
+    },
+    "post_c": {
+      "to": "To",
+      "toValue": "Mehdi Safarzade, Baku",
+      "from": "From",
+      "about": "Message",
+      "stamp": "UTC+4",
+      "received": "Letters from clients",
+      "dispatches": "Dispatches",
+      "postcard": "A postcard from a project",
+      "city": "Baku",
+      "fromPlaceholder": "you@company.com"
+    }
   }
 }

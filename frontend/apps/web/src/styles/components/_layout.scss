@@ -163,7 +163,7 @@
   &__top {
     @include flex(row, flex-start, center, true);
     gap: rem(6);
-    @include micro-label;
+    @include font($color-muted, $fs-xs, $fw-medium);
     text-decoration: none;
 
     @include hover {

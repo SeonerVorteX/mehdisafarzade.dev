@@ -4,8 +4,6 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { THEME_SCRIPT } from "@portfolio/ui/lib";
-import { SiteFooter } from "@/components/SiteFooter/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader/SiteHeader";
 import { SITE_URL } from "@/config/env";
 import { pickMessages, SHELL_CLIENT_NAMESPACES } from "@/i18n/clientMessages";
 import { routing } from "@/i18n/routing";
@@ -58,11 +56,8 @@ export default async function LocaleLayout({
           <a href="#main" className="skip-link">
             {t("skipToContent")}
           </a>
-          <SiteHeader />
-          <main id="main" className="site-main" tabIndex={-1}>
-            {children}
-          </main>
-          <SiteFooter />
+          {/* Each route group renders its own chrome and the #main landmark. */}
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>

@@ -26,83 +26,132 @@
     "elsewhere": "Digər yerlərdə",
     "backToTop": "Yuxarı qayıt"
   },
-  "design": {
-    "metaTitle": "Stil lövhəsi",
-    "label": "Mərhələ 5 · stil lövhəsi · yalnız dev",
-    "title": "Stil lövhəsi",
-    "intro": "Bir başlıq şrifti və bir aksent rəngi seçin. Mövzunu və dili başlıqdan dəyişin; aşağıdakı bütün bloklar dərhal yenilənir.",
-    "controls": "Lövhə ayarları",
-    "accent": "Aksent",
-    "vermilion": "Vermilyon",
-    "lime": "Turş laym",
-    "grid": "12 sütunlu şəbəkəni göstər",
+  "directions": {
+    "metaTitle": "Dizayn istiqamətləri",
+    "index": {
+      "title": "Dizayn istiqamətləri",
+      "intro": "Sayt üçün üç istiqamət, hamısı eyni real məzmun üzərində. Birini seçin və ya qarışdırın.",
+      "a": "Line: Linear-a ən yaxın. Məhsul bir marşrutdur, mən onu ilk dayanacaqdan sonuncuya qədər keçirəm.",
+      "b": "Pane: ortada. Dəqiq çərçivələr, rəng yalnız şüşələrin içində, Şəki şəbəkələri kimi.",
+      "c": "Post: Josh Comeau-ya ən yaxın. Hər sübut bir məktubdur, əlaqə forması isə zərfdir."
+    },
+    "nav": {
+      "work": "İşlər",
+      "writing": "Yazılar",
+      "about": "Haqqımda",
+      "contact": "Əlaqə",
+      "menu": "Menyu",
+      "label": "Əsas"
+    },
+    "hero": {
+      "name": "Mehdi Səfərzadə",
+      "role": "Full-stack veb developer və AI mühəndisi",
+      "title": "Veb məhsulları başdan-sona özüm qururam.",
+      "lede": "Verilənlər bazası, API, admin alətləri, interfeys və hamısının işlədiyi server. Son vaxtlar AI da: istehsalda işləyən RAG pipeline-ları və çoxagentli assistentlər.",
+      "proof": "Upwork-da 10 müqavilə üzrə 100% Job Success"
+    },
+    "route": {
+      "label": "Bir məhsul, bütün mərhələlər",
+      "dataModel": "Verilənlər modeli",
+      "api": "API",
+      "admin": "Admin alətləri",
+      "interface": "İnterfeys",
+      "server": "Server",
+      "production": "İstehsalda",
+      "caption": "Examination.az bütün mərhələləri bir developerlə keçdi: mənimlə.",
+      "next": "Növbəti dayanacaq: sizin layihəniz"
+    },
+    "starter": {
+      "label": "Nə qurduğunuzu yazın",
+      "placeholder": "Kiçik bir klinika üçün qeydiyyat sistemi…",
+      "email": "E-poçtunuz",
+      "send": "Göndər",
+      "sent": "Göndərildi. E-poçtla cavab verəcəyəm."
+    },
+    "availability": {
+      "freelance": "Frilans layihələrə açığam",
+      "roles": "Tam və yarımştat vəzifələrə açığam",
+      "timezone": "Bakı, UTC+4. İş günüm Avropa iş saatları ilə üst-üstə düşür."
+    },
     "sections": {
-      "display": "Başlıq şrifti",
-      "text": "Mətn, interfeys və kod",
-      "scale": "Şrift ölçüləri",
-      "color": "Rəng və kontrast",
-      "components": "Komponentlər",
-      "layout": "Bento və xronologiya",
-      "motion": "Hərəkət"
+      "work": "Seçilmiş işlər",
+      "experience": "Harada işləmişəm",
+      "words": "Müştərilər nə deyir",
+      "writing": "Yazılar",
+      "contact": "Söhbətə başlayaq"
     },
-    "candidate": "Namizəd {letter}",
-    "cyrillicNote": "Bu ailədə kiril yoxdur, ona görə rus səhifələrində başlıqlar Literata ilə yığılır (görmək üçün RU-ya keçin).",
-    "variable": "Dəyişən: qalınlıq + optik ölçü",
-    "single": "Tək qalınlıq (400), düz + kursiv",
-    "sampleHeadline": "Real insanlar üçün sakit və sürətli proqramlar qururam.",
-    "sampleName": "Mehdi Səfərzadə",
-    "sampleRole": "Full-stack developer · Bakı",
-    "sampleQuote": "Yaxşı proqram imkan verdiyi işin içində görünməz olur.",
-    "glyphs": "Hərflər",
-    "bodyTitle": "Oxu və interfeys üçün Inter",
-    "body": "İstehsal platformalarını başdan-sona layihələndirib təhvil verirəm: məlumat modelləri, API-lər, admin alətləri və insanların hər gün istifadə etdiyi interfeyslər. Bu abzas əsas mətn ölçüsündə, rahat sətir uzunluğu ilə yığılıb ki, ritmi və rəngi oxu uzunluğunda qiymətləndirə biləsiniz.",
-    "bodySmall": "İkinci dərəcəli mətn, izahlar və metadata ikinci dərəcəli və solğun boz rənglərdən istifadə edir.",
-    "codeLabel": "Kod · JetBrains Mono",
-    "swatches": "Tokenlər (səhifə fonuna qarşı kontrast)",
-    "onAccent": "Aksent üzərində mətn",
-    "accentText": "Mətn kimi aksent",
-    "buttons": "Düymələr",
-    "primary": "Layihəyə başla",
-    "secondary": "İşlərə bax",
-    "ghost": "Bloqu oxu",
-    "link": "Mətndaxili keçid",
-    "disabled": "Deaktiv",
-    "chips": "Teqlər",
-    "form": "Forma sahələri",
-    "name": "Ad",
-    "email": "E-poçt",
-    "message": "Mesaj",
-    "messagePlaceholder": "Layihə haqqında yazın…",
-    "projectType": "Layihə növü",
-    "projectTypes": {
-      "web": "Veb tətbiq",
-      "api": "API / backend",
-      "other": "Başqa bir şey"
+    "project": {
+      "summary": "Azərbaycanda universitet tələbələri üçün imtahana hazırlıq platforması.",
+      "role": "Tək qurulub və idarə olunur: verilənlər modelindən istehsal serverinə qədər.",
+      "cta": "Keysi oxu",
+      "alt": "Examination.az loqosu",
+      "live": "examination.az saytına keç",
+      "shotPending": "Cari versiyanın ekran görüntüsü burada olacaq."
     },
-    "error": "Etibarlı e-poçt ünvanı daxil edin.",
-    "notice": "Bu səhifə hələ tərcümə olunmayıb, ona görə ingiliscə versiyanı oxuyursunuz.",
-    "card": {
-      "label": "Keys",
-      "title": "Examination.az",
-      "body": "Minlərlə tələbə üçün imtahan platforması: Next.js, NestJS, Postgres, RabbitMQ.",
-      "cta": "Keysi oxu"
+    "experience": {
+      "prodata": {
+        "title": "AI və Data Mühəndisi",
+        "period": "İyul 2026 – indi",
+        "note": "Kənd təsərrüfatı suallarına cavab verən assistent: sənədlər və canlı məlumatlar üzərində RAG, bir çatın arxasında bir neçə agent."
+      },
+      "heroic": {
+        "title": "Aparıcı Full-Stack Developer",
+        "period": "Mart 2025 – May 2026",
+        "note": "Agentliyin yeganə developeri, müştəri işlərinin çoxunu mən qurdum."
+      },
+      "upwork": {
+        "title": "Full-stack developer, frilans",
+        "period": "Sentyabr 2024 – İyul 2026",
+        "note": "10 müqavilə, təxminən 600 saat, 100% Job Success. Top Rated statusu qazandım."
+      },
+      "team": "Uzaqdan işləyən komandalarda da çalışmışam: Mobius-da və Heroic.art-da, burada sahibkar QA və layihə meneceri idi.",
+      "more": "Bütün təcrübə"
     },
-    "bento": {
-      "a": "Seçilmiş layihə",
-      "b": "Texnologiyalar",
-      "c": "İndi",
-      "d": "Yazılar"
+    "words": {
+      "translation": "Tərcümə",
+      "q1": "Mehdi indiyədək birgə işlədiyim ən yaxşı developerlərdən biridir. … O, təkcə bacarıqlı və tez öyrənən deyil, həm də münasibəti əladır, tez-tez ünsiyyət saxlayır və tapşırıqlara insani yanaşma gətirir … Bütün kateqoriyalarda 6 ulduza layiqdir - 5 azdır.",
+      "q1By": "Agentlik sahibi",
+      "q1Source": "Upwork, 2025",
+      "q2": "… Biznes tələblərini nə qədər tez qavradığı, həm də onları seçdiyim texnologiyalara (AWS, NodeJS, ...) nə qədər çevik tətbiq edə bildiyi məni çox sevindirdi. O, həmişə müddətlərə əməl edirdi və əlçatan olmasını təmin etmək üçün çox proaktiv planlama aparırdı - üstəlik ünsiyyət bacarığı hər şeyin son dərəcə rəvan getməsini təmin etdi. …",
+      "q2By": "Mark Bosshard, StrategicAI-ın CEO-su",
+      "q2Source": "LinkedIn",
+      "all": "Bütün tövsiyələr",
+      "q3": "O, ağıllıdır, münasibəti əladır, yaradıcıdır, çox bacarıqlıdır. Upwork botları dünyasında o, 100% insandır, amma həm də botdan yaxşıdır.",
+      "q3By": "Müştəri, Upwork, 2024"
     },
-    "timeline": {
-      "role": "Full-stack developer",
-      "org": "Frilans",
-      "period": "2023 — indi",
-      "summary": "Azərbaycanda və xaricdə müştərilər üçün platformalar, API-lər və admin alətləri."
+    "post": {
+      "title": "Redaktələri silmədən seed-i yenidən işə salmaq",
+      "excerpt": "Seed skriptini bir dəfə yazmaq asandır. İnsanlar məzmunu redaktə etdikdən sonra onu yenidən işə salanda problem başlayır. Bir qayda yenidən seed-i təhlükəsiz saxlayır.",
+      "meta": "Nümunə yazı, oktyabr 2026, 4 dəq oxu",
+      "file": "seed.ts",
+      "cta": "Yazını oxu",
+      "all": "Bütün yazılar"
     },
-    "motionBody": "Görünmə effektləri 250 ms ərzində solğunluqdan çıxır və 8px qalxır. ƏS-də azaldılmış hərəkət aktivdirsə, dərhal görünür.",
-    "replay": "Təkrarla",
-    "reduced": "Azaldılmış hərəkət: {state}",
-    "on": "aktiv",
-    "off": "deaktiv"
+    "contact": {
+      "title": "Nə qurduğunuzu yazın",
+      "body": "Layihələr, vəzifələr və ya yazdığım bir şey haqqında sual. Hər mesajı özüm oxuyuram və e-poçtla cavab verirəm.",
+      "name": "Adınız",
+      "email": "E-poçtunuz",
+      "message": "Mesajınız",
+      "send": "Mesajı göndər",
+      "sent": "Göndərildi. Təşəkkürlər, e-poçtla cavab verəcəyəm.",
+      "direct": "Və ya birbaşa yazın:"
+    },
+    "footer": {
+      "built": "Next.js və NestJS ilə hazırlanıb, öz serverimdə işləyir.",
+      "rights": "© 2026 Mehdi Səfərzadə"
+    },
+    "post_c": {
+      "to": "Kimə",
+      "toValue": "Mehdi Səfərzadə, Bakı",
+      "from": "Kimdən",
+      "about": "Mesaj",
+      "stamp": "UTC+4",
+      "received": "Müştərilərdən məktublar",
+      "dispatches": "Göndərişlər",
+      "postcard": "Bir layihədən açıqca",
+      "city": "Bakı",
+      "fromPlaceholder": "siz@şirkət.az"
+    }
   }
 }

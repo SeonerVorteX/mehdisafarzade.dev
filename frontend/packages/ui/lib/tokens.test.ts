@@ -19,9 +19,7 @@ function get(tokens: Record<string, string>, key: string): string {
 }
 
 const themes = { light: block("light-tokens"), dark: block("dark-tokens") };
-const accents = ["vermilion", "lime"].flatMap((name) =>
-  (["light", "dark"] as const).map((theme) => ({ name, theme, tokens: block(`accent-${name}-${theme}`) })),
-);
+const accents = (["light", "dark"] as const).map((theme) => ({ name: "accent", theme, tokens: block(`accent-${theme}`) }));
 
 describe("design tokens meet WCAG AA", () => {
   it.each(Object.entries(themes))("%s: text colours on every surface", (_theme, t) => {
